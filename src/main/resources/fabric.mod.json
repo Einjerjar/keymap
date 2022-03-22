@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "keymap",
+  "version": "${version}",
+
+  "name": "KeyMap",
+  "description": "Visually resolve keybinding conflicts",
+  "authors": [
+    "Einjerjar"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "ISC",
+  "icon": "assets/keymap/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.einjerjar.mc.keymap.Main"
+    ]
+  },
+  "mixins": [
+    "keymap.mixins.json"
+  ],
+  
+  "accessWidener" : "keymap.accesswidener",
+
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  }
+}
