@@ -1,7 +1,6 @@
 package com.github.einjerjar.mc.keymap.screen.widgets;
 
-import com.github.einjerjar.mc.keymap.Main;
-import com.github.einjerjar.mc.keymap.utils.ColorSet;
+import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -31,33 +30,29 @@ import java.util.function.Predicate;
 public class FlatInputWidget extends ClickableWidget implements Drawable, Element {
     private final TextRenderer textRenderer;
     private String text;
-    private int maxLength;
+    private final int maxLength;
     private int focusedTicks;
-    private boolean drawsBackground;
-    private boolean focusUnlocked;
-    private boolean editable;
+    private final boolean drawsBackground;
+    private final boolean focusUnlocked;
+    private final boolean editable;
     private boolean selecting;
     private int firstCharacterIndex;
     private int selectionStart;
     private int selectionEnd;
-    private int editableColor;
-    private int uneditableColor;
+    private final int editableColor;
+    private final int uneditableColor;
     @Nullable
     private String suggestion;
     @Nullable
     private Consumer<String> changedListener;
-    private Predicate<String> textPredicate;
-    private BiFunction<String, Integer, OrderedText> renderTextProvider;
+    private final Predicate<String> textPredicate;
+    private final BiFunction<String, Integer, OrderedText> renderTextProvider;
 
-    ColorSet cBg = ColorSet.BG;
-    ColorSet cText = ColorSet.TEXT;
-    ColorSet cBorder = ColorSet.BORDER;
-
-    public FlatInputWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text) {
-        this(textRenderer, x, y, width, height, null, text);
+    public FlatInputWidget(int x, int y, int width, int height, Text text) {
+        this(x, y, width, height, null, text);
     }
 
-    public FlatInputWidget(TextRenderer textRenderer, int x, int y, int width, int height, @Nullable TextFieldWidget copyFrom, Text text) {
+    public FlatInputWidget(int x, int y, int width, int height, @Nullable TextFieldWidget copyFrom, Text text) {
         super(x, y, width, height, text);
         this.text = "";
         this.maxLength = 32;
@@ -67,26 +62,16 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
         this.editableColor = 14737632;
         this.uneditableColor = 7368816;
         this.textPredicate = Objects::nonNull;
-        this.renderTextProvider = (string, firstCharacterIndex) -> {
-            return OrderedText.styledForwardsVisitedString(string, Style.EMPTY);
-        };
-        this.textRenderer = textRenderer;
+        this.renderTextProvider = (string, firstCharacterIndex) -> OrderedText.styledForwardsVisitedString(string, Style.EMPTY);
+        this.textRenderer = MinecraftClient.getInstance().textRenderer;
         if (copyFrom != null) {
             this.setText(copyFrom.getText());
         }
 
     }
 
-    public void setChangedListener(Consumer<String> changedListener) {
+    public void setChangedListener(@Nullable Consumer<String> changedListener) {
         this.changedListener = changedListener;
-    }
-
-    public void setRenderTextProvider(BiFunction<String, Integer, OrderedText> renderTextProvider) {
-        this.renderTextProvider = renderTextProvider;
-    }
-
-    public void tick() {
-        ++this.focusedTicks;
     }
 
     protected MutableText getNarrationMessage() {
@@ -116,10 +101,6 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
         int i = Math.min(this.selectionStart, this.selectionEnd);
         int j = Math.max(this.selectionStart, this.selectionEnd);
         return this.text.substring(i, j);
-    }
-
-    public void setTextPredicate(Predicate<String> textPredicate) {
-        this.textPredicate = textPredicate;
     }
 
     public void write(String text) {
@@ -350,7 +331,6 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        Main.LOGGER.warn("SEARCH CLICK");
         if (!this.isVisible()) {
             return false;
         } else {
@@ -381,12 +361,8 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         if (this.isVisible()) {
             int i;
-            if (this.drawsBackground()) {
-                // i = this.isFocused() ? -1 : -6250336;
-                // fill(matrices, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, i);
-                // fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height, -16777216);
-                Utils.drawBoxFilled(this, matrices, x, y, width, height, cBorder.normal, cBg.normal);
-            }
+
+            Utils.drawBoxFilled(this, matrices, x, y, width, height, ColorGroup.NORMAL.border.normal, hovered ? ColorGroup.NORMAL.bg.hovered : ColorGroup.NORMAL.bg.normal);
 
             i = this.editable ? this.editableColor : this.uneditableColor;
             int j = this.selectionStart - this.firstCharacterIndex;
@@ -490,15 +466,6 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
         RenderSystem.enableTexture();
     }
 
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-        if (this.text.length() > maxLength) {
-            this.text = this.text.substring(0, maxLength);
-            this.onChanged(this.text);
-        }
-
-    }
-
     private int getMaxLength() {
         return this.maxLength;
     }
@@ -509,18 +476,6 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
 
     private boolean drawsBackground() {
         return this.drawsBackground;
-    }
-
-    public void setDrawsBackground(boolean drawsBackground) {
-        this.drawsBackground = drawsBackground;
-    }
-
-    public void setEditableColor(int color) {
-        this.editableColor = color;
-    }
-
-    public void setUneditableColor(int color) {
-        this.uneditableColor = color;
     }
 
     public boolean changeFocus(boolean lookForwards) {
@@ -540,10 +495,6 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
 
     private boolean isEditable() {
         return this.editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
     }
 
     public int getInnerWidth() {
@@ -576,24 +527,8 @@ public class FlatInputWidget extends ClickableWidget implements Drawable, Elemen
 
     }
 
-    public void setFocusUnlocked(boolean focusUnlocked) {
-        this.focusUnlocked = focusUnlocked;
-    }
-
     public boolean isVisible() {
         return this.visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public void setSuggestion(@Nullable String suggestion) {
-        this.suggestion = suggestion;
-    }
-
-    public int getCharacterX(int index) {
-        return index > this.text.length() ? this.x : this.x + this.textRenderer.getWidth(this.text.substring(0, index));
     }
 
     public void setX(int x) {

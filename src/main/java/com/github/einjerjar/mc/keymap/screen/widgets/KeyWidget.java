@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class KeyWidget extends FlatWidget {
     public KeyboardLayout.KeyboardKey key;
-    public HashMap<Integer, ArrayList<KeyBinding>> mappedKeyCount = new HashMap<>();
+    public HashMap<Integer, ArrayList<KeyBinding>> mappedKeyCount;
     public boolean selected = false;
     static int baseWidth = 16;
     static final int baseHeight = 16;
@@ -47,6 +47,7 @@ public class KeyWidget extends FlatWidget {
     @Override
     public void renderButton(MatrixStack m, int mouseX, int mouseY, float delta) {
         ColorGroup color = selected ? COL_SELECTED : colors;
+        updateState();
         int cBorder = color.border.getVariant(enabled, mouseActive, hovered);
         int cFill = color.bg.getVariant(enabled, mouseActive, hovered);
         int cText = color.text.getVariant(enabled, mouseActive, hovered);

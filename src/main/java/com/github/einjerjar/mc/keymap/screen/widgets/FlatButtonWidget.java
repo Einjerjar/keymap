@@ -4,7 +4,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-public class FlatButtonWidget extends FlatWidget{
+public class FlatButtonWidget extends FlatWidget {
     public Text text;
 
     public FlatButtonWidget(int x, int y, int width, int height, Text text, @Nullable FlatAction action) {

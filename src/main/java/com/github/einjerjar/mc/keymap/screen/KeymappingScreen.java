@@ -2,265 +2,219 @@ package com.github.einjerjar.mc.keymap.screen;
 
 import com.github.einjerjar.mc.keymap.Main;
 import com.github.einjerjar.mc.keymap.screen.widgets.*;
+import com.github.einjerjar.mc.keymap.utils.Utils;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KeymappingScreen extends Screen {
-    private final ArrayList<KeyWidget> keyWidgets = new ArrayList<>();
-    private final HashMap<Integer, ArrayList<KeyWidget>> keyWidgetMap = new HashMap<>();
-    private final HashMap<String, ArrayList<KeyBinding>> categorizedKeybinds = new HashMap<>();
+    TextRenderer tr;
+    ArrayList<KeyWidget> keyWidgets = new ArrayList<>();
+    HashMap<Integer, ArrayList<KeyBinding>> mappedKeyCount = new HashMap<>();
+    HashMap<String, ArrayList<KeyBinding>> categoryKeyMap = new HashMap<>();
+    CategoryListWidget categoryList;
+    KeyListWidget keyList;
+    FlatButtonWidget btnReset;
+    FlatButtonWidget btnResetAll;
+    FlatInputWidget inpSearch;
 
-    private KeyListWidget keyList;
-    private CategoryListWidget categoryList;
-    private Element lastClickedElement;
-    private KeyBinding selectedKeyBind = null;
-    private final HashMap<Integer, ArrayList<KeyBinding>> mappedKeyCount = new HashMap<>();
-    private FlatButtonWidget resetSelected;
-    private FlatButtonWidget resetAll;
-    private FlatInputWidget searchBar;
+    int outerPadX = 4;
+    int outerPadY = 4;
+    int padX = 10;
+    int padY = 10;
+    int keyGapX = 2;
+    int keyGapY = 2;
+    int expectedScreenWidth;
+    int minX;
+    int maxX;
+    int minY;
+    int maxY;
 
     public KeymappingScreen() {
-        super(new TranslatableText("ein.kb.screen.title"));
-        // this.addDrawable(new KeyWidget(textRenderer, 10, 10, 16, 16, "test"));
+        super(new TranslatableText("key.keymap.cfg.title"));
     }
 
     @Override
     protected void init() {
-        int keyBoardMaxWidth = 276;
-        int expectedScreenWidth = Math.min(500, width);
-        int padX = 10;
-        int padY = 10;
-        int tx = padX;
-        int ty = padY;
-        int sx = 16;
-        int sy = 16;
-        int ox = 2;
-        int oy = 2;
-        int keyListWidth = expectedScreenWidth - (padX * 2 + keyBoardMaxWidth);
-        if (width > expectedScreenWidth) tx = padX + ((width / 2) - ((expectedScreenWidth - padX * 2) / 2));
-        int keyListX = tx + keyBoardMaxWidth;
+        tr = textRenderer;
+        expectedScreenWidth = Math.min(500, width);
+        minX = Math.max(0, width - expectedScreenWidth) / 2 + outerPadX;
+        maxX = Math.max(0, width - expectedScreenWidth) / 2 + (expectedScreenWidth - outerPadX);
+        minY = outerPadY;
+        maxY = height - outerPadY;
 
-        assert client != null;
-        keyList = new KeyListWidget(client, keyListWidth, height - ((padY * 2 + 50) + padY + 20), padY * 2 + 20, height - (padY * 2 + 20), textRenderer.fontHeight + 1);
-        keyList.setLeftPos(keyListX);
-
-        categoryList = new CategoryListWidget(client, 70 + padX, 88, ty + 112 + 5, ty + 88, textRenderer.fontHeight + 1);
-        categoryList.setLeftPos(tx + 72 + padX + 70);
-        // addDrawableChild(categoryList);
-
-        resetAll = new FlatButtonWidget(keyListX + ((keyListWidth / 2)), height - (padY + 20), (keyListWidth - padX) / 2, 20, new TranslatableText("key.keymap.reset_all"), btn -> {
-            resetAllKeybinds();
-        });
-        resetSelected = new FlatButtonWidget(keyListX, height - (padY + 20), (keyListWidth - padX) / 2, 20, new TranslatableText("key.keymap.reset"), btn -> {
-            resetSelectedKeybind();
-        });
-        resetAll.enabled = true;
-        resetSelected.enabled = true;
-        addDrawableChild(keyList);
-        addDrawableChild(resetAll);
-        addDrawableChild(resetSelected);
-
-        // FIXME: Disgusting + slow (bec of recreating entries) code
-        searchBar = new FlatInputWidget(this.textRenderer, keyListX, padY, keyListWidth, 20, null);
-        searchBar.setChangedListener(s -> {
-            s = s.toLowerCase().trim();
-            boolean blank = s.isBlank();
-            keyList._clearEntries();
-            for (String k : categorizedKeybinds.keySet()) {
-                for (KeyBinding kk : categorizedKeybinds.get(k)) {
-                    String txt = new TranslatableText(kk.getTranslationKey()).getString().toLowerCase();
-                    String key = String.format("[%s]", kk.getBoundKeyLocalizedText().getString()).toLowerCase();
-                    if (blank || txt.contains(s) || key.contains(s)) {
-                        keyList.addEntry(new KeyListWidget.KeyListEntry(this.textRenderer, kk));
-                    }
-                }
-            }
-        });
-        addDrawableChild(searchBar);
+        children().clear();
+        if (keyList != null) keyList._clearEntries();
+        if (categoryList != null) categoryList._clearEntries();
 
         keyWidgets.clear();
-        keyWidgetMap.clear();
-        refreshMapCount();
-        refreshKeyList();
+        int[] kbKeys = addKeys(KeyboardLayout.getKeys(), minX + padX, minY + padY);
+        int[] kbExtra = addKeys(KeyboardLayout.getExtra(), minX + padX, minY + padY * 2 + kbKeys[1] - keyGapY);
+        int[] kbMouse = addKeys(KeyboardLayout.getMouse(), minX + padX, minY + padY * 3 + kbKeys[1] + kbExtra[1] - keyGapY * 2);
+        int[] kbNumpad = addKeys(KeyboardLayout.getNumpad(), minX + padX * 2 + kbExtra[0] - keyGapX, minY + padY * 2 + kbKeys[1] - keyGapY);
 
-        addKeys(KeyboardLayout.getKeys(), tx, ty, sx, sy, ox, oy);
+        int leftSpaceX = expectedScreenWidth - outerPadX * 2 - kbKeys[0] - padX * 3;
+        int btnSizeX = (leftSpaceX - padX) / 2;
 
-        ty += 112 + 5;
-        addKeys(KeyboardLayout.getExtra(), tx, ty, sx, sy, ox, oy);
+        btnReset = new FlatButtonWidget(maxX - (btnSizeX * 2 + padX * 2), maxY - (20 + padX), btnSizeX, 20, new TranslatableText("key.keymap.reset"), widget -> resetSelectedKey());
+        btnResetAll = new FlatButtonWidget(maxX - (btnSizeX + padX), maxY - (20 + padX), btnSizeX, 20, new TranslatableText("key.keymap.reset_all"), widget -> resetAllKeys());
+        inpSearch = new FlatInputWidget(maxX - leftSpaceX - padX, minY + padY, leftSpaceX, 16, new LiteralText(""));
 
-        ty += 54;
-        addKeys(KeyboardLayout.getMouse(), tx, ty, sx, sy, ox, oy);
+        keyList = new KeyListWidget(client, leftSpaceX, maxY - minY - padY * 3 - 20, minY + padY * 2 + 16, maxY - padY * 2 - 20, tr.fontHeight + 1);
+        keyList.setLeftPos(maxX - leftSpaceX - padX);
 
-        ty -= 54;
-        tx += 72 + padX;
-        addKeys(KeyboardLayout.getNumpad(), tx, ty, sx, sy, ox, oy);
+        categoryList = new CategoryListWidget(client,
+            expectedScreenWidth - padX * 5 - kbExtra[0] - kbNumpad[0] - leftSpaceX - padX / 2 - 1,
+            kbNumpad[1],
+            minY + padY * 2 + kbKeys[1] - keyGapY,
+            minY + padY * 2 + kbKeys[1] - keyGapY + kbNumpad[1],
+            tr.fontHeight + 1);
+        categoryList.setLeftPos(minX + padX * 2 + kbExtra[0] - keyGapX * 2 + kbNumpad[0] + padX);
+
+        addSelectableChild(btnReset);
+        addSelectableChild(btnResetAll);
+        addSelectableChild(inpSearch);
+        addSelectableChild(keyList);
+        addSelectableChild(categoryList);
+
+        // Inefficient at load, but allows decoupled updates later down the line
+        updateCategoryList();
+        updateCategoryKeymap();
+        updateMappedKeyCount();
+        updateKeyList();
+
+        categoryList.setSelected(categoryList.children().get(0));
+        inpSearch.setChangedListener(s -> updateKeyList());
     }
 
-    private void refreshKeyList() {
-        for (String s : categorizedKeybinds.keySet()) {
-            for(KeyBinding k : categorizedKeybinds.get(s)) {
-                keyList.addEntry(new KeyListWidget.KeyListEntry(this.textRenderer, k));
+    private void updateKeyList() {
+        assert client != null;
+        keyList._clearEntries();
+        if (keyList.selected != null) keyList.selected.selected = false;
+        CategoryListWidget.CategoryEntry c = categoryList.selected;
+        String search = inpSearch.getText().trim();
+        boolean blankSearch = search.isBlank();
+        for (String cat : categoryList.knownCategories) {
+            if (c != null && !c.category.equalsIgnoreCase("__ANY__") && !c.category.equalsIgnoreCase(cat)) continue;
+            if (!categoryKeyMap.containsKey(cat)) continue;
+            for (KeyBinding k : categoryKeyMap.get(cat)) {
+                if (!blankSearch) {
+                    String tKey = String.format("[%s]", k.getBoundKeyLocalizedText().getString().toLowerCase());
+                    String tName = new TranslatableText(k.getTranslationKey()).getString().toLowerCase();
+                    if (!tKey.contains(search) && !tName.contains(search)) continue;
+                }
+                keyList.addEntry(new KeyListWidget.KeyListEntry(k));
             }
         }
     }
 
-    private void addKeys(ArrayList<ArrayList<KeyboardLayout.KeyboardKey>> keys, int tx, int ty, int sx, int sy, int ox, int oy) {
-        for (int y = 0; y < keys.size(); y++) {
-            ArrayList<KeyboardLayout.KeyboardKey> row = keys.get(y);
-            int currentX = tx;
-            for (KeyboardLayout.KeyboardKey key : row) {
-                int cw = sx + key.extraWidth;
-                KeyWidget k = new KeyWidget(currentX, ty + ((sy + oy) * y), key, mappedKeyCount);
-                currentX += cw + ox;
-                addDrawableChild(k);
-                addKeyWidget(k);
-            }
+    private void updateCategoryList() {
+        assert client != null;
+        categoryList._clearEntries();
+        categoryList.addEntry(new CategoryListWidget.CategoryEntry("__ANY__"));
+        for (KeyBinding k : client.options.keysAll) {
+            String cat = k.getCategory();
+            if (!categoryList.knownCategories.contains(cat))
+                categoryList.addEntry(new CategoryListWidget.CategoryEntry(cat));
         }
     }
 
-    private void addKeyWidget(KeyWidget k) {
-        keyWidgets.add(k);
-        int code = k.key.keyCode;
-        if (!keyWidgetMap.containsKey(code)) {
-            keyWidgetMap.put(code, new ArrayList<>());
-        }
-        keyWidgetMap.get(code).add(k);
-    }
-
-    private void refreshMapCount() {
+    private void updateMappedKeyCount() {
+        assert client != null;
         mappedKeyCount.clear();
-        categorizedKeybinds.clear();
+        for (KeyBinding k : client.options.keysAll) {
+            int code = k.boundKey.getCode();
+            String cat = k.getCategory();
+
+            if (!mappedKeyCount.containsKey(code)) mappedKeyCount.put(code, new ArrayList<>());
+            mappedKeyCount.get(code).add(k);
+        }
+    }
+
+    private void updateCategoryKeymap() {
         assert client != null;
-        for (KeyBinding kk : client.options.keysAll) {
-            int code = kk.boundKey.getCode();
-            String cat = kk.getCategory();
+        categoryKeyMap.clear();
+        for (KeyBinding k : client.options.keysAll) {
+            int code = k.boundKey.getCode();
+            String cat = k.getCategory();
 
-            if (!mappedKeyCount.containsKey(code))
-                mappedKeyCount.put(code, new ArrayList<>());
-            mappedKeyCount.get(code).add(kk);
-
-            if (!categorizedKeybinds.containsKey(cat)) categorizedKeybinds.put(cat, new ArrayList<>());
-            categorizedKeybinds.get(cat).add(kk);
-
-            if (!categoryList.knownCategories.contains(cat)) categoryList.addEntry(new CategoryListWidget.CategoryEntry(cat));
+            if (!categoryKeyMap.containsKey(cat)) categoryKeyMap.put(cat, new ArrayList<>());
+            categoryKeyMap.get(cat).add(k);
         }
-        for (String cat : categorizedKeybinds.keySet()) {
-            categorizedKeybinds.get(cat).sort((o1, o2) -> new TranslatableText(o1.getTranslationKey()).getString().compareToIgnoreCase(
-                new TranslatableText(o2.getTranslationKey()).getString()
-            ));
-        }
-    }
-
-    public void resetAllKeybinds() {
-        assert client != null;
-        KeyBinding[] keys = client.options.keysAll;
-        for (KeyBinding k : keys) {
-            k.setBoundKey(k.getDefaultKey());
-        }
-
-        KeyBinding.updateKeysByCode();
-        refreshMapCount();
-
-        for (int k : keyWidgetMap.keySet()) {
-            updateKeybindCount(k);
-        }
-    }
-
-    private void resetSelectedKeybind() {
-        if (selectedKeyBind == null) return;
-        selectedKeyBind.setBoundKey(selectedKeyBind.getDefaultKey());
-
-        for (int k : keyWidgetMap.keySet()) {
-            updateKeybindCount(k);
-        }
-        KeyBinding.updateKeysByCode();
-        refreshMapCount();
-
-        selectedKeyBind = null;
-        if (keyList.focusedEntry != null) {
-            keyList.focusedEntry.focused = false;
-            keyList.focusedEntry = null;
-        }
-
-        for (int k : keyWidgetMap.keySet()) {
-            updateKeybindCount(k);
-        }
-    }
-
-    private void updateKeybindCount(int code) {
-        if (!keyWidgetMap.containsKey(code)) return;
-        ArrayList<KeyWidget> keys = keyWidgetMap.get(code);
-        for (KeyWidget k : keys) {
-            k.updateState();
-        }
-    }
-
-    @Nullable
-    public KeyWidget getHoveredKeyWidget() {
-        for (KeyWidget e : keyWidgets) {
-            if (e.isHovered() && e.enabled) return e;
-        }
-
-        return null;
     }
 
     @Override
     public void render(MatrixStack m, int mouseX, int mouseY, float delta) {
         renderBackground(m);
+        Utils.drawBoxFilled(this, m, minX, minY, expectedScreenWidth - outerPadX * 2, maxY - minY, 0xff_ffffff, 0x55_444444);
 
-        Element he = hoveredElement(mouseX, mouseY).orElse(null);
-
+        KeyListWidget.KeyListEntry ke = keyList.selected;
         for (KeyWidget k : keyWidgets) {
-            // FIXME: only updated when changed
-            k.selected = selectedKeyBind != null && k.key.keyCode == selectedKeyBind.boundKey.getCode();
-            k.updateState();
+            k.selected = ke != null && k.key.key == ke.key.boundKey;
             k.render(m, mouseX, mouseY, delta);
         }
 
+        btnReset.render(m, mouseX, mouseY, delta);
+        btnResetAll.render(m, mouseX, mouseY, delta);
+        inpSearch.render(m, mouseX, mouseY, delta);
         keyList.render(m, mouseX, mouseY, delta);
         categoryList.render(m, mouseX, mouseY, delta);
-        resetAll.render(m, mouseX, mouseY, delta);
-        resetSelected.render(m, mouseX, mouseY, delta);
-        searchBar.render(m, mouseX, mouseY, delta);
+    }
 
-        if (he instanceof FlatWidget) {
-            Text tip = ((FlatWidget) he).getToolTip();
-            if (tip != null) renderTooltip(m, tip, mouseX, mouseY);
+    private void resetAllKeys() {
+        assert client != null;
+        for (KeyBinding k : client.options.keysAll) {
+            resetKey(k, false);
         }
+
+        KeyBinding.updateKeysByCode();
+        updateMappedKeyCount();
+        keyList.setSelected(null);
+    }
+
+    private void resetSelectedKey() {
+        KeyListWidget.KeyListEntry k = keyList.selected;
+        if (k == null) return;
+
+        resetKey(k.key, true);
+        updateMappedKeyCount();
+        keyList.setSelected(null);
+    }
+
+    private void resetKey(KeyBinding kb, boolean update) {
+        assert client != null;
+        client.options.setKeyCode(kb, kb.getDefaultKey());
+        if (update) KeyBinding.updateKeysByCode();
+    }
+
+    private void setKeyboardKey(KeyBinding kb, InputUtil.Key key, boolean update) {
+        assert client != null;
+        if (key.getCode() == 256) {
+            client.options.setKeyCode(kb, InputUtil.UNKNOWN_KEY);
+        } else {
+            client.options.setKeyCode(kb, key);
+        }
+        if (update) KeyBinding.updateKeysByCode();
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (selectedKeyBind != null) {
-            InputUtil.Key lastKey = selectedKeyBind.boundKey;
-            assert client != null;
-            if (keyCode == 256) {
-                client.options.setKeyCode(selectedKeyBind, InputUtil.UNKNOWN_KEY);
-            } else {
-                client.options.setKeyCode(selectedKeyBind, InputUtil.fromKeyCode(keyCode, scanCode));
-            }
-            selectedKeyBind = null;
-            // if (keyList != null) keyList.focusedEntry.focused = false;
-            // keyList.focusedEntry = null;
-
-            refreshMapCount();
-            updateKeybindCount(keyCode);
-            if (lastKey != null) {
-                updateKeybindCount(lastKey.getCode());
-            }
-            KeyBinding.updateKeysByCode();
+        KeyListWidget.KeyListEntry ke = keyList.selected;
+        if (ke != null) {
+            setKeyboardKey(ke.key, InputUtil.fromKeyCode(keyCode, scanCode), true);
+            updateMappedKeyCount();
+            keyList.setSelected(null);
             return true;
         }
-        if (keyCode == Main.KBOpenKBScreen.boundKey.getCode() && !searchBar.isFocused()) {
+        if (keyCode == Main.KBOpenKBScreen.boundKey.getCode()) {
             onClose();
             return true;
         }
@@ -268,101 +222,59 @@ public class KeymappingScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if (keyList.isMouseOver(mouseX, mouseY)) {
-            return keyList.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (Element c : children()) {
+            if (c.mouseClicked(mouseX, mouseY, button)) {
+                if (c instanceof CategoryListWidget) {
+                    inpSearch.setText("");
+                    updateKeyList();
+                    keyList.setScrollAmount(0);
+                }
+                if (c instanceof KeyWidget k && keyWidgets.contains(c)) {
+                    KeyListWidget.KeyListEntry ke = keyList.selected;
+                    if (ke != null) {
+                        setKeyboardKey(ke.key, k.key.key, true);
+                        updateMappedKeyCount();
+                        keyList.setSelected(null);
+                    }
+                }
+                if (c instanceof FlatInputWidget) {
+                    keyList.setSelected(null);
+                }
+                setFocused(c);
+                if (button == 0) setDragging(true);
+                return true;
+            }
         }
-        return super.mouseScrolled(mouseX, mouseY, amount);
+        return true;
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (keyList.isMouseOver(mouseX, mouseY)) {
-            return keyList.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-        }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        Element e = hoveredElement(mouseX, mouseY).orElse(null);
-        Element le = lastClickedElement;
-        lastClickedElement = null;
-        if (le != null) le.mouseReleased(mouseX, mouseY, button);
-        if (e != null && e != le) return e.mouseReleased(mouseX, mouseY, button);
-        return false;
-    }
+    private int[] addKeys(ArrayList<ArrayList<KeyboardLayout.KeyboardKey>> keys, int x, int y) {
+        int sizeX = 0;
+        int sizeY = 0;
+        int currentX = x;
+        int currentY = y;
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        lastClickedElement = hoveredElement(mouseX, mouseY).orElse(null);
-
-        if (lastClickedElement != null) {
-            Main.LOGGER.info(lastClickedElement.getClass().getName());
+        for (ArrayList<KeyboardLayout.KeyboardKey> row : keys) {
+            int minItemHeight = height;
+            for (KeyboardLayout.KeyboardKey key : row) {
+                KeyWidget k = new KeyWidget(currentX, currentY, key, mappedKeyCount);
+                keyWidgets.add(k);
+                addSelectableChild(k);
+                currentX += keyGapX + k.getWidth();
+                minItemHeight = Math.min(k.getHeight(), minItemHeight);
+            }
+            sizeX = Math.max(currentX - x, sizeX);
+            currentX = x;
+            currentY += keyGapY + minItemHeight;
+            sizeY = currentY - y;
         }
 
-        if (keyList.isMouseOver(mouseX, mouseY)) {
-            if (keyList.mouseClicked(mouseX, mouseY, button)) {
-                if (searchBar.isFocused()) searchBar.changeFocus(false);
-                if (keyList.focusedEntry != null)
-                    selectedKeyBind = keyList.focusedEntry.key;
-                else
-                    selectedKeyBind = null;
-                return true;
-            }
-        }
-
-        Main.LOGGER.info("?" + children().contains(lastClickedElement));
-
-        Main.LOGGER.info("1");
-
-        if (selectedKeyBind == null) super.mouseClicked(mouseX, mouseY, button);
-
-        Main.LOGGER.info("2");
-
-        // TODO: Handle mouse binds
-        if ((lastClickedElement != null) && lastClickedElement instanceof KeyWidget kw && keyWidgets.contains(lastClickedElement)) {
-            int keyCode = kw.key.keyCode;
-
-            InputUtil.Key lastKey = selectedKeyBind.boundKey;
-            assert client != null;
-            if (keyCode == 256) {
-                client.options.setKeyCode(selectedKeyBind, InputUtil.UNKNOWN_KEY);
-            } else {
-                client.options.setKeyCode(selectedKeyBind, kw.key.key);
-            }
-            selectedKeyBind = null;
-
-            refreshMapCount();
-            updateKeybindCount(keyCode);
-            if (lastKey != null) {
-                updateKeybindCount(lastKey.getCode());
-            }
-            KeyBinding.updateKeysByCode();
-            return true;
-        }
-
-        Main.LOGGER.info("3");
-
-        if (lastClickedElement == null) {
-            InputUtil.Key lastKey = selectedKeyBind.boundKey;
-            assert client != null;
-            client.options.setKeyCode(selectedKeyBind, InputUtil.Type.MOUSE.createFromCode(button));
-            selectedKeyBind = null;
-            if (keyList.focusedEntry != null) keyList.focusedEntry.focused = false;
-            keyList.focusedEntry = null;
-
-            refreshMapCount();
-            updateKeybindCount(button);
-            if (lastKey != null) {
-                updateKeybindCount(lastKey.getCode());
-            }
-            KeyBinding.updateKeysByCode();
-            return true;
-        }
-
-        Main.LOGGER.info("4");
-
-        return super.mouseClicked(mouseX, mouseY, button);
+        return new int[]{sizeX, sizeY};
     }
 }

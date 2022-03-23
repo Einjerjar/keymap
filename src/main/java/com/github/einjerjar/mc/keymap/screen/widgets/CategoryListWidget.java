@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.screen.widgets;
 
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
+import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -8,6 +9,8 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
@@ -18,7 +21,7 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
     public ArrayList<String> knownCategories = new ArrayList<>();
 
     public CategoryListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
-        super(client, width, height, top, bottom, itemHeight);
+        super(client, width, height - 20, top + 10, bottom - 10, itemHeight);
     }
 
     @Override
@@ -32,8 +35,15 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
     }
 
     public boolean removeEntry(CategoryEntry entry) {
-        if (knownCategories.contains(entry.category)) knownCategories.remove(entry.category);
+        knownCategories.remove(entry.category);
         return super.removeEntry(entry);
+    }
+
+    @Override
+    public void setSelected(CategoryEntry selected) {
+        if (this.selected != null) this.selected.selected = false;
+        this.selected = selected;
+        if (selected != null) selected.selected = true;
     }
 
     public void _clearEntries() {
@@ -54,6 +64,7 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
     public void render(MatrixStack m, int mouseX, int mouseY, float delta) {
         Tessellator ts = Tessellator.getInstance();
         BufferBuilder bb = ts.getBuffer();
+        Utils.drawBoxFilled(this, m, left, top - 10, width, height + 20, 0xff_ffffff, 0x33_ffffff);
 
         renderList(m, this.left, this.top, mouseX, mouseY, delta);
         renderScrollBar(bb, ts);
@@ -65,6 +76,7 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
         int maxScroll = this.getMaxScroll();
         if (maxScroll > 0) {
             RenderSystem.disableTexture();
+            RenderSystem.enableBlend();
             int p = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top)) / (float) this.getMaxPosition());
             p = MathHelper.clamp(p, 32, this.bottom - this.top - 8);
             int q = (int) this.getScrollAmount() * (this.bottom - this.top - p) / maxScroll + this.top;
@@ -72,34 +84,68 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
                 q = this.top;
             }
 
+            int colScrollBg = 0x44_000000;
+            int colScrollFg = 0xaa_ffffff;
+
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-            bb.vertex(scrollbarStartX, this.bottom, 0.0D).color(0, 0, 0, 255).next();
-            bb.vertex(scrollbarEndX, this.bottom, 0.0D).color(0, 0, 0, 255).next();
-            bb.vertex(scrollbarEndX, this.top, 0.0D).color(0, 0, 0, 255).next();
-            bb.vertex(scrollbarStartX, this.top, 0.0D).color(0, 0, 0, 255).next();
+            bb.vertex(scrollbarStartX, this.bottom, 0.0D).color(colScrollBg).next();
+            bb.vertex(scrollbarEndX, this.bottom, 0.0D).color(colScrollBg).next();
+            bb.vertex(scrollbarEndX, this.top, 0.0D).color(colScrollBg).next();
+            bb.vertex(scrollbarStartX, this.top, 0.0D).color(colScrollBg).next();
 
-            bb.vertex(scrollbarStartX, q + p, 0.0D).color(128, 128, 128, 255).next();
-            bb.vertex(scrollbarEndX, q + p, 0.0D).color(128, 128, 128, 255).next();
-            bb.vertex(scrollbarEndX, q, 0.0D).color(128, 128, 128, 255).next();
-            bb.vertex(scrollbarStartX, q, 0.0D).color(128, 128, 128, 255).next();
-
-            bb.vertex(scrollbarStartX, q + p - 1, 0.0D).color(192, 192, 192, 255).next();
-            bb.vertex(scrollbarEndX - 1, q + p - 1, 0.0D).color(192, 192, 192, 255).next();
-            bb.vertex(scrollbarEndX - 1, q, 0.0D).color(192, 192, 192, 255).next();
-            bb.vertex(scrollbarStartX, q, 0.0D).color(192, 192, 192, 255).next();
+            bb.vertex(scrollbarStartX, q + p, 0.0D).color(colScrollFg).next();
+            bb.vertex(scrollbarEndX, q + p, 0.0D).color(colScrollFg).next();
+            bb.vertex(scrollbarEndX, q, 0.0D).color(colScrollFg).next();
+            bb.vertex(scrollbarStartX, q, 0.0D).color(colScrollFg).next();
             ts.draw();
+            RenderSystem.disableBlend();
         }
+    }
+
+    public boolean isScrolling(double mouseX, double mouseY, int button) {
+        return button == 0 && mouseX >= this.getScrollbarPositionX() && mouseX < (this.getScrollbarPositionX() + 6);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         CategoryEntry e = getEntryAtPosition(mouseX, mouseY);
-        if (selected != null) selected.selected = false;
-        selected = e;
-        if (e != null)
-            e.selected = true;
-        return true;
+        if (!isMouseOver(mouseX, mouseY)) return false;
+        if (e != null) {
+            if (selected != null) selected.selected = false;
+            selected = e;
+
+            if (e.mouseClicked(mouseX, mouseY, button)) {
+                setFocused(e);
+                setDragging(true);
+                return true;
+            }
+        }
+
+        setDragging(true);
+        return isScrolling(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+            return true;
+        } else if (button == 0 && isScrolling(mouseX, mouseY, button)) {
+            if (mouseY < (double) this.top) {
+                this.setScrollAmount(0.0D);
+            } else if (mouseY > (double) this.bottom) {
+                this.setScrollAmount(this.getMaxScroll());
+            } else {
+                double d = Math.max(1, this.getMaxScroll());
+                int i = this.bottom - this.top;
+                int j = MathHelper.clamp((int) ((float) (i * i) / (float) this.getMaxPosition()), 32, i - 8);
+                double e = Math.max(1.0D, d / (double) (i - j));
+                this.setScrollAmount(this.getScrollAmount() + deltaY * e);
+            }
+
+            return true;
+        }
+        return false;
     }
 
     public static class CategoryEntry extends EntryListWidget.Entry<CategoryEntry> {
@@ -113,12 +159,19 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
         }
 
         @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            selected = true;
+            return true;
+        }
+
+        @Override
         public void render(MatrixStack m, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             int c = ColorGroup.NORMAL.text.normal;
             if (selected)
                 c = ColorGroup.GREEN.text.normal;
-
-            tr.drawWithShadow(m, new TranslatableText(category), x, y, c);
+            String text = category.equals("__ANY__") ? "All" : new TranslatableText(category).getString();
+            String sTrim = tr.trimToWidth(text, entryWidth);
+            tr.drawWithShadow(m, sTrim, x, y, c);
         }
     }
 }
