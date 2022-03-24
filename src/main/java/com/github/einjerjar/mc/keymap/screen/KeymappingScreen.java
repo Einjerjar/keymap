@@ -1,6 +1,6 @@
 package com.github.einjerjar.mc.keymap.screen;
 
-import com.github.einjerjar.mc.keymap.Main;
+import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.screen.widgets.*;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import net.minecraft.client.font.TextRenderer;
@@ -10,6 +10,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class KeymappingScreen extends Screen {
     FlatButtonWidget btnResetAll;
     FlatInputWidget inpSearch;
 
+    Screen parent = null;
+
     int outerPadX = 4;
     int outerPadY = 4;
     int padX = 10;
@@ -41,6 +44,11 @@ public class KeymappingScreen extends Screen {
 
     public KeymappingScreen() {
         super(new TranslatableText("key.keymap.cfg.title"));
+    }
+
+    public KeymappingScreen(Screen parent) {
+        super(new TranslatableText("key.keymap.cfg.title"));
+        this.parent = parent;
     }
 
     @Override
@@ -173,6 +181,9 @@ public class KeymappingScreen extends Screen {
         Element e = hoveredElement(mouseX, mouseY).orElse(null);
         if (e instanceof FlatWidget f) {
             renderTooltip(m, f.getToolTips(), mouseX, mouseY);
+        } else if (e instanceof KeyListWidget kl) {
+            ArrayList<Text> tip = kl.getToolTips();
+            if (tip != null) renderTooltip(m, tip, mouseX, mouseY);
         }
     }
 
@@ -248,7 +259,7 @@ public class KeymappingScreen extends Screen {
             keyList.setSelected(null);
             return true;
         }
-        if (keyCode == Main.KBOpenKBScreen.boundKey.getCode()) {
+        if (keyCode == KeymapMain.KBOpenKBScreen.boundKey.getCode()) {
             onClose();
             return true;
         }
@@ -256,13 +267,24 @@ public class KeymappingScreen extends Screen {
     }
 
     @Override
+    public void onClose() {
+        assert client != null;
+
+        if (parent != null) client.setScreen(parent);
+        else super.onClose();
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (Element c : children()) {
             if (c.mouseClicked(mouseX, mouseY, button)) {
-                if (c instanceof CategoryListWidget) {
-                    inpSearch.setText("");
-                    updateKeyList();
-                    keyList.setScrollAmount(0);
+                if (c instanceof CategoryListWidget cl) {
+                    Element ce = cl.hoveredElement(mouseX, mouseY).orElse(null);
+                    if (ce != null) {
+                        inpSearch.setText("");
+                        updateKeyList();
+                        keyList.setScrollAmount(0);
+                    }
                 }
                 if (c instanceof KeyWidget k && keyWidgets.contains(c)) {
                     KeyListWidget.KeyListEntry ke = keyList.selected;

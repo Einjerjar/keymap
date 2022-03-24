@@ -1,13 +1,29 @@
 package com.github.einjerjar.mc.keymap.utils;
 
-import com.github.einjerjar.mc.keymap.Main;
+import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+
+import java.util.List;
 
 public class Utils {
+    public static final Style styleKey = new Style(TextColor.fromRgb(0xff_55ff55), true, true, false, false, false, null, null, "", null);
+    public static final Style styleKeybind = new Style(TextColor.fromRgb(0xff_ffffff), false, false, false, false, false, null, null, "", null);
+    public static final Style styleSeparator = new Style(TextColor.fromRgb(0xff_555555), false, false, false, false, false, null, null, "", null);
+    public static final Style styleError = new Style(TextColor.fromRgb(0xff_ff5555), true, false, false, false, false, null, null, "", null);
+    public static final Style stylePassive = new Style(TextColor.fromRgb(0xff_aaaaaa), false, false, false, false, false, null, null, "", null);
+    public static final Style styleSimpleBold = new Style(TextColor.fromRgb(0xff_ffffff), false, false, false, false, false, null, null, "", null);
+
+    public static <E> E safeGet(List<E> l, int i) {
+        if (l.size() > 0) return l.get(i);
+        return null;
+    }
+
     public static class NIL {
         public static final Text TEXT = Text.of("");
     }
@@ -19,7 +35,7 @@ public class Utils {
 
     public static void drawBoxFilled(DrawableHelper d, MatrixStack m, int x, int y, int w, int h, int colBorder, int colFill) {
         if (d == null) {
-            Main.LOGGER.warn("Empty DrawableHelper passed to drawBox");
+            KeymapMain.LOGGER.warn("Empty DrawableHelper passed to drawBox");
             return;
         }
 
@@ -43,11 +59,9 @@ public class Utils {
     }
 
     public static void fillBox(DrawableHelper d, MatrixStack m, int x, int y, int w, int h, int color) {
-        int x1 = x;
-        int y1 = y;
         int x2 = x + w;
         int y2 = y + h;
-        DrawableHelper.fill(m, x1, y1, x2, y2, color);
+        DrawableHelper.fill(m, x, y, x2, y2, color);
     }
 
     public static void drawQuad(Tessellator ts, BufferBuilder bb, int left, int right, int top, int bottom, int color, boolean init_and_build) {

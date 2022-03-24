@@ -19,7 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.github.einjerjar.mc.keymap.Main"
+      "com.github.einjerjar.mc.keymap.KeymapMain"
+    ],
+    "modmenu": [
+      "com.github.einjerjar.mc.keymap.ModMenuIntegration"
     ]
   },
   "mixins": [
