@@ -45,7 +45,7 @@ dependencies {
     modRuntimeOnly "maven.modrinth:ferrite-core:${project.version_ferrite_core}"
     modRuntimeOnly "maven.modrinth:lazydfu:${project.version_lazydfu}"
     modRuntimeOnly "maven.modrinth:ksyxis:${project.version_ksyxis}"
-    modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
+    // modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
     modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
 }
 

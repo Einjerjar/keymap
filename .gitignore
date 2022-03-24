@@ -31,3 +31,7 @@ bin/
 # fabric
 
 run/
+
+# icon
+*.aseprite
+*-export.png
