@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class CategoryListWidget extends EntryListWidget<CategoryListWidget.CategoryEntry> {
     public CategoryEntry selected = null;
-    public ArrayList<String> knownCategories = new ArrayList<>();
+    public final ArrayList<String> knownCategories = new ArrayList<>();
 
     public CategoryListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
         super(client, width, height - 20, top + 10, bottom - 10, itemHeight);
@@ -142,9 +142,9 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
     }
 
     public static class CategoryEntry extends EntryListWidget.Entry<CategoryEntry> {
-        public String category;
+        public final String category;
         public boolean selected;
-        TextRenderer tr;
+        final TextRenderer tr;
 
         public CategoryEntry(String category) {
             this.category = category;

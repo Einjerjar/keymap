@@ -57,6 +57,7 @@ public class KeyboardLayout {
         }
     }
 
+    // FIXME: Convert to static finals on post beta
     public static ArrayList<ArrayList<KeyboardKey>> getKeys() {
         return new ArrayList<>() {{
             add(new ArrayList<>() {{
@@ -211,94 +212,4 @@ public class KeyboardLayout {
             }});
         }};
     }
-
-    // public static ArrayList<ArrayList<KeyboardKey>> keys = new ArrayList<>(){{
-    //     add(new ArrayList<>(){{
-    //         add(new KeyboardKey("ESC", 15));
-    //         add(new KeyboardKey("F1"));
-    //         add(new KeyboardKey("F2"));
-    //         add(new KeyboardKey("F3"));
-    //         add(new KeyboardKey("F4"));
-    //         add(new KeyboardKey("F5"));
-    //         add(new KeyboardKey("F6"));
-    //         add(new KeyboardKey("F7"));
-    //         add(new KeyboardKey("F8"));
-    //         add(new KeyboardKey("F9"));
-    //         add(new KeyboardKey("F10"));
-    //         add(new KeyboardKey("F11"));
-    //         add(new KeyboardKey("F12"));
-    //     }});
-    //     add(new ArrayList<>(){{
-    //         add(new KeyboardKey("`"));
-    //         add(new KeyboardKey("1"));
-    //         add(new KeyboardKey("2"));
-    //         add(new KeyboardKey("3"));
-    //         add(new KeyboardKey("4"));
-    //         add(new KeyboardKey("5"));
-    //         add(new KeyboardKey("6"));
-    //         add(new KeyboardKey("7"));
-    //         add(new KeyboardKey("8"));
-    //         add(new KeyboardKey("9"));
-    //         add(new KeyboardKey("0"));
-    //         add(new KeyboardKey("-"));
-    //         add(new KeyboardKey("="));
-    //         add(new KeyboardKey("BSP"));
-    //     }});
-    //     add(new ArrayList<>(){{
-    //         add(new KeyboardKey("TAB"));
-    //         add(new KeyboardKey("Q"));
-    //         add(new KeyboardKey("W"));
-    //         add(new KeyboardKey("E"));
-    //         add(new KeyboardKey("R"));
-    //         add(new KeyboardKey("T"));
-    //         add(new KeyboardKey("Y"));
-    //         add(new KeyboardKey("U"));
-    //         add(new KeyboardKey("I"));
-    //         add(new KeyboardKey("O"));
-    //         add(new KeyboardKey("P"));
-    //         add(new KeyboardKey("["));
-    //         add(new KeyboardKey("]"));
-    //         add(new KeyboardKey("\\"));
-    //     }});
-    //     add(new ArrayList<>(){{
-    //         add(new KeyboardKey("CAP"));
-    //         add(new KeyboardKey("A"));
-    //         add(new KeyboardKey("S"));
-    //         add(new KeyboardKey("D"));
-    //         add(new KeyboardKey("F"));
-    //         add(new KeyboardKey("G"));
-    //         add(new KeyboardKey("H"));
-    //         add(new KeyboardKey("I"));
-    //         add(new KeyboardKey("J"));
-    //         add(new KeyboardKey("K"));
-    //         add(new KeyboardKey("L"));
-    //         add(new KeyboardKey(";"));
-    //         add(new KeyboardKey("'"));
-    //         add(new KeyboardKey("ENT"));
-    //     }});
-    //     add(new ArrayList<>(){{
-    //         add(new KeyboardKey("LSH"));
-    //         add(new KeyboardKey("Z"));
-    //         add(new KeyboardKey("X"));
-    //         add(new KeyboardKey("C"));
-    //         add(new KeyboardKey("V"));
-    //         add(new KeyboardKey("B"));
-    //         add(new KeyboardKey("N"));
-    //         add(new KeyboardKey("M"));
-    //         add(new KeyboardKey(","));
-    //         add(new KeyboardKey("."));
-    //         add(new KeyboardKey("/"));
-    //         add(new KeyboardKey("RSH"));
-    //     }});
-    //     add(new ArrayList<>(){{
-    //         add(new KeyboardKey("LCT"));
-    //         add(new KeyboardKey("LWN"));
-    //         add(new KeyboardKey("LAL"));
-    //         add(new KeyboardKey("SPC", 20));
-    //         add(new KeyboardKey("RAL"));
-    //         add(new KeyboardKey("RWN"));
-    //         add(new KeyboardKey("CTX"));
-    //         add(new KeyboardKey("RCT"));
-    //     }});
-    // }};
 }
