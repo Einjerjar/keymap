@@ -132,7 +132,6 @@ public class KeymappingScreen extends Screen {
         mappedKeyCount.clear();
         for (KeyBinding k : client.options.keysAll) {
             int code = k.boundKey.getCode();
-            String cat = k.getCategory();
 
             if (!mappedKeyCount.containsKey(code)) mappedKeyCount.put(code, new ArrayList<>());
             mappedKeyCount.get(code).add(k);
@@ -143,7 +142,6 @@ public class KeymappingScreen extends Screen {
         assert client != null;
         categoryKeyMap.clear();
         for (KeyBinding k : client.options.keysAll) {
-            int code = k.boundKey.getCode();
             String cat = k.getCategory();
 
             if (!categoryKeyMap.containsKey(cat)) categoryKeyMap.put(cat, new ArrayList<>());
@@ -156,17 +154,21 @@ public class KeymappingScreen extends Screen {
         renderBackground(m);
         Utils.drawBoxFilled(this, m, minX, minY, expectedScreenWidth - outerPadX * 2, maxY - minY, 0xff_ffffff, 0x55_444444);
 
-        KeyListWidget.KeyListEntry ke = keyList.selected;
-        for (KeyWidget k : keyWidgets) {
-            k.selected = ke != null && k.key.key == ke.key.boundKey;
-            k.render(m, mouseX, mouseY, delta);
-        }
-
         btnReset.render(m, mouseX, mouseY, delta);
         btnResetAll.render(m, mouseX, mouseY, delta);
         inpSearch.render(m, mouseX, mouseY, delta);
         keyList.render(m, mouseX, mouseY, delta);
         categoryList.render(m, mouseX, mouseY, delta);
+
+        KeyListWidget.KeyListEntry ke = keyList.selected;
+        for (KeyWidget k : keyWidgets) {
+            k.selected = ke != null && k.key.key == ke.key.boundKey;
+            k.render(m, mouseX, mouseY, delta);
+        }
+        Element e = hoveredElement(mouseX, mouseY).orElse(null);
+        if (e instanceof FlatWidget f) {
+            renderTooltip(m, f.getToolTips(), mouseX, mouseY);
+        }
     }
 
     private void resetAllKeys() {

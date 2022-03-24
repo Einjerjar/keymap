@@ -5,9 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,10 +13,9 @@ import java.util.ArrayList;
 
 public class FlatWidget extends ClickableWidget {
     TextRenderer tr;
-    FlatAction action = null;
+    FlatAction action;
     public boolean mouseActive = false;
     public boolean enabled = true;
-    public ArrayList<InputUtil.Key> assignedKeys = new ArrayList<>();
     int halfWidth;
     int halfHeight;
 
@@ -72,13 +69,13 @@ public class FlatWidget extends ClickableWidget {
         drawBoxFilled(m, x, y, width, height, cBorder, cFill);
     }
 
-    public Text getToolTip() {
-        return new LiteralText("Text");
+    public ArrayList<Text> getToolTips() {
+        return new ArrayList<>();
     }
 
     public void drawText(MatrixStack m, String s, int x, int y, int color, boolean shadow, boolean centerX, boolean centerY) {
-        if (centerX) x += /* (width / 2) */ -(tr.getWidth(s) / 2);
-        if (centerY) y += /* (height / 2) */ -(tr.fontHeight / 2);
+        if (centerX) x -= tr.getWidth(s) / 2;
+        if (centerY) y -= tr.fontHeight / 2;
 
         if (shadow)
             tr.drawWithShadow(m, s, x, y, color);

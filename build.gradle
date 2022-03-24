@@ -24,6 +24,9 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    flatDir {
+        dirs "./lib"
+    }
     mavenCentral()
 }
 
@@ -38,6 +41,9 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     modImplementation "com.terraformersmc:modmenu:${project.version_mod_menu}"
+
+    // Malilib
+    // modRuntimeOnly name: "malilib-fabric-1.18.1-0.11.6"
 
     // Performance
     modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"

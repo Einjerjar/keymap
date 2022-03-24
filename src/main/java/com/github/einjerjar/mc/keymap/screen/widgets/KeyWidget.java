@@ -5,6 +5,7 @@ import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +41,15 @@ public class KeyWidget extends FlatWidget {
     }
 
     @Override
-    public Text getToolTip() {
-        return key.key.getLocalizedText();
+    public ArrayList<Text> getToolTips() {
+        return new ArrayList<>() {{
+            add(key.key.getLocalizedText());
+            if (mappedKeyCount.containsKey(key.keyCode)) {
+                for (KeyBinding k : mappedKeyCount.get(key.keyCode)) {
+                    add(new TranslatableText(k.getTranslationKey()));
+                }
+            }
+        }};
     }
 
     @Override
