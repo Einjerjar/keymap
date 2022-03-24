@@ -89,15 +89,10 @@ public class CategoryListWidget extends EntryListWidget<CategoryListWidget.Categ
 
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-            bb.vertex(scrollbarStartX, this.bottom, 0.0D).color(colScrollBg).next();
-            bb.vertex(scrollbarEndX, this.bottom, 0.0D).color(colScrollBg).next();
-            bb.vertex(scrollbarEndX, this.top, 0.0D).color(colScrollBg).next();
-            bb.vertex(scrollbarStartX, this.top, 0.0D).color(colScrollBg).next();
 
-            bb.vertex(scrollbarStartX, q + p, 0.0D).color(colScrollFg).next();
-            bb.vertex(scrollbarEndX, q + p, 0.0D).color(colScrollFg).next();
-            bb.vertex(scrollbarEndX, q, 0.0D).color(colScrollFg).next();
-            bb.vertex(scrollbarStartX, q, 0.0D).color(colScrollFg).next();
+            Utils.drawQuad(ts, bb, scrollbarStartX, scrollbarEndX, top, bottom, colScrollBg, false);
+            Utils.drawQuad(ts, bb, scrollbarStartX, scrollbarEndX, q, q + p, colScrollFg, false);
+
             ts.draw();
             RenderSystem.disableBlend();
         }

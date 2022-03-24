@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.screen.widgets;
 
+import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.AbstractParentElement;
@@ -73,15 +74,10 @@ public abstract class FlatListWidget<T extends FlatListWidget.FlatEntry<T>> exte
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         bb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        bb.vertex(x1, y1, 0).color(colScrollBg);
-        bb.vertex(x2, y1, 0).color(colScrollBg);
-        bb.vertex(x1, y2, 0).color(colScrollBg);
-        bb.vertex(x2, y2, 0).color(colScrollBg);
 
-        bb.vertex(x1, y1, 0).color(colScrollFg);
-        bb.vertex(x2, y1, 0).color(colScrollFg);
-        bb.vertex(x1, y1 + scrollBarHeight, 0).color(colScrollFg);
-        bb.vertex(x2, y1 + scrollBarHeight, 0).color(colScrollFg);
+
+        Utils.drawQuad(ts, bb, x1, x2, y1, y2, colScrollBg, false);
+        Utils.drawQuad(ts, bb, x1, x2, y1, y1 + scrollBarHeight, colScrollFg, false);
         ts.draw();
     }
 
