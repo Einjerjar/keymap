@@ -31,3 +31,10 @@ bin/
 # fabric
 
 run/
+
+# icon
+*.aseprite
+*-export.png
+
+# malilib
+lib/

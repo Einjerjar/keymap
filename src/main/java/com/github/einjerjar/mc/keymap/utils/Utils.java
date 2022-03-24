@@ -57,11 +57,15 @@ public class Utils {
         }
 
         SColor _color = new SColor(color);
+        int a = _color.a;
+        int r = _color.r;
+        int g = _color.g;
+        int b = _color.b;
 
-        bb.vertex(left, bottom, 0.0D).color(_color.r, _color.g, _color.b, _color.a).next();
-        bb.vertex(right, bottom, 0.0D).color(_color.r, _color.g, _color.b, _color.a).next();
-        bb.vertex(right, top, 0.0D).color(_color.r, _color.g, _color.b, _color.a).next();
-        bb.vertex(left, top, 0.0D).color(_color.r, _color.g, _color.b, _color.a).next();
+        bb.vertex(left, bottom, 0.0D).color(r, g, b, a).next();
+        bb.vertex(right, bottom, 0.0D).color(r, g, b, a).next();
+        bb.vertex(right, top, 0.0D).color(r, g, b, a).next();
+        bb.vertex(left, top, 0.0D).color(r, g, b, a).next();
 
         if (init_and_build) {
             ts.draw();
@@ -69,30 +73,30 @@ public class Utils {
     }
 
     public static class SColor {
-        public float a;
-        public float r;
-        public float g;
-        public float b;
+        public int a;
+        public int r;
+        public int g;
+        public int b;
 
         public SColor(float a, float r, float g, float b) {
+            this.a = (int) (a * 255);
+            this.r = (int) (r * 255);
+            this.g = (int) (g * 255);
+            this.b = (int) (b * 255);
+        }
+
+        public SColor(int color) {
+            this.a = color >> 24 & 0xff;
+            this.r = color >> 16 & 0xff;
+            this.g = color >> 8 & 0xff;
+            this.b = color & 0xff;
+        }
+
+        public SColor(int a, int r, int g, int b) {
             this.a = a;
             this.r = r;
             this.g = g;
             this.b = b;
-        }
-
-        public SColor(int color) {
-            this.a = (float) ((0xff_000000 & color) / 255.0);
-            this.r = (float) ((0x00_ff0000 & color) / 255.0);
-            this.g = (float) ((0x00_00ff00 & color) / 255.0);
-            this.b = (float) ((0x00_0000ff & color) / 255.0);
-        }
-
-        public SColor(int a, int r, int g, int b) {
-            this.a = (float) (a / 255.0);
-            this.r = (float) (r / 255.0);
-            this.g = (float) (g / 255.0);
-            this.b = (float) (b / 255.0);
         }
     }
 }
