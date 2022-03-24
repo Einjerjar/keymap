@@ -4,6 +4,7 @@
   "package": "com.github.einjerjar.mc.keymap.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ControlsOptionsScreenMixin"
   ],
   "client": [
   ],

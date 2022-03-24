@@ -2,5 +2,15 @@
   "key.keymap.cfg.title": "Keymap",
   "key.keymap.cfg.open": "Open KeyMapper",
   "key.keymap.reset_all": "Reset all",
-  "key.keymap.reset": "Reset"
+  "key.keymap.reset": "Reset",
+  "key.keymap.stat.not_assigned": "NOT ASSIGNED",
+  "text.autoconfig.keymap.option.replaceKeybindScreen": "Override Keybind Screen",
+  "text.autoconfig.keymap.option.replaceKeybindScreen.@Tooltip[0]": "Replaces the default keybinding screen",
+  "text.autoconfig.keymap.option.replaceKeybindScreen.@Tooltip[1]": "with the one provided by this mod",
+  "text.autoconfig.keymap.option.keybindKeyOnHover": "Keybind key on hover",
+  "text.autoconfig.keymap.option.keybindKeyOnHover.@Tooltip[0]": "Shows the name of a keybind key on hover",
+  "text.autoconfig.keymap.option.keybindKeyOnHover.@Tooltip[1]": "(in case it gets cut off by screen size)",
+  "text.autoconfig.keymap.option.keybindNameOnHover": "Keybind name on hover",
+  "text.autoconfig.keymap.option.keybindNameOnHover.@Tooltip[0]": "Shows the full name of a keybind on hover",
+  "text.autoconfig.keymap.option.keybindNameOnHover.@Tooltip[1]": "(in case it gets cut off by screen size)"
 }

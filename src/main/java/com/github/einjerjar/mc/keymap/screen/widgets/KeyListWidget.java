@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.screen.widgets;
 
+import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
@@ -9,12 +10,16 @@ import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.ArrayList;
+
 public class KeyListWidget extends EntryListWidget<KeyListWidget.KeyListEntry> {
     TextRenderer tr;
+    public KeyListEntry hoveredEntry = null;
     public KeyListEntry selected = null;
 
     public KeyListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
@@ -53,9 +58,31 @@ public class KeyListWidget extends EntryListWidget<KeyListWidget.KeyListEntry> {
     public void render(MatrixStack m, int mouseX, int mouseY, float delta) {
         Tessellator ts = Tessellator.getInstance();
         BufferBuilder bb = ts.getBuffer();
+        hoveredEntry = this.isMouseOver(mouseX, mouseY) ? this.getEntryAtPosition(mouseX, mouseY) : null;
 
         renderList(m, this.left, this.top, mouseX, mouseY, delta);
         renderScrollBar(bb, ts);
+    }
+
+    public ArrayList<Text> getToolTips() {
+        // FIXME: optimize this
+        if (hoveredEntry == null) return null;
+        if (!KeymapMain.cfg.keybindKeyOnHover && !KeymapMain.cfg.keybindNameOnHover) return null;
+        ArrayList<Text> tips = new ArrayList<>();
+
+        Text lt = hoveredEntry.key.getBoundKeyLocalizedText();
+        Text s = Utils.safeGet(lt.getWithStyle(Utils.styleKey), 0);
+        if (s == null) s = new TranslatableText("key.keymap.stat.not_assigned").getWithStyle(Utils.stylePassive).get(0);
+
+
+        if (KeymapMain.cfg.keybindKeyOnHover)
+            tips.add(s);
+        if (KeymapMain.cfg.keybindKeyOnHover && KeymapMain.cfg.keybindNameOnHover)
+            tips.add(new LiteralText("----------------").getWithStyle(Utils.styleSeparator).get(0));
+        if (KeymapMain.cfg.keybindNameOnHover)
+            tips.add(new TranslatableText(hoveredEntry.key.getTranslationKey()).getWithStyle(Utils.styleSimpleBold).get(0));
+
+        return tips;
     }
 
     @Override
