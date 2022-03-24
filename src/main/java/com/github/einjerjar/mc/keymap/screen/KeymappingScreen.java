@@ -18,6 +18,7 @@ import java.util.HashMap;
 public class KeymappingScreen extends Screen {
     TextRenderer tr;
     ArrayList<KeyWidget> keyWidgets = new ArrayList<>();
+    HashMap<Integer, KeyWidget> keyWidgetMap = new HashMap<>();
     HashMap<Integer, ArrayList<KeyBinding>> mappedKeyCount = new HashMap<>();
     HashMap<String, ArrayList<KeyBinding>> categoryKeyMap = new HashMap<>();
     CategoryListWidget categoryList;
@@ -73,9 +74,9 @@ public class KeymappingScreen extends Screen {
 
         categoryList = new CategoryListWidget(client,
             expectedScreenWidth - padX * 5 - kbExtra[0] - kbNumpad[0] - leftSpaceX - padX / 2 - 1,
-            kbNumpad[1],
+            kbNumpad[1] - 2,
             minY + padY * 2 + kbKeys[1] - keyGapY,
-            minY + padY * 2 + kbKeys[1] - keyGapY + kbNumpad[1],
+            minY + padY * 2 + kbKeys[1] - keyGapY + kbNumpad[1] - 2,
             tr.fontHeight + 1);
         categoryList.setLeftPos(minX + padX * 2 + kbExtra[0] - keyGapX * 2 + kbNumpad[0] + padX);
 
@@ -90,6 +91,8 @@ public class KeymappingScreen extends Screen {
         updateCategoryKeymap();
         updateMappedKeyCount();
         updateKeyList();
+        updateKeyWidgetStates();
+
 
         categoryList.setSelected(categoryList.children().get(0));
         inpSearch.setChangedListener(s -> updateKeyList());
@@ -98,10 +101,12 @@ public class KeymappingScreen extends Screen {
     private void updateKeyList() {
         assert client != null;
         keyList._clearEntries();
+
         if (keyList.selected != null) keyList.selected.selected = false;
         CategoryListWidget.CategoryEntry c = categoryList.selected;
         String search = inpSearch.getText().trim();
         boolean blankSearch = search.isBlank();
+
         for (String cat : categoryList.knownCategories) {
             if (c != null && !c.category.equalsIgnoreCase("__ANY__") && !c.category.equalsIgnoreCase(cat)) continue;
             if (!categoryKeyMap.containsKey(cat)) continue;
@@ -186,25 +191,52 @@ public class KeymappingScreen extends Screen {
         KeyListWidget.KeyListEntry k = keyList.selected;
         if (k == null) return;
 
-        resetKey(k.key, true);
+        resetKey(k.key, false);
         updateMappedKeyCount();
+        updateKeyWidgetStates();
         keyList.setSelected(null);
     }
 
     private void resetKey(KeyBinding kb, boolean update) {
         assert client != null;
-        client.options.setKeyCode(kb, kb.getDefaultKey());
-        if (update) KeyBinding.updateKeysByCode();
+        InputUtil.Key def = kb.getDefaultKey();
+        client.options.setKeyCode(kb, def);
+        if (update) {
+            KeyBinding.updateKeysByCode();
+            updateKeys(kb.boundKey.getCode(), def.getCode(), kb);
+        }
     }
 
     private void setKeyboardKey(KeyBinding kb, InputUtil.Key key, boolean update) {
         assert client != null;
+        int lastKeyCode = kb.boundKey.getCode();
+        int currKeyCode = key.getCode();
+
         if (key.getCode() == 256) {
             client.options.setKeyCode(kb, InputUtil.UNKNOWN_KEY);
         } else {
             client.options.setKeyCode(kb, key);
         }
-        if (update) KeyBinding.updateKeysByCode();
+        if (update) {
+            KeyBinding.updateKeysByCode();
+            updateKeys(lastKeyCode, currKeyCode, kb);
+        }
+    }
+
+    public void updateKeyWidgetStates() {
+        for (KeyWidget kw : keyWidgets) {
+            kw.updateState();
+        }
+    }
+
+    public void updateKeys(int from, int to, KeyBinding kb) {
+        mappedKeyCount.get(from).remove(kb);
+        if (!mappedKeyCount.containsKey(to)) mappedKeyCount.put(to, new ArrayList<>());
+        mappedKeyCount.get(to).add(kb);
+
+        // KeyWidgets
+        if (keyWidgetMap.containsKey(from)) keyWidgetMap.get(from).updateState();
+        if (keyWidgetMap.containsKey(to)) keyWidgetMap.get(to).updateState();
     }
 
     @Override
@@ -212,7 +244,7 @@ public class KeymappingScreen extends Screen {
         KeyListWidget.KeyListEntry ke = keyList.selected;
         if (ke != null) {
             setKeyboardKey(ke.key, InputUtil.fromKeyCode(keyCode, scanCode), true);
-            updateMappedKeyCount();
+            // updateMappedKeyCount();
             keyList.setSelected(null);
             return true;
         }
@@ -236,7 +268,6 @@ public class KeymappingScreen extends Screen {
                     KeyListWidget.KeyListEntry ke = keyList.selected;
                     if (ke != null) {
                         setKeyboardKey(ke.key, k.key.key, true);
-                        updateMappedKeyCount();
                         keyList.setSelected(null);
                     }
                 }
@@ -267,6 +298,7 @@ public class KeymappingScreen extends Screen {
             for (KeyboardLayout.KeyboardKey key : row) {
                 KeyWidget k = new KeyWidget(currentX, currentY, key, mappedKeyCount);
                 keyWidgets.add(k);
+                keyWidgetMap.put(key.keyCode, k);
                 addSelectableChild(k);
                 currentX += keyGapX + k.getWidth();
                 minItemHeight = Math.min(k.getHeight(), minItemHeight);
