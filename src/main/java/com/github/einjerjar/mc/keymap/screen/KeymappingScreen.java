@@ -1,11 +1,15 @@
 package com.github.einjerjar.mc.keymap.screen;
 
 import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
 import com.github.einjerjar.mc.keymap.screen.widgets.*;
 import com.github.einjerjar.mc.keymap.utils.Utils;
+import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.Input;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -26,6 +30,7 @@ public class KeymappingScreen extends Screen {
     KeyListWidget keyList;
     FlatButtonWidget btnReset;
     FlatButtonWidget btnResetAll;
+    FlatButtonWidget btnToggleMalilib;
     FlatInputWidget inpSearch;
 
     Screen parent = null;
@@ -42,6 +47,10 @@ public class KeymappingScreen extends Screen {
     int minY;
     int maxY;
 
+    boolean malilib;
+
+    Element lastClickedElement = null;
+
     public KeymappingScreen() {
         super(new TranslatableText("key.keymap.cfg.title"));
     }
@@ -53,6 +62,7 @@ public class KeymappingScreen extends Screen {
 
     @Override
     protected void init() {
+        malilib = KeymapMain.malilibSupport;
         tr = textRenderer;
         expectedScreenWidth = Math.min(500, width);
         minX = Math.max(0, width - expectedScreenWidth) / 2 + outerPadX;
@@ -80,13 +90,23 @@ public class KeymappingScreen extends Screen {
         keyList = new KeyListWidget(client, leftSpaceX, maxY - minY - padY * 3 - 20, minY + padY * 2 + 16, maxY - padY * 2 - 20, tr.fontHeight + 1);
         keyList.setLeftPos(maxX - leftSpaceX - padX);
 
+        int catX = minX + padX * 2 + kbExtra[0] - keyGapX * 2 + kbNumpad[0] + padX;
+        int catY = minY + padY * 2 + kbKeys[1] - keyGapY;
+        int catW = expectedScreenWidth - padX * 5 - kbExtra[0] - kbNumpad[0] - leftSpaceX - padX / 2 - 1;
+        int catH = kbNumpad[1] - 2;
+
+        if (malilib) {
+            btnToggleMalilib = new FlatButtonWidget(catX, catY, catW, 16, new TranslatableText("togglemali"), null);
+            addSelectableChild(btnToggleMalilib);
+        }
+
         categoryList = new CategoryListWidget(client,
-            expectedScreenWidth - padX * 5 - kbExtra[0] - kbNumpad[0] - leftSpaceX - padX / 2 - 1,
-            kbNumpad[1] - 2,
-            minY + padY * 2 + kbKeys[1] - keyGapY,
+            catW,
+            malilib ? catH - 16 - keyGapY : catH,
+            malilib ? catY + 16 + keyGapY : catY,
             minY + padY * 2 + kbKeys[1] - keyGapY + kbNumpad[1] - 2,
             tr.fontHeight + 1);
-        categoryList.setLeftPos(minX + padX * 2 + kbExtra[0] - keyGapX * 2 + kbNumpad[0] + padX);
+        categoryList.setLeftPos(catX);
 
         addSelectableChild(btnReset);
         addSelectableChild(btnResetAll);
@@ -101,6 +121,10 @@ public class KeymappingScreen extends Screen {
         updateKeyList();
         updateKeyWidgetStates();
 
+        // InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
+        // for(KeybindCategory cat : handler.getKeybindCategories()) {
+        //     cat.getHotkeys()
+        // }
 
         categoryList.setSelected(categoryList.children().get(0));
         inpSearch.setChangedListener(s -> updateKeyList());
@@ -173,6 +197,10 @@ public class KeymappingScreen extends Screen {
         keyList.render(m, mouseX, mouseY, delta);
         categoryList.render(m, mouseX, mouseY, delta);
 
+        if (malilib) {
+            btnToggleMalilib.render(m, mouseX, mouseY, delta);
+        }
+
         KeyListWidget.KeyListEntry ke = keyList.selected;
         for (KeyWidget k : keyWidgets) {
             k.selected = ke != null && k.key.key == ke.key.boundKey;
@@ -185,6 +213,18 @@ public class KeymappingScreen extends Screen {
             ArrayList<Text> tip = kl.getToolTips();
             if (tip != null) renderTooltip(m, tip, mouseX, mouseY);
         }
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        this.setDragging(false);
+        Element h = hoveredElement(mouseX, mouseY).orElse(null);
+        if (lastClickedElement != null && h != lastClickedElement) {
+            lastClickedElement.mouseReleased(mouseX, mouseY, button);
+        }
+        lastClickedElement = null;
+        if (h != null) return h.mouseReleased(mouseX, mouseY, button);
+        return false;
     }
 
     private void resetAllKeys() {
@@ -298,6 +338,7 @@ public class KeymappingScreen extends Screen {
                 }
                 setFocused(c);
                 if (button == 0) setDragging(true);
+                lastClickedElement = c;
                 return true;
             }
         }

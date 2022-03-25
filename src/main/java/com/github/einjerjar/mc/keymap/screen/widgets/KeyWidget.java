@@ -1,6 +1,6 @@
 package com.github.einjerjar.mc.keymap.screen.widgets;
 
-import com.github.einjerjar.mc.keymap.screen.KeyboardLayout;
+import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import net.minecraft.client.option.KeyBinding;
@@ -49,12 +49,16 @@ public class KeyWidget extends FlatWidget {
         if (mappedKeyCount.containsKey(key.keyCode)) {
             ArrayList<KeyBinding> kbs = mappedKeyCount.get(key.keyCode);
 
-            if (kbs.size() > 0) {
-                tooltips.add(new LiteralText("----------------").getWithStyle(Utils.styleSeparator).get(0));
-            }
-
+            int maxChars = 0;
+            int maxWidth = 0;
             for (KeyBinding kb : kbs) {
-                tooltips.add(new TranslatableText(kb.getTranslationKey()).getWithStyle(Utils.styleKeybind).get(0));
+                Text t = new TranslatableText(kb.getTranslationKey()).getWithStyle(Utils.styleKeybind).get(0);
+                maxChars = t.getString().length();
+                maxWidth = tr.getWidth(t);
+                tooltips.add(t);
+            }
+            if (kbs.size() > 0) {
+                tooltips.add(new LiteralText(tr.trimToWidth("-".repeat(maxChars), maxWidth)).getWithStyle(Utils.styleSeparator).get(0));
             }
         }
     }

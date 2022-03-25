@@ -74,13 +74,17 @@ public class KeyListWidget extends EntryListWidget<KeyListWidget.KeyListEntry> {
         Text s = Utils.safeGet(lt.getWithStyle(Utils.styleKey), 0);
         if (s == null) s = new TranslatableText("key.keymap.stat.not_assigned").getWithStyle(Utils.stylePassive).get(0);
 
+        Text keymapName = new TranslatableText(hoveredEntry.key.getTranslationKey()).getWithStyle(Utils.styleSimpleBold).get(0);
 
         if (KeymapMain.cfg.keybindKeyOnHover)
             tips.add(s);
-        if (KeymapMain.cfg.keybindKeyOnHover && KeymapMain.cfg.keybindNameOnHover)
-            tips.add(new LiteralText("----------------").getWithStyle(Utils.styleSeparator).get(0));
+        if (KeymapMain.cfg.keybindKeyOnHover && KeymapMain.cfg.keybindNameOnHover) {
+            String ss = "-".repeat(Math.max(keymapName.getString().length(), s.getString().length()));
+            String st = tr.trimToWidth(ss, tr.getWidth(keymapName));
+            tips.add(new LiteralText(st).getWithStyle(Utils.styleSeparator).get(0));
+        }
         if (KeymapMain.cfg.keybindNameOnHover)
-            tips.add(new TranslatableText(hoveredEntry.key.getTranslationKey()).getWithStyle(Utils.styleSimpleBold).get(0));
+            tips.add(keymapName);
 
         return tips;
     }
