@@ -24,6 +24,11 @@ public class Utils {
         return null;
     }
 
+    public static <E> E safeGet(List<E> l, int i, E or) {
+        if (l.size() > 0) return l.get(i);
+        return or;
+    }
+
     public static class NIL {
         public static final Text TEXT = Text.of("");
     }

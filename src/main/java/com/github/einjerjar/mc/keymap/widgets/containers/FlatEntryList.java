@@ -1,8 +1,10 @@
 package com.github.einjerjar.mc.keymap.widgets.containers;
 
 import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
+import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.FlatWidgetBase;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
@@ -12,43 +14,59 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extends FlatWidgetBase implements Selectable {
-    MinecraftClient client;
-    int x;
-    int y;
-    int w;
-    int h;
-    int entryHeight;
+public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extends FlatWidgetBase implements Selectable, Tooltipped {
+    protected MinecraftClient client;
+    protected TextRenderer tr;
+    protected int x;
+    protected int y;
+    protected int w;
+    protected int h;
+    protected int entryHeight;
 
-    int scrollOffset = 0;
-    int scrollBarW = 6;
-    int scrollBarX;
+    protected int scrollOffset = 0;
+    protected int scrollBarW = 6;
+    protected int scrollBarX;
 
-    boolean hovered;
-    boolean dragging;
-    boolean focused;
-    boolean visible;
+    public boolean hovered;
+    public boolean dragging;
+    public boolean focused;
+    public boolean visible;
 
-    List<T> entries = new ArrayList<>();
+    protected List<T> entries = new ArrayList<>();
+    // protected List<Text> tooltips = new ArrayList<>();
 
-    T hoveredEntry;
-    T selectedEntry;
+    protected T hoveredEntry;
+    protected T selectedEntry;
 
-    int lastDragY;
-    int lastClickX;
+    protected int lastDragY;
+    protected int lastClickY;
+    protected int lastClickX;
 
     public FlatEntryList(int x, int y, int w, int h, int entryHeight) {
         this.client = MinecraftClient.getInstance();
+        this.tr = this.client.textRenderer;
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.entryHeight = entryHeight;
         this.scrollBarX = x + w - scrollBarW;
+    }
+
+    @Override
+    public List<Text> getToolTips() {
+        return hoveredEntry != null ? hoveredEntry.getToolTips() : new ArrayList<>();
+    }
+
+    @Override
+    public Text getFirstToolTip() {
+        return hoveredEntry != null ? hoveredEntry.getFirstToolTip() : new LiteralText("");
     }
 
     @Override
@@ -61,13 +79,20 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        hovered = isMouseOver(mouseX, mouseY);
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h;
     }
 
     @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h;
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        hovered = isMouseOver(mouseX, mouseY);
+
+        hoveredEntry = null;
+
+        if (hovered) {
+            int index = (int) ((mouseY - y + scrollOffset) / (float) entryHeight);
+            if (index >= 0 && index < entries.size()) hoveredEntry = entries.get(index);
+        }
     }
 
     public void renderScrollbar(MatrixStack matrices) {
@@ -91,35 +116,40 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         int scrollHeight = (int)(h / (float) getContentHeight() * h);
         int scrollTop = (int)(scrollOffset / (float) getContentHeight() * h);
 
-        // KeymapMain.LOGGER.info(String.format(
-        //     "sh %s :: st %s :: ch %s :: h %s",
-        //     scrollHeight,
-        //     scrollTop,
-        //     getContentHeight(),
-        //     h
-        // ));
-
         // left right top bottom
         Utils.drawQuad(ts, bb, scrollBarX, x + w, y, y + h, colScrollBg, false);
         Utils.drawQuad(ts, bb, scrollBarX, x + w, y + scrollTop, y + scrollTop + scrollHeight, colScrollFg, false);
 
         ts.draw();
-        RenderSystem.disableBlend();
+        // RenderSystem.disableBlend();
+        // RenderSystem.enableTexture();
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        if (!hovered) return false;
+
+        scrollOffset += amount * -12;
+        if (scrollOffset < 0) scrollOffset = 0;
+        if (scrollOffset > getContentHeight() - h) scrollOffset = Math.max(getContentHeight() - h, 0);
+
+        return true;
     }
 
     public void renderList(MatrixStack matrices) {
         for (int i = 0; i < entries.size(); i++) {
             T entry = entries.get(i);
-            entry.render(matrices, x, y + i * entryHeight - scrollOffset, w - scrollBarW, entryHeight, false, 0);
+            entry.render(matrices, x, y + i * entryHeight - scrollOffset, w - scrollBarW, entryHeight, entry == hoveredEntry, 0);
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!isMouseOver(mouseX, mouseY)) return false;
+        if (!hovered) return false;
         dragging = true;
         lastDragY = (int) (mouseY - y);
         lastClickX = (int) mouseX;
+        lastClickY = (int) (mouseY - y);
         return true;
     }
 
@@ -142,7 +172,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
             // clamp scroll
             if (scrollOffset < 0) scrollOffset = 0;
-            if (scrollOffset > getContentHeight() - h) scrollOffset = getContentHeight() - h;
+            if (scrollOffset > getContentHeight() - h) scrollOffset = Math.max(getContentHeight() - h, 0);
         }
         return true;
     }
@@ -151,7 +181,12 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = false;
         // TODO: click on entry
-        if (lastDragY == mouseY) {}
+        KeymapMain.LOGGER.info("Release");
+        if (Math.abs(lastClickY - (mouseY - y)) < 3) {
+            if (selectedEntry != null) selectedEntry.selected = false;
+            selectedEntry = hoveredEntry;
+            if (selectedEntry != null) selectedEntry.selected = true;
+        }
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
@@ -193,17 +228,21 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         return y + h;
     }
 
-    public abstract static class FlatEntry<T extends FlatEntryList.FlatEntry<T>> {
+    public abstract static class FlatEntry<T extends FlatEntryList.FlatEntry<T>> implements Tooltipped {
         protected TextRenderer tr;
         protected boolean hovered = false;
         protected boolean selected = false;
 
         protected ColorGroup colors = ColorGroup.NORMAL;
 
+        protected List<Text> tooltips = new ArrayList<>();
+
         public void updateState() {
             colors = selected
                      ? ColorGroup.RED
-                     : ColorGroup.NORMAL;
+                     : hovered
+                        ? ColorGroup.GREEN
+                        : ColorGroup.NORMAL;
         }
 
         public FlatEntry() {
@@ -211,5 +250,15 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         }
 
         public abstract void render(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta);
+
+        @Override
+        public List<Text> getToolTips() {
+            return null;
+        }
+
+        @Override
+        public Text getFirstToolTip() {
+            return null;
+        }
     }
 }

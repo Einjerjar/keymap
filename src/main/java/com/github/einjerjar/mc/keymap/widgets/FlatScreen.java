@@ -1,17 +1,12 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
-import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
-import com.github.einjerjar.mc.keymap.screen.v1.widgets.FlatListWidget;
-import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
-import net.minecraft.client.Mouse;
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+
+import java.util.List;
 
 public class FlatScreen extends Screen {
     protected Screen parent;
@@ -50,6 +45,15 @@ public class FlatScreen extends Screen {
             }
         }
 
+        if (hovered != null && hovered instanceof FlatWidgetBase fw) {
+            if (fw instanceof Tooltipped tipped) {
+                List<Text> tips = tipped.getToolTips();
+                if (tips != null) {
+                    renderTooltip(matrices, tipped.getToolTips(), mouseX, mouseY);
+                }
+            }
+        }
+
         hovered = null;
 
         for (FlatWidgetBase c : children().stream().filter(e -> e instanceof FlatWidgetBase).map(e -> (FlatWidgetBase) e).toList()) {
@@ -58,13 +62,6 @@ public class FlatScreen extends Screen {
                 hovered = c;
             }
         }
-
-        if (hovered != null && hovered instanceof FlatWidget<?> fw) {
-            if (fw instanceof Tooltipped tipped) {
-                renderTooltip(matrices, tipped.getToolTips(), mouseX, mouseY);
-            }
-        }
-
         // if (hovered != null) KeymapMain.LOGGER.info(hovered.getClass().getName());
     }
 
