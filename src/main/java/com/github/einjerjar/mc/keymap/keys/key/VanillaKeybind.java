@@ -48,8 +48,8 @@ public class VanillaKeybind implements KeybindHolder {
     public void assignHotKey(int[] hotkey, boolean mouse) {
         int hk = hotkey[0];
         InputUtil.Key newKey = mouse
-            ? InputUtil.Type.MOUSE.createFromCode(hk)
-            : InputUtil.Type.KEYSYM.createFromCode(hk);
+                               ? InputUtil.Type.MOUSE.createFromCode(hk)
+                               : InputUtil.Type.KEYSYM.createFromCode(hk);
         key.setBoundKey(newKey);
 
         KeyBinding.updateKeysByCode();

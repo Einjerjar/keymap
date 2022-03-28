@@ -1,15 +1,12 @@
-package com.github.einjerjar.mc.keymap.screen;
+package com.github.einjerjar.mc.keymap.screen.v1;
 
 import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
-import com.github.einjerjar.mc.keymap.screen.widgets.*;
+import com.github.einjerjar.mc.keymap.screen.v1.widgets.*;
 import com.github.einjerjar.mc.keymap.utils.Utils;
-import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.input.Input;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -75,13 +72,18 @@ public class KeymappingScreen extends Screen {
         if (categoryList != null) categoryList._clearEntries();
 
         keyWidgets.clear();
-        int[] kbKeys = addKeys(KeyboardLayout.getKeys(), minX + padX, minY + padY);
-        int[] kbExtra = addKeys(KeyboardLayout.getExtra(), minX + padX, minY + padY * 2 + kbKeys[1] - keyGapY);
-        int[] kbMouse = addKeys(KeyboardLayout.getMouse(), minX + padX, minY + padY * 3 + kbKeys[1] + kbExtra[1] - keyGapY * 2);
-        int[] kbNumpad = addKeys(KeyboardLayout.getNumpad(), minX + padX * 2 + kbExtra[0] - keyGapX, minY + padY * 2 + kbKeys[1] - keyGapY);
+        // int[] kbKeys   = addKeys(KeyboardLayout.getKeys(), minX + padX, minY + padY);
+        // int[] kbExtra  = addKeys(KeyboardLayout.getExtra(), minX + padX, minY + padY * 2 + kbKeys[1] - keyGapY);
+        // int[] kbMouse  = addKeys(KeyboardLayout.getMouse(), minX + padX, minY + padY * 3 + kbKeys[1] + kbExtra[1] - keyGapY * 2);
+        // int[] kbNumpad = addKeys(KeyboardLayout.getNumpad(), minX + padX * 2 + kbExtra[0] - keyGapX, minY + padY * 2 + kbKeys[1] - keyGapY);
+
+        int[] kbKeys   = new int[0];
+        int[] kbExtra  = new int[0];
+        int[] kbMouse  = new int[0];
+        int[] kbNumpad = new int[0];
 
         int leftSpaceX = expectedScreenWidth - outerPadX * 2 - kbKeys[0] - padX * 3;
-        int btnSizeX = (leftSpaceX - padX) / 2;
+        int btnSizeX   = (leftSpaceX - padX) / 2;
 
         btnReset = new FlatButtonWidget(maxX - (btnSizeX * 2 + padX * 2), maxY - (20 + padX), btnSizeX, 20, new TranslatableText("key.keymap.reset"), widget -> resetSelectedKey());
         btnResetAll = new FlatButtonWidget(maxX - (btnSizeX + padX), maxY - (20 + padX), btnSizeX, 20, new TranslatableText("key.keymap.reset_all"), widget -> resetAllKeys());
@@ -135,16 +137,16 @@ public class KeymappingScreen extends Screen {
         keyList._clearEntries();
 
         if (keyList.selected != null) keyList.selected.selected = false;
-        CategoryListWidget.CategoryEntry c = categoryList.selected;
-        String search = inpSearch.getText().trim();
-        boolean blankSearch = search.isBlank();
+        CategoryListWidget.CategoryEntry c           = categoryList.selected;
+        String                           search      = inpSearch.getText().trim();
+        boolean                          blankSearch = search.isBlank();
 
         for (String cat : categoryList.knownCategories) {
             if (c != null && !c.category.equalsIgnoreCase("__ANY__") && !c.category.equalsIgnoreCase(cat)) continue;
             if (!categoryKeyMap.containsKey(cat)) continue;
             for (KeyBinding k : categoryKeyMap.get(cat)) {
                 if (!blankSearch) {
-                    String tKey = String.format("[%s]", k.getBoundKeyLocalizedText().getString().toLowerCase());
+                    String tKey  = String.format("[%s]", k.getBoundKeyLocalizedText().getString().toLowerCase());
                     String tName = new TranslatableText(k.getTranslationKey()).getString().toLowerCase();
                     if (!tKey.contains(search) && !tName.contains(search)) continue;
                 }
@@ -351,8 +353,8 @@ public class KeymappingScreen extends Screen {
     }
 
     private int[] addKeys(ArrayList<ArrayList<KeyboardLayout.KeyboardKey>> keys, int x, int y) {
-        int sizeX = 0;
-        int sizeY = 0;
+        int sizeX    = 0;
+        int sizeY    = 0;
         int currentX = x;
         int currentY = y;
 

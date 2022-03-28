@@ -5,16 +5,19 @@ import net.minecraft.text.Text;
 import java.util.List;
 
 public interface CategoryHolder {
-    public Text getCategoryName();
-    public String getCategoryKey();
+    Text getCategoryName();
 
-    public void addKeybind(KeybindHolder kb);
-    public List<KeybindHolder> getKeybinds();
-    public KeybindHolder getKeyByTranslationKey(String key);
+    String getCategoryKey();
 
-    public String getModName();
+    void addKeybind(KeybindHolder kb);
 
-    public void sortKeybinds();
+    List<KeybindHolder> getKeybinds();
 
-    public int count();
+    KeybindHolder getKeyByTranslationKey(String key);
+
+    String getModName();
+
+    void sortKeybinds();
+
+    int count();
 }

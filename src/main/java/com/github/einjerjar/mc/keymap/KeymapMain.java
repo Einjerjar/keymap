@@ -1,6 +1,6 @@
 package com.github.einjerjar.mc.keymap;
 
-import com.github.einjerjar.mc.keymap.screen.KeymappingScreen;
+import com.github.einjerjar.mc.keymap.screen.v1.KeymappingScreen;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.EnvType;

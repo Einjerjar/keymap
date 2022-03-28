@@ -5,6 +5,7 @@ import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class KeyboardLayout {
     public static class KeyboardKey {
@@ -58,7 +59,7 @@ public class KeyboardLayout {
     }
 
     // FIXME: Convert to static finals on post beta
-    public static ArrayList<ArrayList<KeyboardKey>> getKeys() {
+    public static List<List<KeyboardKey>> getKeys() {
         return new ArrayList<>() {{
             add(new ArrayList<>() {{
                 add(new KeyboardKey("ESC", InputUtil.GLFW_KEY_ESCAPE, 14));
@@ -150,7 +151,7 @@ public class KeyboardLayout {
         }};
     }
 
-    public static ArrayList<ArrayList<KeyboardKey>> getNumpad() {
+    public static List<List<KeyboardKey>> getNumpad() {
         return new ArrayList<>() {{
             add(new ArrayList<>() {{
                 add(new KeyboardKey("NM", InputUtil.GLFW_KEY_NUM_LOCK));
@@ -182,7 +183,7 @@ public class KeyboardLayout {
         }};
     }
 
-    public static ArrayList<ArrayList<KeyboardKey>> getMouse() {
+    public static List<List<KeyboardKey>> getMouse() {
         return new ArrayList<>() {{
             add(new ArrayList<>() {{
                 add(new KeyboardKey("ML", GLFW.GLFW_MOUSE_BUTTON_1, 6, InputUtil.Type.MOUSE));
@@ -192,7 +193,7 @@ public class KeyboardLayout {
         }};
     }
 
-    public static ArrayList<ArrayList<KeyboardKey>> getExtra() {
+    public static List<List<KeyboardKey>> getExtra() {
         return new ArrayList<>() {{
             add(new ArrayList<>() {{
                 add(new KeyboardKey("INS", InputUtil.GLFW_KEY_INSERT, 6));

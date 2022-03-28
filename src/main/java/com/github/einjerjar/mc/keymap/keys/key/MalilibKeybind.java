@@ -7,7 +7,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MalilibKeybind implements KeybindHolder {

@@ -1,11 +1,10 @@
-package com.github.einjerjar.mc.keymap.screen.widgets;
+package com.github.einjerjar.mc.keymap.screen.v1.widgets;
 
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -61,7 +60,8 @@ public class KeyCaptureWidget extends ClickableWidget {
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {}
+    public void appendNarrations(NarrationMessageBuilder builder) {
+    }
 
     @Override
     public void mouseMoved(double mouseX, double mouseY) {

@@ -1,9 +1,7 @@
-package com.github.einjerjar.mc.keymap.screen.widgets;
+package com.github.einjerjar.mc.keymap.screen.v1.widgets;
 
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
-import com.github.einjerjar.mc.keymap.utils.ColorSet;
 import com.github.einjerjar.mc.keymap.utils.Utils;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
@@ -11,8 +9,6 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
 public class FlatTextWidget extends DrawableHelper implements Drawable, Element {
     TextRenderer tr;
@@ -60,16 +56,18 @@ public class FlatTextWidget extends DrawableHelper implements Drawable, Element 
 
     @Override
     public void render(MatrixStack m, int mouseX, int mouseY, float delta) {
-        int textWidth = tr.getWidth(text) + padX * 2;
+        int textWidth  = tr.getWidth(text) + padX * 2;
         int textHeight = tr.fontHeight + padY * 2;
 
         if (drawBg || drawBorder) {
-            if (drawBg) Utils.fillBox(this, m, x - textWidth / 2 - padX - 1, y - textHeight / 2 - padY - 1, textWidth+1, textHeight+1, color.bg.normal);
-            if (drawBorder) Utils.drawBoxOutline(this, m, x - textWidth / 2 - padX - 1, y - textHeight / 2 - padY - 1, textWidth+1, textHeight+1, color.bg.normal);
+            if (drawBg)
+                Utils.fillBox(this, m, x - textWidth / 2 - padX - 1, y - textHeight / 2 - padY - 1, textWidth + 1, textHeight + 1, color.bg.normal);
+            if (drawBorder)
+                Utils.drawBoxOutline(this, m, x - textWidth / 2 - padX - 1, y - textHeight / 2 - padY - 1, textWidth + 1, textHeight + 1, color.bg.normal);
         }
 
 
         if (drawShadow) tr.drawWithShadow(m, text, x - textWidth / 2f, y - textHeight / 2f, color.text.normal);
-        else            tr.draw(m, text, x - (float)(textWidth / 2), y - (float)(textHeight / 2), color.text.normal);
+        else tr.draw(m, text, x - (float) (textWidth / 2), y - (float) (textHeight / 2), color.text.normal);
     }
 }
