@@ -121,8 +121,6 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         Utils.drawQuad(ts, bb, scrollBarX, x + w, y + scrollTop, y + scrollTop + scrollHeight, colScrollFg, false);
 
         ts.draw();
-        // RenderSystem.disableBlend();
-        // RenderSystem.enableTexture();
     }
 
     @Override

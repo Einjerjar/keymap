@@ -38,6 +38,8 @@ public class TestingScreen extends FlatScreen {
         super.render(m, mouseX, mouseY, delta);
         renderBackground(m);
         keyList.render(m, mouseX, mouseY, delta);
+
+        renderTooltips(m, mouseX, mouseY, delta);
     }
 
     @Override

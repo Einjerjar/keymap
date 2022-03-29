@@ -45,15 +45,6 @@ public class FlatScreen extends Screen {
             }
         }
 
-        if (hovered != null && hovered instanceof FlatWidgetBase fw) {
-            if (fw instanceof Tooltipped tipped) {
-                List<Text> tips = tipped.getToolTips();
-                if (tips != null) {
-                    renderTooltip(matrices, tipped.getToolTips(), mouseX, mouseY);
-                }
-            }
-        }
-
         hovered = null;
 
         for (FlatWidgetBase c : children().stream().filter(e -> e instanceof FlatWidgetBase).map(e -> (FlatWidgetBase) e).toList()) {
@@ -62,7 +53,17 @@ public class FlatScreen extends Screen {
                 hovered = c;
             }
         }
-        // if (hovered != null) KeymapMain.LOGGER.info(hovered.getClass().getName());
+    }
+
+    public void renderTooltips(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        if (hovered != null && hovered instanceof FlatWidgetBase fw) {
+            if (fw instanceof Tooltipped tipped) {
+                List<Text> tips = tipped.getToolTips();
+                if (tips != null) {
+                    renderTooltip(matrices, tipped.getToolTips(), mouseX, mouseY);
+                }
+            }
+        }
     }
 
     @Override
