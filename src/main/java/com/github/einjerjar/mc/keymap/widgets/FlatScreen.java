@@ -1,10 +1,12 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
+import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,19 +34,19 @@ public class FlatScreen extends Screen {
         super.onClose();
     }
 
-    @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        renderBackground(matrices);
-        // super.render(matrices, mouseX, mouseY, delta);
-
+    protected void renderChildren(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         for (Element e : children()) {
-            if (e instanceof FlatWidget<?> ee) {
+            if (e instanceof FlatWidgetBase ee) {
                 if (ee.visible) {
                     ee.render(matrices, mouseX, mouseY, delta);
                 }
             }
         }
+    }
 
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        renderBackground(matrices);
         hovered = null;
 
         for (FlatWidgetBase c : children().stream().filter(e -> e instanceof FlatWidgetBase).map(e -> (FlatWidgetBase) e).toList()) {
@@ -74,6 +76,7 @@ public class FlatScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (hovered != null) {
+            KeymapMain.LOGGER.info(hovered.getClass().getName());
             if (hovered.mouseClicked(mouseX, mouseY, button)) {
                 setFocused(hovered);
                 setDragging(true);
@@ -82,6 +85,18 @@ public class FlatScreen extends Screen {
         }
         setFocused(null);
         return false;
+    }
+
+    protected Element drillFocused(Element focused) {
+        if (focused instanceof FlatContainer fc) {
+            if (fc.focusedElement != null) return drillFocused(fc.focusedElement);
+        }
+        return focused;
+    }
+
+    @Override
+    public void setFocused(@Nullable Element focused) {
+        super.setFocused(drillFocused(focused));
     }
 
     @Override
@@ -97,16 +112,21 @@ public class FlatScreen extends Screen {
         return false;
     }
 
-    // @Override
-    // public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-    //     if (keyCode == InputUtil.GLFW_KEY_ESCAPE && shouldCloseOnEsc()) {
-    //         onClose();
-    //         return true;
-    //     };
-    //     if (keyCode == InputUtil.GLFW_KEY_TAB) {
-    //         changeFocus(!hasShiftDown());
-    //         return false;
-    //     }
-    //     return super.keyPressed(keyCode, scanCode, modifiers);
-    // }
+    @Override
+    public boolean charTyped(char chr, int modifiers) {
+        return super.charTyped(chr, modifiers);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // if (keyCode == InputUtil.GLFW_KEY_ESCAPE && shouldCloseOnEsc()) {
+        //     onClose();
+        //     return true;
+        // };
+        // if (keyCode == InputUtil.GLFW_KEY_TAB) {
+        //     changeFocus(!hasShiftDown());
+        //     return false;
+        // }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
 }

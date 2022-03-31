@@ -5,6 +5,7 @@ import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -24,11 +25,9 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         renderScrollbar(matrices);
         renderList(matrices);
 
-        // renderT
-
-        if (hoveredEntry != null) {
-            WidgetUtils.drawCenteredText(matrices, tr, hoveredEntry.holder.getTranslation(), x, y, w, h, true, true, false, 0xff_ffffff);
-        }
+        // if (hoveredEntry != null) {
+        //     WidgetUtils.drawCenteredText(matrices, tr, hoveredEntry.holder.getTranslation(), x, y, w, h, true, true, false, 0xff_ffffff);
+        // }
     }
 
     @Override

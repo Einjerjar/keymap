@@ -10,6 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.render.*;
@@ -22,21 +23,13 @@ import java.util.List;
 
 public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extends FlatWidgetBase implements Selectable, Tooltipped {
     protected MinecraftClient client;
-    protected TextRenderer tr;
-    protected int x;
-    protected int y;
-    protected int w;
-    protected int h;
     protected int entryHeight;
 
     protected int scrollOffset = 0;
     protected int scrollBarW = 6;
     protected int scrollBarX;
 
-    public boolean hovered;
     public boolean dragging;
-    public boolean focused;
-    public boolean visible;
 
     protected List<T> entries = new ArrayList<>();
     // protected List<Text> tooltips = new ArrayList<>();
@@ -49,13 +42,14 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     protected int lastClickX;
 
     public FlatEntryList(int x, int y, int w, int h, int entryHeight) {
+        super(x, y, w, h);
         this.client = MinecraftClient.getInstance();
-        this.tr = this.client.textRenderer;
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
         this.entryHeight = entryHeight;
+        this.scrollBarX = x + w - scrollBarW;
+    }
+
+    @Override
+    protected void updateSize() {
         this.scrollBarX = x + w - scrollBarW;
     }
 
@@ -98,7 +92,9 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     public void renderScrollbar(MatrixStack matrices) {
         Tessellator ts = Tessellator.getInstance();
         BufferBuilder bb = ts.getBuffer();
-        int scroll = h / getContentHeight();
+        int ch = getContentHeight();
+        if (ch == 0) return;
+        int scroll = h / ch;
         if (scroll >= 1) {
             scrollOffset = 0;
             return;
@@ -137,7 +133,14 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     public void renderList(MatrixStack matrices) {
         for (int i = 0; i < entries.size(); i++) {
             T entry = entries.get(i);
-            entry.render(matrices, x, y + i * entryHeight - scrollOffset, w - scrollBarW, entryHeight, entry == hoveredEntry, 0);
+            int _x = x;
+            int _y = y + i * entryHeight - scrollOffset;
+            int _w = w - scrollBarW;
+            int _h = entryHeight;
+
+            if (_y + _h < top() + 8 || _y > bottom() - 8) continue;
+
+            entry.render(matrices, _x, _y, _w, _h, entry == hoveredEntry, 0);
         }
     }
 
@@ -154,6 +157,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         int direction = -1;
+        if (getContentHeight() == 0) return false;
         int scroll = h / getContentHeight();
         if (scroll >= 1) return false;
 
@@ -226,7 +230,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         return y + h;
     }
 
-    public abstract static class FlatEntry<T extends FlatEntryList.FlatEntry<T>> implements Tooltipped {
+    public abstract static class FlatEntry<T extends FlatEntryList.FlatEntry<T>> extends DrawableHelper implements Tooltipped {
         protected TextRenderer tr;
         protected boolean hovered = false;
         protected boolean selected = false;

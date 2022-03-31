@@ -3,13 +3,17 @@ package com.github.einjerjar.mc.keymap.screen;
 import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
+import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
+import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
 import com.github.einjerjar.mc.keymap.screen.widgets.FlatKeyWidget;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.FlatButton;
+import com.github.einjerjar.mc.keymap.widgets.FlatInput;
 import com.github.einjerjar.mc.keymap.widgets.FlatScreen;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlexContainer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
@@ -37,7 +41,10 @@ public class KeyMappingScreen2 extends FlatScreen {
     private final Map<Integer, List<KeybindHolder>> mappedKeybindHolders = new HashMap<>();
     private final Map<Integer, List<FlatKeyWidget>> mappedKeyWidgets = new HashMap<>();
 
-    FlexContainer buttonContainerSide;
+    FlatInput inputSearch;
+    FlatKeyList listKeybinds;
+    FlexContainer containerSidebar;
+    FlexContainer containerSideButtons;
     FlatButton buttonResetSelect;
     FlatButton buttonResetAll;
 
@@ -70,16 +77,34 @@ public class KeyMappingScreen2 extends FlatScreen {
 
         int leftSpaceX = expectedScreenWidth - outPadX * 2 - kbKeys[0] - padX * 3;
 
+        inputSearch = new FlatInput(0, 0, leftSpaceX, 16, "");
+        listKeybinds = new FlatKeyList(0, 0, leftSpaceX, 50, 10);
+
         buttonResetSelect = new FlatButton(0, 0, 0, 0, new LiteralText("Reset"));
         buttonResetAll = new FlatButton(0, 0, 0, 0, new LiteralText("Reset All"));
-        buttonContainerSide = new FlexContainer(right - leftSpaceX - padX, bottom - padY - outPadY - 16, leftSpaceX, 16);
 
-        buttonContainerSide
+        containerSideButtons = new FlexContainer(0, 0, 0, 16);
+        containerSideButtons
             .addChild(buttonResetSelect)
-            .addChild(buttonResetAll)
+            .addChild(buttonResetAll);
+
+        containerSidebar = new FlexContainer(right - leftSpaceX - padX, top + padY, leftSpaceX, height - outPadY * 2 - padY);
+        containerSidebar
+            .setDirection(FlexContainer.FlexDirection.COLUMN)
+            .addChild(inputSearch, -1)
+            .addChild(listKeybinds)
+            .addChild(containerSideButtons, -1)
+            .setGap(10)
             .arrange();
 
-        addSelectableChild(buttonContainerSide);
+        containerSideButtons.arrange();
+
+        addSelectableChild(containerSidebar);
+
+        //noinspection ConstantConditions
+        for (KeyBinding kb : client.options.keysAll) {
+            listKeybinds.addEntry(new FlatKeyList.FlatKeyListEntry(new VanillaKeybind(kb)));
+        }
     }
 
     private int[] addKeys(List<List<KeyboardLayout.KeyboardKey>> keys, int x, int y) {
@@ -116,5 +141,14 @@ public class KeyMappingScreen2 extends FlatScreen {
         super.render(matrices, mouseX, mouseY, delta);
 
         WidgetUtils.drawBoxOutline(this, matrices, left, top, right - left, bottom - top, 0xff_ffffff);
+
+        containerSidebar.render(matrices, mouseX, mouseY, delta);
+
+        if (getFocused() != null) {
+            drawCenteredText(matrices, tr, getFocused().getClass().getName(), width / 2, 5, 0xff_00ff00);
+        }
+
+        renderChildren(matrices, mouseX, mouseY, delta);
+        renderTooltips(matrices, mouseX, mouseY, delta);
     }
 }

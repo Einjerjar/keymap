@@ -31,6 +31,10 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
 
     }
 
+    public Element getFocusedElement() {
+        return focusedElement;
+    }
+
     public FlatContainer(int x, int y, int w, int h) {
         super(FlatContainer.class, x, y, w, h);
         this.setDrawBg(true).setDrawBorder(true);

@@ -20,7 +20,8 @@ public class ControlsOptionsScreenMixin {
     @Inject(at = @At("HEAD"), method = "method_19872", cancellable = true)
     private void openKeybindScreen(ButtonWidget button, CallbackInfo ci) {
         if (KeymapMain.cfg.replaceKeybindScreen) {
-            MinecraftClient.getInstance().setScreen(new TestingScreen((Screen) (Object) this));
+            // MinecraftClient.getInstance().setScreen(new TestingScreen((Screen) (Object) this));
+            MinecraftClient.getInstance().setScreen(new KeyMappingScreen2((Screen) (Object) this));
             ci.cancel();
         }
     }

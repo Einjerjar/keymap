@@ -58,6 +58,7 @@ public class KeyboardLayout {
         }
     }
 
+    // TODO: PORT ENTIRE KEY LAYOUT TO CONFIG FILE
     // FIXME: Convert to static finals on post beta
     public static List<List<KeyboardKey>> getKeys() {
         return new ArrayList<>() {{
