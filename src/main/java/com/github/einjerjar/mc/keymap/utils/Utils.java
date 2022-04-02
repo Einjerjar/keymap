@@ -24,11 +24,16 @@ public class Utils {
         return null;
     }
 
+    public static <E> E safeGet(List<E> l, int i, E or) {
+        if (l.size() > 0) return l.get(i);
+        return or;
+    }
+
     public static class NIL {
         public static final Text TEXT = Text.of("");
     }
 
-    public static <E> E orNull(E x, E y) {
+    public static <E> E or(E x, E y) {
         if (x != null) return x;
         return y;
     }
@@ -71,10 +76,10 @@ public class Utils {
         }
 
         SColor _color = new SColor(color);
-        int a = _color.a;
-        int r = _color.r;
-        int g = _color.g;
-        int b = _color.b;
+        int    a      = _color.a;
+        int    r      = _color.r;
+        int    g      = _color.g;
+        int    b      = _color.b;
 
         bb.vertex(left, bottom, 0.0D).color(r, g, b, a).next();
         bb.vertex(right, bottom, 0.0D).color(r, g, b, a).next();

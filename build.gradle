@@ -43,7 +43,11 @@ dependencies {
     modImplementation "com.terraformersmc:modmenu:${project.version_mod_menu}"
 
     // Malilib
-    // modRuntimeOnly name: "malilib-fabric-1.18.1-0.11.6"
+    modImplementation name: "malilib-fabric-${project.version_malilib}"
+    modRuntimeOnly name: "malilib-fabric-${project.version_malilib}"
+
+    // Malilib Testing
+    modRuntimeOnly name: "litematica-fabric-${project.version_litematica}"
 
     // Performance
     modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
