@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import net.minecraft.SharedConstants;
@@ -22,6 +21,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
 
     protected KBAction onEnter;
     protected KBAction onEscape;
+    protected KBAction onTextChanged;
 
     public FlatInput(int x, int y, int w, int h, String text) {
         super(FlatInput.class, x, y, w, h);
@@ -30,9 +30,17 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
         this.setDrawBg(true).setDrawBorder(true).setVisible(true);
     }
 
+    public FlatInput setOnTextChanged(KBAction onTextChanged) {
+        this.onTextChanged = onTextChanged;
+        return this;
+    }
+
     public FlatInput setText(String text) {
         this.text = text;
         this.lText = new LiteralText(this.text);
+        if (onTextChanged != null) {
+            onTextChanged.run(this);
+        }
         return this;
     }
 
@@ -81,12 +89,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
             if (SharedConstants.isValidChar(c)) {
                 sb.append(c);
             }
-            KeymapMain.LOGGER.info(String.format(
-                "INP: %s",
-                cc
-            ));
         }
-        KeymapMain.LOGGER.info(text + " - " + cursorPosX + " - " + sb);
         setText(new StringBuilder(text)
             .insert(cursorPosX, sb)
             .toString());
@@ -131,7 +134,6 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
 
     @Override
     public boolean charTyped(char chr, int modifiers) {
-        KeymapMain.LOGGER.info("type");
         write(chr);
         return super.charTyped(chr, modifiers);
     }
@@ -166,7 +168,6 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        KeymapMain.LOGGER.info("PRESSEd");
         switch (keyCode) {
             // TODO: HANDLE CTRL PRESS ON MOVE
             case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> {
@@ -199,7 +200,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
 
     }
 
-    public static interface KBAction {
+    public interface KBAction {
         void run(FlatInput input);
     }
 

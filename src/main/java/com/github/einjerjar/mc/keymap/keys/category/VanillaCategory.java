@@ -64,7 +64,7 @@ public class VanillaCategory implements CategoryHolder {
     }
 
     @Override
-    public int count() {
+    public int size() {
         return bindings.size();
     }
 }

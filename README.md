@@ -35,6 +35,8 @@ slow on my machine
 - Sleek UI (_lol_)
 - OCD Triggering misalignment of some panels ( _:D_ )
 
+---
+
 ### Images?
 
 - Status
@@ -48,22 +50,30 @@ slow on my machine
 - Filter by category + search
   > ![Filter by category + search](./screenshots/sample-03.png)
 
+---
+
 ### Latest Changes
 
 - some fixes for more performance (?)
 - show bound key to keybind on hover
 - show keybind for key on hover
 
+---
+
 ### Help I can't xx
 
 - **Can't rebind mouse keys?**
   - Currently, rebinding mouse key requires the user to click on the `ML`, `MM`, and `MR` buttons to assign the `Left button`, `Middle Button`, and `Right Button` respectively.
 
+---
+
 ### BUG!
 
 - [Github Issues](https://github.com/Einjerjar/keymap/issues)
 
-### Todo
+---
+
+### TODO
 - [ ] Support Malilib hotkeys
 - [ ] ~~Add conflict counter in the case that a key has more than 2 keys bound to it~~ (_replaced by hover tooltips_)
 - [x] Show the actions bound to the key on hover
@@ -71,6 +81,14 @@ slow on my machine
 - [ ] Show the mod bound to a category on hover (_if that's even possible_)
 - [x] Support overriding the default keybind screen
 
+---
+
 ### Support
 
 <a href='https://ko-fi.com/X8X831J1L' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+---
+
+#### Deprecation notice
+
+Complete UI widget rewrite, everything under v1 is practically obsolete, kept just for personal reference, will prolly be removed on succeeding updates

@@ -1,13 +1,19 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
+import com.github.einjerjar.mc.keymap.screen.Tooltipped;
+import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
-public class FlatButton extends FlatWidget<FlatButton> implements Selectable {
+import java.util.ArrayList;
+import java.util.List;
+
+public class FlatButton extends FlatWidget<FlatButton> implements Selectable, Tooltipped {
     Text text;
+    Text tooltip = null;
     ButtonAction action;
 
     public void click() {
@@ -21,9 +27,26 @@ public class FlatButton extends FlatWidget<FlatButton> implements Selectable {
         return SelectionType.NONE;
     }
 
+    public FlatButton setTooltip(Text tooltip) {
+        this.tooltip = tooltip;
+        return this;
+    }
+
     @Override
     public void appendNarrations(NarrationMessageBuilder builder) {
 
+    }
+
+    @Override
+    public List<Text> getToolTips() {
+        return tooltip != null ? new ArrayList<>() {{
+            add(tooltip);
+        }} : new ArrayList<>();
+    }
+
+    @Override
+    public Text getFirstToolTip() {
+        return Utils.safeGet(getToolTips(), 0);
     }
 
     public interface ButtonAction {

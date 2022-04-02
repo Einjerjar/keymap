@@ -1,17 +1,13 @@
 package com.github.einjerjar.mc.keymap.widgets.containers;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
-import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.FlatWidgetBase;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -90,9 +86,9 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     }
 
     public void renderScrollbar(MatrixStack matrices) {
-        Tessellator ts = Tessellator.getInstance();
+        Tessellator   ts = Tessellator.getInstance();
         BufferBuilder bb = ts.getBuffer();
-        int ch = getContentHeight();
+        int           ch = getContentHeight();
         if (ch == 0) return;
         int scroll = h / ch;
         if (scroll >= 1) {
@@ -109,8 +105,8 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         int colScrollBg = 0x88_000000;
         int colScrollFg = 0xaa_ffffff;
 
-        int scrollHeight = (int)(h / (float) getContentHeight() * h);
-        int scrollTop = (int)(scrollOffset / (float) getContentHeight() * h);
+        int scrollHeight = (int) (h / (float) getContentHeight() * h);
+        int scrollTop    = (int) (scrollOffset / (float) getContentHeight() * h);
 
         // left right top bottom
         Utils.drawQuad(ts, bb, scrollBarX, x + w, y, y + h, colScrollBg, false);
@@ -132,11 +128,11 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
     public void renderList(MatrixStack matrices) {
         for (int i = 0; i < entries.size(); i++) {
-            T entry = entries.get(i);
-            int _x = x;
-            int _y = y + i * entryHeight - scrollOffset;
-            int _w = w - scrollBarW;
-            int _h = entryHeight;
+            T   entry = entries.get(i);
+            int _x    = x;
+            int _y    = y + i * entryHeight - scrollOffset;
+            int _w    = w - scrollBarW;
+            int _h    = entryHeight;
 
             if (_y + _h < top() + 8 || _y > bottom() - 8) continue;
 
@@ -168,7 +164,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
         if (mouseY - y != lastDragY) {
             // positive if down
-            int delta = (int)(mouseY - y - lastDragY) * direction;
+            int delta = (int) (mouseY - y - lastDragY) * direction;
             lastDragY = (int) (mouseY - y);
             scrollOffset += delta;
 
@@ -182,8 +178,6 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = false;
-        // TODO: click on entry
-        KeymapMain.LOGGER.info("Release");
         if (Math.abs(lastClickY - (mouseY - y)) < 3) {
             if (selectedEntry != null) selectedEntry.selected = false;
             selectedEntry = hoveredEntry;
@@ -232,8 +226,8 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
     public abstract static class FlatEntry<T extends FlatEntryList.FlatEntry<T>> extends DrawableHelper implements Tooltipped {
         protected TextRenderer tr;
-        protected boolean hovered = false;
-        protected boolean selected = false;
+        public boolean hovered = false;
+        public boolean selected = false;
 
         protected ColorGroup colors = ColorGroup.NORMAL;
 
@@ -243,8 +237,8 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
             colors = selected
                      ? ColorGroup.RED
                      : hovered
-                        ? ColorGroup.GREEN
-                        : ColorGroup.NORMAL;
+                       ? ColorGroup.GREEN
+                       : ColorGroup.NORMAL;
         }
 
         public FlatEntry() {

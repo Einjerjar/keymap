@@ -23,7 +23,6 @@ public class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
     }
 
 
-
     public boolean isEnabled() {
         return enabled;
     }
@@ -53,7 +52,6 @@ public class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
     }
 
     public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (!visible) return;
     }
 
     public boolean isActive() {

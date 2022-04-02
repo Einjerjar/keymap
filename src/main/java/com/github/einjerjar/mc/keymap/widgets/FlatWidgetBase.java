@@ -5,8 +5,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 
 public abstract class FlatWidgetBase extends DrawableHelper implements Element, Drawable {
     protected TextRenderer tr;
@@ -29,7 +27,8 @@ public abstract class FlatWidgetBase extends DrawableHelper implements Element, 
         this.tr = MinecraftClient.getInstance().textRenderer;
     }
 
-    protected void updateSize() {}
+    protected void updateSize() {
+    }
 
     public int getX() {
         return x;

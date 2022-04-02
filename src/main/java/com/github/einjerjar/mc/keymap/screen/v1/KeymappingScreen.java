@@ -77,6 +77,7 @@ public class KeymappingScreen extends Screen {
         // int[] kbMouse  = addKeys(KeyboardLayout.getMouse(), minX + padX, minY + padY * 3 + kbKeys[1] + kbExtra[1] - keyGapY * 2);
         // int[] kbNumpad = addKeys(KeyboardLayout.getNumpad(), minX + padX * 2 + kbExtra[0] - keyGapX, minY + padY * 2 + kbKeys[1] - keyGapY);
 
+        // IGNORE, DEPRECATED CODE, SHIT IS JUST FOR TESTING
         int[] kbKeys   = new int[0];
         int[] kbExtra  = new int[0];
         int[] kbMouse  = new int[0];

@@ -53,4 +53,9 @@ public class MalilibKeybind implements KeybindHolder {
             hotkey.getKeybind().addKey(i);
         }
     }
+
+    @Override
+    public void resetHotkey() {
+
+    }
 }

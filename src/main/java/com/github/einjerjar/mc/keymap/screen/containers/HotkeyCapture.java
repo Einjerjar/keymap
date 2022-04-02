@@ -95,7 +95,7 @@ public class HotkeyCapture extends FlatContainer {
         setVisible(false);
     }
 
-    List<InputUtil.Key> allowedModifiers = new ArrayList<>(){{
+    List<InputUtil.Key> allowedModifiers = new ArrayList<>() {{
         add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_SHIFT));
         add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_SHIFT));
         add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_CONTROL));
@@ -112,7 +112,7 @@ public class HotkeyCapture extends FlatContainer {
 
         int currentModifiers = 0;
         for (InputUtil.Key kk : pressed) {
-            if (allowedModifiers.contains(kk)) currentModifiers ++;
+            if (allowedModifiers.contains(kk)) currentModifiers++;
         }
         if (!pressed.contains(k) && (pressed.size() < 2 + currentModifiers || allowedModifiers.contains(k))) {
             pressed.add(k);

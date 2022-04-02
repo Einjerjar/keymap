@@ -2,7 +2,7 @@ package com.github.einjerjar.mc.keymap.widgets;
 
 import org.jetbrains.annotations.NotNull;
 
-public class SimplePoint implements Comparable<SimplePoint>{
+public class SimplePoint implements Comparable<SimplePoint> {
     public int x;
     public int y;
 

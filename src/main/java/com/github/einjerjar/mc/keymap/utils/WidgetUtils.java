@@ -67,7 +67,6 @@ public class WidgetUtils {
     }
 
 
-
     public static void drawCenteredText(MatrixStack matrices, TextRenderer tr, Text text, int x, int y, int w, int h, boolean shadow, boolean centerX, boolean centerY, int color) {
         x = centerX ? x + w / 2 - tr.getWidth(text) / 2 : x;
         y = centerY ? y + h / 2 - tr.fontHeight / 2 : y;

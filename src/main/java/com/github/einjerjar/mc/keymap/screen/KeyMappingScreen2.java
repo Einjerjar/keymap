@@ -1,8 +1,10 @@
 package com.github.einjerjar.mc.keymap.screen;
 
 import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
+import com.github.einjerjar.mc.keymap.keys.category.VanillaCategory;
 import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
 import com.github.einjerjar.mc.keymap.screen.widgets.FlatKeyWidget;
@@ -16,6 +18,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +41,7 @@ public class KeyMappingScreen2 extends FlatScreen {
     int right;
     int bottom;
 
+    private final Map<String, CategoryHolder> mappedCategories = new HashMap<>();
     private final Map<Integer, List<KeybindHolder>> mappedKeybindHolders = new HashMap<>();
     private final Map<Integer, List<FlatKeyWidget>> mappedKeyWidgets = new HashMap<>();
 
@@ -48,12 +52,12 @@ public class KeyMappingScreen2 extends FlatScreen {
     FlatButton buttonResetSelect;
     FlatButton buttonResetAll;
 
-    public KeyMappingScreen2() {
-        super(new LiteralText(""));
-    }
-
     public KeyMappingScreen2(Screen parent) {
         super(new LiteralText(""), parent);
+    }
+
+    public KeyMappingScreen2() {
+        super(new LiteralText(""));
     }
 
     @Override
@@ -83,10 +87,24 @@ public class KeyMappingScreen2 extends FlatScreen {
         buttonResetSelect = new FlatButton(0, 0, 0, 0, new LiteralText("Reset"));
         buttonResetAll = new FlatButton(0, 0, 0, 0, new LiteralText("Reset All"));
 
+        buttonResetSelect.setTooltip(new TranslatableText("key.keymap.tip.reset_selected"));
+        buttonResetAll.setTooltip(new TranslatableText("key.keymap.tip.reset_all"));
+
         containerSideButtons = new FlexContainer(0, 0, 0, 16);
         containerSideButtons
             .addChild(buttonResetSelect)
             .addChild(buttonResetAll);
+
+        buttonResetSelect.setAction(button -> {
+            listKeybinds.resetSelected();
+            updateMappedKeybinds();
+            updateKeyWidgets();
+        });
+        buttonResetAll.setAction(button -> {
+            listKeybinds.resetAll();
+            updateMappedKeybinds();
+            updateKeyWidgets();
+        });
 
         containerSidebar = new FlexContainer(right - leftSpaceX - padX, top + padY, leftSpaceX, height - outPadY * 2 - padY);
         containerSidebar
@@ -101,9 +119,72 @@ public class KeyMappingScreen2 extends FlatScreen {
 
         addSelectableChild(containerSidebar);
 
+        inputSearch.setOnTextChanged(input -> {
+            filterListKeys();
+        });
+
+        listKeybinds.setOnKeyChanged(fk -> {
+            updateMappedKeybinds();
+            updateKeyWidgets();
+        });
+
         //noinspection ConstantConditions
         for (KeyBinding kb : client.options.keysAll) {
-            listKeybinds.addEntry(new FlatKeyList.FlatKeyListEntry(new VanillaKeybind(kb)));
+            String cat = kb.getCategory();
+            if (!mappedCategories.containsKey(cat)) {
+                mappedCategories.put(cat, new VanillaCategory(cat));
+            }
+            CategoryHolder catHolder = mappedCategories.get(cat);
+            VanillaKeybind vkb       = new VanillaKeybind(kb);
+            catHolder.addKeybind(vkb);
+        }
+
+        for (String cat : mappedCategories.keySet().stream().sorted().toList()) {
+            for (KeybindHolder kb : mappedCategories.get(cat).getKeybinds()) {
+                listKeybinds.addEntry(new FlatKeyList.FlatKeyListEntry(kb));
+            }
+        }
+
+        updateMappedKeybinds();
+        updateKeyWidgets();
+
+        filterListKeys();
+    }
+
+    public void updateKeyWidgets() {
+        for (List<FlatKeyWidget> kwl : mappedKeyWidgets.values()) {
+            for (FlatKeyWidget kw : kwl) {
+                kw.updateState();
+            }
+        }
+    }
+
+    public void updateMappedKeybinds() {
+        // TODO: Optimize
+        mappedKeybindHolders.clear();
+        for (String cat : mappedCategories.keySet().stream().sorted().toList()) {
+            for (KeybindHolder kb : mappedCategories.get(cat).getKeybinds()) {
+                if (kb.getCode().size() == 0) continue;
+                int kCode = kb.getCode().get(0);
+                if (!mappedKeybindHolders.containsKey(kCode)) mappedKeybindHolders.put(kCode, new ArrayList<>());
+                mappedKeybindHolders.get(kCode).add(kb);
+            }
+        }
+    }
+
+    private void filterListKeys() {
+        String filter = inputSearch.getText().trim().toLowerCase();
+        listKeybinds.clearEntries();
+
+        for (String cat : mappedCategories.keySet().stream().sorted().toList()) {
+            for (KeybindHolder kb : mappedCategories.get(cat).getKeybinds()) {
+                if (
+                    filter.isBlank()
+                        || kb.getTranslation().getString().toLowerCase().contains(filter)
+                        || kb.getKeyTranslation().getString().toLowerCase().contains(filter)
+                )
+                    listKeybinds.addEntry(new FlatKeyList.FlatKeyListEntry(kb));
+            }
         }
     }
 

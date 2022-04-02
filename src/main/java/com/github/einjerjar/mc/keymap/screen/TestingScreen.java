@@ -1,16 +1,14 @@
 package com.github.einjerjar.mc.keymap.screen;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.FlatInput;
 import com.github.einjerjar.mc.keymap.widgets.FlatScreen;
-import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.client.option.KeyBinding;
 
 public class TestingScreen extends FlatScreen {
     FlatKeyList keyList;
@@ -45,8 +43,10 @@ public class TestingScreen extends FlatScreen {
         keyList.render(m, mouseX, mouseY, delta);
 
         renderTooltips(m, mouseX, mouseY, delta);
-        if (hovered != null) WidgetUtils.drawCenteredText(m, textRenderer, new LiteralText(hovered.getClass().getName()), 0, 0, 0, 0, true, false, false, 0xff_00ff00);
-        if (getFocused() != null) WidgetUtils.drawCenteredText(m, textRenderer, new LiteralText(getFocused().getClass().getName()), 0, 10, 0, 0, true, false, false, 0xff_ff0000);
+        if (hovered != null)
+            WidgetUtils.drawCenteredText(m, textRenderer, new LiteralText(hovered.getClass().getName()), 0, 0, 0, 0, true, false, false, 0xff_00ff00);
+        if (getFocused() != null)
+            WidgetUtils.drawCenteredText(m, textRenderer, new LiteralText(getFocused().getClass().getName()), 0, 10, 0, 0, true, false, false, 0xff_ff0000);
     }
 
     @Override

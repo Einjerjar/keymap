@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface Tooltipped {
     List<Text> getToolTips();
+
     Text getFirstToolTip();
 }

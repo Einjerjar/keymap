@@ -1,9 +1,9 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -58,12 +58,10 @@ public class FlatScreen extends Screen {
     }
 
     public void renderTooltips(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (hovered != null && hovered instanceof FlatWidgetBase fw) {
-            if (fw instanceof Tooltipped tipped) {
-                List<Text> tips = tipped.getToolTips();
-                if (tips != null) {
-                    renderTooltip(matrices, tipped.getToolTips(), mouseX, mouseY);
-                }
+        if (hovered != null && hovered instanceof Tooltipped tipped) {
+            List<Text> tips = tipped.getToolTips();
+            if (tips != null) {
+                renderTooltip(matrices, tipped.getToolTips(), mouseX, mouseY);
             }
         }
     }
@@ -76,7 +74,6 @@ public class FlatScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (hovered != null) {
-            KeymapMain.LOGGER.info(hovered.getClass().getName());
             if (hovered.mouseClicked(mouseX, mouseY, button)) {
                 setFocused(hovered);
                 setDragging(true);
@@ -106,8 +103,6 @@ public class FlatScreen extends Screen {
         if (focus != null && focus != hovered) {
             focus.mouseReleased(mouseX, mouseY, button);
         }
-        // if (focus != null) KeymapMain.LOGGER.info(focus.getClass().getName());
-        // if (hovered != null) KeymapMain.LOGGER.info(hovered.getClass().getName());
         if (hovered != null) return hovered.mouseReleased(mouseX, mouseY, button);
         return false;
     }
@@ -119,14 +114,19 @@ public class FlatScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        // if (keyCode == InputUtil.GLFW_KEY_ESCAPE && shouldCloseOnEsc()) {
-        //     onClose();
-        //     return true;
-        // };
-        // if (keyCode == InputUtil.GLFW_KEY_TAB) {
-        //     changeFocus(!hasShiftDown());
-        //     return false;
-        // }
+        if (getFocused() != null) {
+            if (getFocused().keyPressed(keyCode, scanCode, modifiers)) {
+                return true;
+            }
+        }
+        if (keyCode == InputUtil.GLFW_KEY_ESCAPE && shouldCloseOnEsc()) {
+            onClose();
+            return true;
+        }
+        if (keyCode == InputUtil.GLFW_KEY_TAB) {
+            changeFocus(!hasShiftDown());
+            return false;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }

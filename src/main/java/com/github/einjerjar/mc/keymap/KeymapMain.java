@@ -1,6 +1,6 @@
 package com.github.einjerjar.mc.keymap;
 
-import com.github.einjerjar.mc.keymap.screen.v1.KeymappingScreen;
+import com.github.einjerjar.mc.keymap.screen.KeyMappingScreen2;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.EnvType;
@@ -50,7 +50,8 @@ public class KeymapMain implements ModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (KBOpenKBScreen.wasPressed()) {
-                client.setScreen(new KeymappingScreen());
+                // client.setScreen(new KeymappingScreen());
+                client.setScreen(new KeyMappingScreen2());
             }
         });
     }

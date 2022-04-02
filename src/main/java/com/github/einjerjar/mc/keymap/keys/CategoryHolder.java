@@ -1,10 +1,12 @@
 package com.github.einjerjar.mc.keymap.keys;
 
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface CategoryHolder {
+
     Text getCategoryName();
 
     String getCategoryKey();
@@ -13,11 +15,12 @@ public interface CategoryHolder {
 
     List<KeybindHolder> getKeybinds();
 
+    @Nullable
     KeybindHolder getKeyByTranslationKey(String key);
 
     String getModName();
 
     void sortKeybinds();
 
-    int count();
+    int size();
 }

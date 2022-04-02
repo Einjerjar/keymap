@@ -14,4 +14,6 @@ public interface KeybindHolder {
     String getTranslationKey();
 
     void assignHotKey(int[] hotkey, boolean mouse);
+
+    void resetHotkey();
 }

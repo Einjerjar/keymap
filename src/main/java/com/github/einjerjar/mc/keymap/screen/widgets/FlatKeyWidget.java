@@ -13,13 +13,12 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FlatKeyWidget extends FlatButton implements Tooltipped {
     public KeyboardLayout.KeyboardKey key;
-    private Map<Integer, List<KeybindHolder>> mappedKeybindHolders = new HashMap<>();
+    private Map<Integer, List<KeybindHolder>> mappedKeybindHolders;
 
     private final List<Text> tooltips = new ArrayList<>();
 
@@ -30,9 +29,9 @@ public class FlatKeyWidget extends FlatButton implements Tooltipped {
 
     public boolean selected = false;
 
-    private Text displayText;
+    private final Text displayText;
 
-    public FlatKeyWidget(int x, int y, KeyboardLayout.KeyboardKey key, Map<Integer, List<KeybindHolder>>mappedKeys) {
+    public FlatKeyWidget(int x, int y, KeyboardLayout.KeyboardKey key, Map<Integer, List<KeybindHolder>> mappedKeys) {
         super(x, y, 16 + key.extraWidth, 16 + key.extraHeight, new LiteralText(""));
         this.key = key;
         this.mappedKeybindHolders = mappedKeys;
@@ -46,7 +45,7 @@ public class FlatKeyWidget extends FlatButton implements Tooltipped {
         else {
             int count = mappedKeybindHolders.get(keyCode).size();
             if (count == 0) color = COL_NORMAL;
-            else if (count == 1 ) color = COL_SET;
+            else if (count == 1) color = COL_SET;
             else color = COL_CONFLICT;
         }
 

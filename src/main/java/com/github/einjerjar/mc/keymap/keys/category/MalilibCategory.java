@@ -63,7 +63,7 @@ public class MalilibCategory implements CategoryHolder {
     }
 
     @Override
-    public int count() {
+    public int size() {
         return 0;
     }
 }

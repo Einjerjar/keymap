@@ -52,6 +52,23 @@ public class VanillaKeybind implements KeybindHolder {
                                : InputUtil.Type.KEYSYM.createFromCode(hk);
         key.setBoundKey(newKey);
 
+        this.keyCode = Collections.singletonList(key.boundKey.getCode());
+        this.boundKeyTranslation = key.getBoundKeyLocalizedText();
+        this.translation = new TranslatableText(key.getTranslationKey());
+        this.translationKey = key.getTranslationKey();
+
+        KeyBinding.updateKeysByCode();
+    }
+
+    @Override
+    public void resetHotkey() {
+        key.setBoundKey(key.getDefaultKey());
+
+        this.keyCode = Collections.singletonList(key.boundKey.getCode());
+        this.boundKeyTranslation = key.getBoundKeyLocalizedText();
+        this.translation = new TranslatableText(key.getTranslationKey());
+        this.translationKey = key.getTranslationKey();
+
         KeyBinding.updateKeysByCode();
     }
 }
