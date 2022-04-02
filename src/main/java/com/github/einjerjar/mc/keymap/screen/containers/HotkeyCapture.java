@@ -1,5 +1,7 @@
 package com.github.einjerjar.mc.keymap.screen.containers;
 
+import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.widgets.FlatButton;
 import com.github.einjerjar.mc.keymap.widgets.FlatContainer;
 import com.github.einjerjar.mc.keymap.widgets.FlatText;
@@ -26,6 +28,7 @@ public class HotkeyCapture extends FlatContainer {
 
     CustomAction onOkAction;
     CustomAction onCancelAction;
+    CustomAction onCloseAction;
 
     public interface CustomAction {
         void execute(HotkeyCapture cap);
@@ -35,6 +38,9 @@ public class HotkeyCapture extends FlatContainer {
 
     public HotkeyCapture(int x, int y, int w, int h) {
         super(x, y, w, h);
+
+        color = ColorGroup.fromBaseColor(0xff_333333);
+        color.bg.normal = (color.bg.normal & 0x00_ffffff) | 0xee_000000;
 
         labelContainer = new FlatText(w / 2 + x, h / 2 + y - tr.fontHeight * 2, 0, 0, new LiteralText("Set Hotkey"));
         labelHotkey = new FlatText(w / 2 + x, h / 2 + y, 0, 0, new LiteralText("A + B + C"));
@@ -64,6 +70,14 @@ public class HotkeyCapture extends FlatContainer {
             .arrange();
 
         addSelectable(parentContainer);
+    }
+
+    public void clear() {
+        pressed.clear();
+    }
+
+    public void add(InputUtil.Key k) {
+        pressed.add(k);
     }
 
     public List<InputUtil.Key> getPressed() {
@@ -99,6 +113,11 @@ public class HotkeyCapture extends FlatContainer {
         return this;
     }
 
+    public HotkeyCapture setOnCloseAction(CustomAction onCloseAction) {
+        this.onCloseAction = onCloseAction;
+        return this;
+    }
+
     public void ok() {
         if (onOkAction != null) {
             onOkAction.execute(this);
@@ -114,6 +133,9 @@ public class HotkeyCapture extends FlatContainer {
     public void close() {
         setEnabled(false);
         setVisible(false);
+        if (onCloseAction != null) {
+            onCloseAction.execute(this);
+        }
     }
 
     List<InputUtil.Key> allowedModifiers = new ArrayList<>() {{
@@ -128,6 +150,8 @@ public class HotkeyCapture extends FlatContainer {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == InputUtil.GLFW_KEY_ESCAPE) buttonCancel.click();
+
+        // KeymapMain.LOGGER.info(keyCode + "");
 
         InputUtil.Key k = InputUtil.Type.KEYSYM.createFromCode(keyCode);
 
@@ -146,6 +170,15 @@ public class HotkeyCapture extends FlatContainer {
         }
 
         return true;
+    }
+
+    public void updateState() {
+        StringBuilder sb = new StringBuilder();
+        for (InputUtil.Key kk : pressed) {
+            sb.append(kk.getLocalizedText().getString()).append(" + ");
+        }
+        if (sb.length() > 3) sb.delete(sb.length() - 3, sb.length());
+        labelHotkey.setText(new LiteralText(sb.toString()));
     }
 
     @Override

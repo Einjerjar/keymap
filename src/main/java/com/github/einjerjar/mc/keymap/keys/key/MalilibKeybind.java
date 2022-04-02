@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.keys.key;
 
+import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
@@ -10,31 +11,23 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class MalilibKeybind implements KeybindHolder {
+public class MalilibKeybind extends KeybindHolder {
     ConfigHotkey hotkey;
     List<Integer> keyCode;
     Text boundKeyTranslation;
     Text translation;
     String translationKey;
-    String modName = "";
+    String modName = null;
 
     public MalilibKeybind(ConfigHotkey hotkey) {
         this.hotkey = hotkey;
-        InputUtil.Key firstKey = InputUtil.Type.KEYSYM.createFromCode(Utils.safeGet(hotkey.getKeybind().getKeys(), 0, -1));
-        this.boundKeyTranslation = firstKey.getLocalizedText();
-        this.translation = new LiteralText(hotkey.getConfigGuiDisplayName());
-        // this.translationKey = "config.name." + hotkey.getName().toLowerCase();
-        this.translationKey = hotkey.getName() + getKeysString();
-        this.keyCode = hotkey.getKeybind().getKeys();
+        updateState();
     }
 
     public String getKeysString(boolean format) {
-        String b = String.join(" + ", hotkey.getKeybind().getKeys().stream().map(i -> {
-            String a = (i < 0
-                        ? InputUtil.Type.MOUSE.createFromCode((i + 100))
-                        : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString();
-            return a;
-        }).toList());
+        String b = String.join(" + ", hotkey.getKeybind().getKeys().stream().map(i -> (i < 0
+                    ? InputUtil.Type.MOUSE.createFromCode((i + 100))
+                    : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString()).toList());
         return format
                ? " §a[" + b + "]"
                : b;
@@ -46,7 +39,7 @@ public class MalilibKeybind implements KeybindHolder {
 
     public void setModName(String modName) {
         this.modName = modName;
-        this.translationKey = "[" + modName + "] " + this.hotkey.getName() + getKeysString();
+        this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + this.hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
     }
 
     @Override
@@ -70,16 +63,32 @@ public class MalilibKeybind implements KeybindHolder {
     }
 
     @Override
-    public void assignHotKey(int[] hotkeys, boolean mouse) {
-        InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
+    public void assignHotKey(Integer[] hotkeys, boolean mouse) {
         hotkey.getKeybind().getKeys().clear();
+        if (hotkeys.length == 0) return;
         for (int i : hotkeys) {
             hotkey.getKeybind().addKey(i);
+        }
+        updateState();
+    }
+    
+    public void updateState() {
+        InputUtil.Key firstKey = InputUtil.Type.KEYSYM.createFromCode(Utils.safeGet(hotkey.getKeybind().getKeys(), 0, -1));
+        this.boundKeyTranslation = firstKey.getLocalizedText();
+        this.translation = new LiteralText(hotkey.getConfigGuiDisplayName());
+        // this.translationKey = "config.name." + hotkey.getName().toLowerCase();
+        this.keyCode = hotkey.getKeybind().getKeys();
+
+        if (modName != null) {
+            this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
+        } else {
+            this.translationKey = hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
         }
     }
 
     @Override
     public void resetHotkey() {
-
+        hotkey.getKeybind().resetToDefault();
+        updateState();
     }
 }

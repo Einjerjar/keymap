@@ -183,7 +183,8 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
                 return false;
             }
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return true;
+        // return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

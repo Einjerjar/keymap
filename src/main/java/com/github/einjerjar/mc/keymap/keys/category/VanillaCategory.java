@@ -44,6 +44,7 @@ public class VanillaCategory implements CategoryHolder {
         if (bindings.contains(kb)) return;
         bindings.add(kb);
         bindingMap.put(kb.getTranslationKey(), kb);
+        kb.category = this;
     }
 
     @Override

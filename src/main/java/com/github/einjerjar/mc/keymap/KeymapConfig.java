@@ -18,6 +18,9 @@ public class KeymapConfig implements ConfigData {
     public boolean malilibSupport = true;
     public boolean keyButtonMalilibKeybinds = true;
 
+    // public boolean wrapTooltip = false;
+    // public int wrapTooltipWidth = 300;
+
     @ConfigEntry.Gui.Tooltip()
     public boolean debug = false;
 }

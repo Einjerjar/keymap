@@ -1,7 +1,9 @@
 package com.github.einjerjar.mc.keymap.screen.entrylist;
 
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
+import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
 import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
+import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
@@ -17,7 +19,7 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
     FlatKeyListAction onKeyChanged;
 
     public interface FlatKeyListAction {
-        void run(FlatKeyList fk);
+        void run(FlatKeyList fk, int key);
     }
 
     public FlatKeyList(int x, int y, int w, int h, int entryHeight) {
@@ -32,12 +34,14 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
     public void resetSelected() {
         if (selectedEntry == null) return;
         selectedEntry.holder.resetHotkey();
+        selectedEntry.updateState2();
         setSelectedEntry(null);
     }
 
     public void resetAll() {
         for (FlatKeyListEntry fk : entries) {
             fk.holder.resetHotkey();
+            fk.updateState2();
         }
         setSelectedEntry(null);
     }
@@ -46,11 +50,16 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (selectedEntry == null) return false;
 
-        selectedEntry.holder.assignHotKey(new int[]{keyCode}, false);
-        selectedEntry.selected = false;
-        selectedEntry = null;
+        if (selectedEntry.holder instanceof VanillaKeybind vk) {
+            vk.assignHotKey(new Integer[]{keyCode}, false);
+        }
 
-        if (onKeyChanged != null) onKeyChanged.run(this);
+        if (onKeyChanged != null) onKeyChanged.run(this, keyCode);
+
+        if (selectedEntry != null) {
+            selectedEntry.selected = false;
+            selectedEntry = null;
+        }
 
         return true;
     }
@@ -68,6 +77,14 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
             super();
             this.holder = holder;
             this.displayText = new LiteralText(String.format(
+                "%s §a[%s]",
+                holder.getTranslation().getString(),
+                holder.getKeyTranslation().getString()
+            ));
+        }
+
+        public void updateState2() {
+            displayText = new LiteralText(String.format(
                 "%s §a[%s]",
                 holder.getTranslation().getString(),
                 holder.getKeyTranslation().getString()

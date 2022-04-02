@@ -46,7 +46,9 @@ public class FlatKeyWidget extends FlatButton implements Tooltipped {
             int count = mappedKeybindHolders.get(keyCode).size();
             if (count == 0) color = COL_NORMAL;
             else if (count == 1) color = COL_SET;
-            else color = COL_CONFLICT;
+            else {
+                color = COL_CONFLICT;
+            }
         }
 
         tooltips.clear();

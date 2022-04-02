@@ -29,6 +29,7 @@ public class MalilibCategory implements CategoryHolder {
         for (ConfigHotkey hk : category.getHotkeys().stream().filter(hotkey -> hotkey instanceof ConfigHotkey).map(hotkey -> (ConfigHotkey)hotkey).toList()) {
             MalilibKeybind mk = new MalilibKeybind(hk);
             mk.setModName(category.getModName());
+            mk.category = this;
             bindings.add(mk);
         }
     }

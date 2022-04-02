@@ -6,7 +6,9 @@ import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
 import com.github.einjerjar.mc.keymap.keys.category.MalilibCategory;
 import com.github.einjerjar.mc.keymap.keys.category.VanillaCategory;
+import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
+import com.github.einjerjar.mc.keymap.screen.containers.HotkeyCapture;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatCategoryList;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
 import com.github.einjerjar.mc.keymap.screen.widgets.FlatKeyWidget;
@@ -19,6 +21,7 @@ import com.github.einjerjar.mc.keymap.widgets.containers.FlexContainer;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -26,6 +29,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class KeyMappingScreen2 extends FlatScreen {
@@ -56,12 +60,24 @@ public class KeyMappingScreen2 extends FlatScreen {
     FlatButton buttonResetSelect;
     FlatButton buttonResetAll;
 
+    HotkeyCapture hotkeyCapture;
+
     public KeyMappingScreen2(Screen parent) {
         super(new LiteralText(""), parent);
     }
 
     public KeyMappingScreen2() {
         super(new LiteralText(""));
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        boolean ret = super.mouseReleased(mouseX, mouseY, button);
+        if (hotkeyCapture.isActive()) setFocused(hotkeyCapture, false);
+        // if ((getFocused() == null || !(getFocused() instanceof Selectable)) && hotkeyCapture.isActive()) {
+        //     setFocused(hotkeyCapture);
+        // };
+        return ret;
     }
 
     @Override
@@ -97,6 +113,9 @@ public class KeyMappingScreen2 extends FlatScreen {
             tr.fontHeight
             );
 
+        hotkeyCapture = new HotkeyCapture(0, 0, width, height);
+        hotkeyCapture.setActive(false);
+
         buttonResetSelect = new FlatButton(0, 0, 0, 0, new LiteralText("Reset"));
         buttonResetAll = new FlatButton(0, 0, 0, 0, new LiteralText("Reset All"));
 
@@ -110,11 +129,13 @@ public class KeyMappingScreen2 extends FlatScreen {
 
         buttonResetSelect.setAction(button -> {
             listKeybinds.resetSelected();
+            ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
             updateMappedKeybinds();
             updateKeyWidgets();
         });
         buttonResetAll.setAction(button -> {
             listKeybinds.resetAll();
+            ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
             updateMappedKeybinds();
             updateKeyWidgets();
         });
@@ -137,11 +158,6 @@ public class KeyMappingScreen2 extends FlatScreen {
             filterListKeys();
         });
 
-        listKeybinds.setOnKeyChanged(fk -> {
-            updateMappedKeybinds();
-            updateKeyWidgets();
-        });
-
         listCategories.setOnSelectedAction(w -> {
             inputSearch.setText("");
             listKeybinds.setSelectedEntry(null);
@@ -159,10 +175,52 @@ public class KeyMappingScreen2 extends FlatScreen {
             catHolder.addKeybind(vkb);
         }
 
-        if (malilib) {
+        hotkeyCapture.setOnCloseAction(cap -> {
+            setFocused(null);
+        });
+
+        listKeybinds.setOnKeyChanged((fk, k) -> {
+            if (fk.getSelectedEntry() == null) return;
+            FlatKeyList.FlatKeyListEntry fke = fk.getSelectedEntry();
+            // KeymapMain.LOGGER.info(k + "");
+            // KeymapMain.LOGGER.info(k == InputUtil.GLFW_KEY_ESCAPE ? "a" : "b");
+            if (k == InputUtil.GLFW_KEY_ESCAPE) {
+                fke.holder.assignHotKey(new Integer[0], false);
+                ((MalilibKeybind) fke.holder).updateState();
+                fke.updateState2();
+                ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
+
+                listKeybinds.setSelectedEntry(null);
+                updateMappedKeybinds();
+                updateKeyWidgets();
+            } else if (fke.holder instanceof MalilibKeybind mk) {
+                // TODO: DRY
+                setFocused(hotkeyCapture, false);
+                hotkeyCapture.setActive(true);
+                hotkeyCapture.clear();
+                hotkeyCapture.add(InputUtil.Type.KEYSYM.createFromCode(k));
+                hotkeyCapture.updateState();
+                hotkeyCapture.setOnOkAction(cap -> {
+                    List<InputUtil.Key> pressed = hotkeyCapture.getPressed();
+                    Integer[]           _keys   = new Integer[pressed.size()];
+                    for(int i=0; i<pressed.size(); i++) {
+                        _keys[i] = pressed.get(i).getCode();
+                    }
+                    mk.assignHotKey(_keys, false);
+
+                    fke.updateState2();
+
+                    ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
+                    updateMappedKeybinds();
+                    updateKeyWidgets();
+                    listKeybinds.setSelectedEntry(null);
+                });
+            }
+        });
+
+        if (KeymapMain.malilibSupport && malilib) {
             InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
             for (KeybindCategory cat : handler.getKeybindCategories()) {
-                KeymapMain.LOGGER.info(cat.getModName());
                 MalilibCategory c = new MalilibCategory(cat);
                 mappedCategories.put(cat.getModName(), c);
             }
@@ -178,6 +236,8 @@ public class KeyMappingScreen2 extends FlatScreen {
                 listKeybinds.addEntry(new FlatKeyList.FlatKeyListEntry(kb));
             }
         }
+
+        addSelectableChild(hotkeyCapture);
 
         updateMappedKeybinds();
         updateKeyWidgets();
@@ -196,6 +256,7 @@ public class KeyMappingScreen2 extends FlatScreen {
     public void updateMappedKeybinds() {
         // TODO: Optimize
         mappedKeybindHolders.clear();
+        KeymapMain.LOGGER.info("UPDATE");
         for (String cat : mappedCategories.keySet().stream().sorted().toList()) {
             for (KeybindHolder kb : mappedCategories.get(cat).getKeybinds()) {
                 if (kb.getCode().size() == 0) continue;
@@ -241,10 +302,35 @@ public class KeyMappingScreen2 extends FlatScreen {
                 k.setAction(button -> {
                     FlatKeyList.FlatKeyListEntry fke = listKeybinds.getSelectedEntry();
                     if (fke != null) {
-                        fke.holder.assignHotKey(new int[]{k.key.keyCode}, key.type == InputUtil.Type.MOUSE);
-                        updateMappedKeybinds();
-                        updateKeyWidgets();
-                        listKeybinds.setSelectedEntry(null);
+                        // KeymapMain.LOGGER.info(fke.holder.getClass().getName());
+                        if (fke.holder instanceof VanillaKeybind vk) {
+                            vk.assignHotKey(new Integer[]{k.key.keyCode}, key.type == InputUtil.Type.MOUSE);
+                            updateMappedKeybinds();
+                            updateKeyWidgets();
+                            listKeybinds.setSelectedEntry(null);
+                        } else if (fke.holder instanceof MalilibKeybind mk) {
+                            // KeymapMain.LOGGER.info(fke.holder.getClass().getName());
+                            hotkeyCapture.setActive(true);
+                            hotkeyCapture.clear();
+                            hotkeyCapture.add(k.key.key);
+                            hotkeyCapture.updateState();
+                            hotkeyCapture.setOnOkAction(cap -> {
+                                List<InputUtil.Key> pressed = hotkeyCapture.getPressed();
+                                Integer[]           _keys   = new Integer[pressed.size()];
+                                for(int i=0; i<pressed.size(); i++) {
+                                    _keys[i] = pressed.get(i).getCode();
+                                }
+                                mk.assignHotKey(_keys, false);
+
+                                fke.updateState2();
+
+                                ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
+
+                                updateMappedKeybinds();
+                                updateKeyWidgets();
+                                listKeybinds.setSelectedEntry(null);
+                            });
+                        }
                     }
                 });
 
@@ -278,14 +364,14 @@ public class KeyMappingScreen2 extends FlatScreen {
             listCategories.getH() + padY * 2,
             ColorGroup.NORMAL.border.normal);
 
-        containerSidebar.render(matrices, mouseX, mouseY, delta);
+        // containerSidebar.render(matrices, mouseX, mouseY, delta);
         // listCategories.render(matrices, mouseX, mouseY, delta);
+
+        renderChildren(matrices, mouseX, mouseY, delta);
+        renderTooltips(matrices, mouseX, mouseY, delta);
 
         if (getFocused() != null && KeymapMain.cfg.debug) {
             drawCenteredText(matrices, tr, getFocused().getClass().getName(), width / 2, 5, 0xff_00ff00);
         }
-
-        renderChildren(matrices, mouseX, mouseY, delta);
-        renderTooltips(matrices, mouseX, mouseY, delta);
     }
 }
