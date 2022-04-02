@@ -12,4 +12,12 @@ public class KeymapConfig implements ConfigData {
     public boolean keybindKeyOnHover = true;
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean keybindNameOnHover = true;
+
+    public boolean keyButtonModName = true;
+    public boolean keyButtonTrim = false;
+    public boolean malilibSupport = true;
+    public boolean keyButtonMalilibKeybinds = true;
+
+    @ConfigEntry.Gui.Tooltip()
+    public boolean debug = false;
 }

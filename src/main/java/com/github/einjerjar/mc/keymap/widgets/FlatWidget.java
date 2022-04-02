@@ -47,10 +47,6 @@ public class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
         return self;
     }
 
-    public void playDownSound() {
-        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-    }
-
     public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
     }
 

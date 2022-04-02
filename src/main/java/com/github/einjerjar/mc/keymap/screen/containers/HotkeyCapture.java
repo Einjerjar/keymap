@@ -4,9 +4,11 @@ import com.github.einjerjar.mc.keymap.widgets.FlatButton;
 import com.github.einjerjar.mc.keymap.widgets.FlatContainer;
 import com.github.einjerjar.mc.keymap.widgets.FlatText;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlexContainer;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,25 @@ public class HotkeyCapture extends FlatContainer {
 
     public List<InputUtil.Key> getPressed() {
         return pressed;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) return true;
+        int btn = 0;
+
+        switch (button) {
+            case GLFW.GLFW_MOUSE_BUTTON_1 -> btn = KeyCodes.MOUSE_BUTTON_1;
+            case GLFW.GLFW_MOUSE_BUTTON_2 -> btn = KeyCodes.MOUSE_BUTTON_2;
+            case GLFW.GLFW_MOUSE_BUTTON_3 -> btn = KeyCodes.MOUSE_BUTTON_3;
+            case GLFW.GLFW_MOUSE_BUTTON_4 -> btn = KeyCodes.MOUSE_BUTTON_4;
+            case GLFW.GLFW_MOUSE_BUTTON_5 -> btn = KeyCodes.MOUSE_BUTTON_5;
+            case GLFW.GLFW_MOUSE_BUTTON_6 -> btn = KeyCodes.MOUSE_BUTTON_6;
+            case GLFW.GLFW_MOUSE_BUTTON_7 -> btn = KeyCodes.MOUSE_BUTTON_7;
+            case GLFW.GLFW_MOUSE_BUTTON_8 -> btn = KeyCodes.MOUSE_BUTTON_8;
+        }
+
+        return keyPressed(btn, 0, 0);
     }
 
     public HotkeyCapture setOnOkAction(CustomAction onOkAction) {

@@ -1,4 +1,5 @@
 {
+  "key.keymap.cat.all": "All",
   "key.keymap.cfg.title": "Keymap",
   "key.keymap.cfg.open": "Open KeyMapper",
   "key.keymap.reset_all": "Reset all",
@@ -15,5 +16,15 @@
   "text.autoconfig.keymap.option.keybindNameOnHover": "Keybind name on hover",
   "text.autoconfig.keymap.option.keybindNameOnHover.@Tooltip[0]": "Shows the full name of a keybind on hover",
   "text.autoconfig.keymap.option.keybindNameOnHover.@Tooltip[1]": "(in case it gets cut off by screen size)",
+  "text.autoconfig.keymap.option.keyButtonModName": "Mod name on VK",
+  "text.autoconfig.keymap.option.keyButtonModName.@Tooltip": "Show mod name when hovering over the virtual keyboard",
+  "text.autoconfig.keymap.option.keyButtonTrim": "Trim VK tooltips",
+  "text.autoconfig.keymap.option.keyButtonTrim.@Tooltip": "Trim long virtual keyboard tooltips",
+  "text.autoconfig.keymap.option.malilibSupport": "malilibSupport",
+  "text.autoconfig.keymap.option.malilibSupport.@Tooltip": "malilibSupport",
+  "text.autoconfig.keymap.option.keyButtonMalilibKeybinds": "keyButtonMalilibKeybinds",
+  "text.autoconfig.keymap.option.keyButtonMalilibKeybinds.@Tooltip": "keyButtonMalilibKeybinds",
+  "text.autoconfig.keymap.option.debug": "Debug keymap screen",
+  "text.autoconfig.keymap.option.debug.@Tooltip": "Just some dev stuff",
   "key.keyboard.3333": "-"
 }

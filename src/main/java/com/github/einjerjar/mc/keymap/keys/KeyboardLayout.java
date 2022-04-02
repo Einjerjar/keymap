@@ -15,6 +15,7 @@ public class KeyboardLayout {
         public boolean enabled = true;
         public int keyCode = 0;
         public InputUtil.Key key;
+        public InputUtil.Type type;
 
         private void init(String text, int keyCode, int extraWidth, int extraHeight, InputUtil.Type type, boolean enabled) {
             this.text = text;
@@ -22,6 +23,7 @@ public class KeyboardLayout {
             this.extraHeight = extraHeight;
             this.enabled = enabled;
             this.keyCode = keyCode;
+            this.type = type;
             this.key = type.createFromCode(keyCode);
         }
 

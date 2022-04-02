@@ -208,7 +208,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
             this.focused = true;
-            playDownSound();
+            playClickSound();
             return true;
         }
         this.focused = false;

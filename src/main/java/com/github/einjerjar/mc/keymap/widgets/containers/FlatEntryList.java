@@ -22,7 +22,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     protected MinecraftClient client;
     protected int entryHeight;
 
-    protected int scrollOffset = 0;
+    protected double scrollOffset = 0;
     protected int scrollBarW = 6;
     protected int scrollBarX;
 
@@ -34,9 +34,10 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     protected T hoveredEntry;
     protected T selectedEntry;
 
-    protected int lastDragY;
-    protected int lastClickY;
-    protected int lastClickX;
+    protected double lastDragY;
+    protected double lastClickY;
+    protected double lastClickX;
+    protected double lastScrollPosY;
 
     public FlatEntryList(int x, int y, int w, int h, int entryHeight) {
         super(x, y, w, h);
@@ -77,6 +78,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     public void setSelectedEntry(@Nullable T selectedEntry) {
         if (this.selectedEntry != null) this.selectedEntry.selected = false;
         this.selectedEntry = selectedEntry;
+        if (selectedEntry != null) selectedEntry.selected = true;
     }
 
     @Override
@@ -90,10 +92,16 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
         hoveredEntry = null;
 
-        if (hovered) {
+        if (hovered && mouseX < scrollBarX) {
             int index = (int) ((mouseY - y + scrollOffset) / (float) entryHeight);
             if (index >= 0 && index < entries.size()) hoveredEntry = entries.get(index);
         }
+        renderWidget(matrices, mouseX, mouseY, delta);
+    }
+
+    public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        renderScrollbar(matrices);
+        renderList(matrices);
     }
 
     public void renderScrollbar(MatrixStack matrices) {
@@ -141,7 +149,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         for (int i = 0; i < entries.size(); i++) {
             T   entry = entries.get(i);
             int _x    = x;
-            int _y    = y + i * entryHeight - scrollOffset;
+            int _y    = y + i * entryHeight - (int) scrollOffset;
             int _w    = w - scrollBarW;
             int _h    = entryHeight;
 
@@ -155,9 +163,10 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!hovered) return false;
         dragging = true;
-        lastDragY = (int) (mouseY - y);
-        lastClickX = (int) mouseX;
-        lastClickY = (int) (mouseY - y);
+        lastDragY = mouseY - y;
+        lastClickX = mouseX;
+        lastClickY = mouseY - y;
+        lastScrollPosY = scrollOffset;
         return true;
     }
 
@@ -168,16 +177,16 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         int scroll = h / getContentHeight();
         if (scroll >= 1) return false;
 
-        if (!(mouseX > left() && mouseX < right() && mouseY > top() && mouseY < bottom())) return false;
+        // if (!(mouseX > left() && mouseX < right() && mouseY > top() && mouseY < bottom())) return false;
         if (!dragging) return false;
 
         if (lastClickX > scrollBarX && lastClickX < scrollBarX + scrollBarW) direction *= -1;
 
         if (mouseY - y != lastDragY) {
             // positive if down
-            int delta = (int) (mouseY - y - lastDragY) * direction;
-            lastDragY = (int) (mouseY - y);
-            scrollOffset += delta;
+            double delta = (mouseY - y - lastClickY) * direction;
+            lastDragY = (mouseY - y);
+            scrollOffset = (lastScrollPosY + delta);
 
             // clamp scroll
             if (scrollOffset < 0) scrollOffset = 0;
@@ -192,9 +201,13 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         if (Math.abs(lastClickY - (mouseY - y)) < 3) {
             if (selectedEntry != null) selectedEntry.selected = false;
             selectedEntry = hoveredEntry;
-            if (selectedEntry != null) selectedEntry.selected = true;
+            if (selectedEntry != null) {
+                selectedEntry.selected = true;
+                playClickSound();
+            }
+            return true;
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return false;
     }
 
     public FlatEntryList<T> addEntry(T entry) {
@@ -256,7 +269,13 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
             this.tr = MinecraftClient.getInstance().textRenderer;
         }
 
-        public abstract void render(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta);
+        public void render(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta) {
+            this.hovered = hovered;
+            updateState();
+            renderWidget(matrices, x, y, w, h, hovered, delta);
+        }
+
+        public abstract void renderWidget(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta);
 
         @Override
         public List<Text> getToolTips() {
