@@ -54,16 +54,16 @@ public class FlatKeyWidget extends FlatButton implements Tooltipped {
         if (mappedKeybindHolders.containsKey(key.keyCode)) {
             List<KeybindHolder> kbs = mappedKeybindHolders.get(key.keyCode);
 
-            int maxChars = 0;
-            int maxWidth = 0;
+            int maxChars = tooltips.get(0).getString().length();
+            int maxWidth = tr.getWidth(tooltips.get(0));
             for (KeybindHolder kb : kbs) {
                 Text t = new TranslatableText(kb.getTranslationKey()).getWithStyle(Utils.styleKeybind).get(0);
-                maxChars = t.getString().length();
-                maxWidth = tr.getWidth(t);
+                maxChars = Math.max(t.getString().length(), maxChars);
+                maxWidth = Math.max(tr.getWidth(t), maxWidth);
                 tooltips.add(t);
             }
             if (kbs.size() > 0) {
-                tooltips.add(new LiteralText(tr.trimToWidth("-".repeat(maxChars), maxWidth)).getWithStyle(Utils.styleSeparator).get(0));
+                tooltips.add(1, new LiteralText(tr.trimToWidth("-".repeat(maxChars), maxWidth)).getWithStyle(Utils.styleSeparator).get(0));
             }
         }
     }

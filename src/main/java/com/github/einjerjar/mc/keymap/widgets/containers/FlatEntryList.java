@@ -13,6 +13,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,16 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
                : hovered
                  ? SelectionType.HOVERED
                  : SelectionType.NONE;
+    }
+
+    @Nullable
+    public T getSelectedEntry() {
+        return selectedEntry;
+    }
+
+    public void setSelectedEntry(@Nullable T selectedEntry) {
+        if (this.selectedEntry != null) this.selectedEntry.selected = false;
+        this.selectedEntry = selectedEntry;
     }
 
     @Override

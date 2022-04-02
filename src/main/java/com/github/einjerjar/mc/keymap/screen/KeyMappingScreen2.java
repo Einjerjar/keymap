@@ -181,7 +181,7 @@ public class KeyMappingScreen2 extends FlatScreen {
                 if (
                     filter.isBlank()
                         || kb.getTranslation().getString().toLowerCase().contains(filter)
-                        || kb.getKeyTranslation().getString().toLowerCase().contains(filter)
+                        || String.format("[%s]", kb.getKeyTranslation().getString().toLowerCase()).contains(filter)
                 )
                     listKeybinds.addEntry(new FlatKeyList.FlatKeyListEntry(kb));
             }
@@ -199,6 +199,16 @@ public class KeyMappingScreen2 extends FlatScreen {
             for (KeyboardLayout.KeyboardKey key : row) {
                 FlatKeyWidget k    = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
                 int           code = key.keyCode;
+
+                k.setAction(button -> {
+                    FlatKeyList.FlatKeyListEntry fke = listKeybinds.getSelectedEntry();
+                    if (fke != null) {
+                        fke.holder.assignHotKey(new int[]{k.key.keyCode}, false);
+                        updateMappedKeybinds();
+                        updateKeyWidgets();
+                        listKeybinds.setSelectedEntry(null);
+                    }
+                });
 
                 if (!mappedKeyWidgets.containsKey(code)) {
                     mappedKeyWidgets.put(code, new ArrayList<>());
