@@ -182,11 +182,11 @@ public class KeyMappingScreen2 extends FlatScreen {
         listKeybinds.setOnKeyChanged((fk, k) -> {
             if (fk.getSelectedEntry() == null) return;
             FlatKeyList.FlatKeyListEntry fke = fk.getSelectedEntry();
-            // KeymapMain.LOGGER.info(k + "");
-            // KeymapMain.LOGGER.info(k == InputUtil.GLFW_KEY_ESCAPE ? "a" : "b");
             if (k == InputUtil.GLFW_KEY_ESCAPE) {
                 fke.holder.assignHotKey(new Integer[0], false);
-                ((MalilibKeybind) fke.holder).updateState();
+                if (fke.holder instanceof MalilibKeybind mk) {
+                    mk.updateState();
+                }
                 fke.updateState2();
                 ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
 

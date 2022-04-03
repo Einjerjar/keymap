@@ -46,14 +46,19 @@ public class VanillaKeybind extends KeybindHolder {
 
     @Override
     public void assignHotKey(Integer[] hotkey, boolean mouse) {
-        int           hk = hotkey[0];
+        int hk;
         InputUtil.Key newKey;
-        if (hk == InputUtil.GLFW_KEY_ESCAPE) {
-            newKey = InputUtil.UNKNOWN_KEY;
+        if (hotkey.length != 0) {
+            hk = hotkey[0];
+            if (hk == InputUtil.GLFW_KEY_ESCAPE) {
+                newKey = InputUtil.UNKNOWN_KEY;
+            } else {
+                newKey = mouse
+                         ? InputUtil.Type.MOUSE.createFromCode(hk)
+                         : InputUtil.Type.KEYSYM.createFromCode(hk);
+            }
         } else {
-            newKey = mouse
-                     ? InputUtil.Type.MOUSE.createFromCode(hk)
-                     : InputUtil.Type.KEYSYM.createFromCode(hk);
+            newKey = InputUtil.UNKNOWN_KEY;
         }
         key.setBoundKey(newKey);
 
