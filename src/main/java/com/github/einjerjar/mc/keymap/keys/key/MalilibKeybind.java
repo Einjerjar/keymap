@@ -4,7 +4,6 @@ import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
-import fi.dy.masa.malilib.event.InputEventHandler;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -26,8 +25,8 @@ public class MalilibKeybind extends KeybindHolder {
 
     public String getKeysString(boolean format) {
         String b = String.join(" + ", hotkey.getKeybind().getKeys().stream().map(i -> (i < 0
-                    ? InputUtil.Type.MOUSE.createFromCode((i + 100))
-                    : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString()).toList());
+                                                                                       ? InputUtil.Type.MOUSE.createFromCode((i + 100))
+                                                                                       : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString()).toList());
         return format
                ? " §a[" + b + "]"
                : b;
@@ -71,7 +70,7 @@ public class MalilibKeybind extends KeybindHolder {
         }
         updateState();
     }
-    
+
     public void updateState() {
         InputUtil.Key firstKey = InputUtil.Type.KEYSYM.createFromCode(Utils.safeGet(hotkey.getKeybind().getKeys(), 0, -1));
         this.boundKeyTranslation = firstKey.getLocalizedText();

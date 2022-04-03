@@ -29,10 +29,6 @@ public class Utils {
         return or;
     }
 
-    public static class NIL {
-        public static final Text TEXT = Text.of("");
-    }
-
     public static <E> E or(E x, E y) {
         if (x != null) return x;
         return y;
@@ -89,6 +85,10 @@ public class Utils {
         if (init_and_build) {
             ts.draw();
         }
+    }
+
+    public static class NIL {
+        public static final Text TEXT = Text.of("");
     }
 
     public static class SColor {

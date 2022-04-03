@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.screen.entrylist;
 
-import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
 import net.minecraft.client.MinecraftClient;
@@ -17,9 +16,8 @@ public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategor
         super(x, y, w, h, entryHeight);
     }
 
-    public FlatCategoryList setOnSelectedAction(CommonAction onSelectedAction) {
+    public void setOnSelectedAction(CommonAction onSelectedAction) {
         this.onSelectedAction = onSelectedAction;
-        return this;
     }
 
     @Override
@@ -43,9 +41,9 @@ public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategor
     }
 
     public static class FlatCategoryEntry extends FlatEntryList.FlatEntry<FlatCategoryEntry> {
-        TextRenderer tr;
         public String category;
         protected Text categoryTranslation;
+        TextRenderer tr;
 
         public FlatCategoryEntry(String category) {
             this.tr = MinecraftClient.getInstance().textRenderer;

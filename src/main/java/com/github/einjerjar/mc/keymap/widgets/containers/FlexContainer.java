@@ -20,6 +20,11 @@ public class FlexContainer extends FlatContainer implements Tooltipped {
 
     protected FlatWidgetBase focused;
 
+    public FlexContainer(int x, int y, int w, int h) {
+        super(x, y, w, h);
+        this.setDrawBg(false).setDrawBorder(false);
+    }
+
     public FlexContainer setDirection(FlexDirection direction) {
         this.direction = direction;
         return this;
@@ -36,21 +41,6 @@ public class FlexContainer extends FlatContainer implements Tooltipped {
         return Utils.safeGet(getToolTips(), 0, new LiteralText(""));
     }
 
-    static class FlexChild {
-        public FlatWidgetBase child;
-        public float basis;
-
-        public FlexChild(FlatWidgetBase child, float basis) {
-            this.child = child;
-            this.basis = basis;
-        }
-    }
-
-    public enum FlexDirection {
-        ROW,
-        COLUMN
-    }
-
     public FlexContainer setGap(int gap) {
         this.gap = gap;
         return this;
@@ -64,11 +54,6 @@ public class FlexContainer extends FlatContainer implements Tooltipped {
     public FlexContainer setPadY(int padY) {
         this.padY = padY;
         return this;
-    }
-
-    public FlexContainer(int x, int y, int w, int h) {
-        super(x, y, w, h);
-        this.setDrawBg(false).setDrawBorder(false);
     }
 
     public FlexContainer addChild(FlatWidgetBase element, float basis) {
@@ -124,5 +109,20 @@ public class FlexContainer extends FlatContainer implements Tooltipped {
             if (!childStack.contains(f.child)) childStack.add(f.child);
         }
         return this;
+    }
+
+    public enum FlexDirection {
+        ROW,
+        COLUMN
+    }
+
+    static class FlexChild {
+        public FlatWidgetBase child;
+        public float basis;
+
+        public FlexChild(FlatWidgetBase child, float basis) {
+            this.child = child;
+            this.basis = basis;
+        }
     }
 }

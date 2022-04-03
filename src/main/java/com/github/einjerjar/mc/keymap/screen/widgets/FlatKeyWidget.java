@@ -17,19 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 public class FlatKeyWidget extends FlatButton implements Tooltipped {
-    public KeyboardLayout.KeyboardKey key;
-    private Map<Integer, List<KeybindHolder>> mappedKeybindHolders;
-
-    private final List<Text> tooltips = new ArrayList<>();
-
     static final ColorGroup COL_NORMAL = ColorGroup.NORMAL;
     static final ColorGroup COL_SET = ColorGroup.GREEN;
     static final ColorGroup COL_CONFLICT = ColorGroup.RED;
     static final ColorGroup COL_SELECTED = ColorGroup.YELLOW;
-
-    public boolean selected = false;
-
+    private final List<Text> tooltips = new ArrayList<>();
     private final Text displayText;
+    private final Map<Integer, List<KeybindHolder>> mappedKeybindHolders;
+    public KeyboardLayout.KeyboardKey key;
+    public boolean selected = false;
 
     public FlatKeyWidget(int x, int y, KeyboardLayout.KeyboardKey key, Map<Integer, List<KeybindHolder>> mappedKeys) {
         super(x, y, 16 + key.extraWidth, 16 + key.extraHeight, new LiteralText(""));
@@ -82,8 +78,6 @@ public class FlatKeyWidget extends FlatButton implements Tooltipped {
 
     @Override
     public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        ColorGroup colors = selected ? COL_SELECTED : color;
-
         int cBg   = color.bg.getVariant(enabled, focused, hovered);
         int cBor  = color.border.getVariant(enabled, focused, hovered);
         int cText = color.text.getVariant(enabled, focused, hovered);

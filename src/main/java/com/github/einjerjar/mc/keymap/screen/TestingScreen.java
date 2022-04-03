@@ -42,7 +42,7 @@ public class TestingScreen extends FlatScreen {
         super.render(m, mouseX, mouseY, delta);
         keyList.render(m, mouseX, mouseY, delta);
 
-        renderTooltips(m, mouseX, mouseY, delta);
+        renderTooltips(m, mouseX, mouseY);
         if (hovered != null)
             WidgetUtils.drawCenteredText(m, textRenderer, new LiteralText(hovered.getClass().getName()), 0, 0, 0, 0, true, false, false, 0xff_00ff00);
         if (getFocused() != null)

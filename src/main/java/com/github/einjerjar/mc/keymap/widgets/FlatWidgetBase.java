@@ -9,21 +9,15 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvents;
 
 public abstract class FlatWidgetBase extends DrawableHelper implements Element, Drawable {
-    protected TextRenderer tr;
-
     public boolean hovered = false;
     public boolean focused = false;
     public boolean visible = true;
     public boolean enabled = true;
-
+    protected TextRenderer tr;
     protected int x;
     protected int y;
     protected int w;
     protected int h;
-
-    public interface CommonAction{
-        public void run(FlatWidgetBase w);
-    }
 
     public FlatWidgetBase(int x, int y, int w, int h) {
         this.x = x;
@@ -48,22 +42,14 @@ public abstract class FlatWidgetBase extends DrawableHelper implements Element, 
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public int getH() {
-        return h;
-    }
-
-    public int getW() {
-        return w;
-    }
-
     public FlatWidgetBase setX(int x) {
         this.x = x;
         updateSize();
         return this;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public FlatWidgetBase setY(int y) {
@@ -72,10 +58,18 @@ public abstract class FlatWidgetBase extends DrawableHelper implements Element, 
         return this;
     }
 
+    public int getH() {
+        return h;
+    }
+
     public FlatWidgetBase setH(int h) {
         this.h = h;
         updateSize();
         return this;
+    }
+
+    public int getW() {
+        return w;
     }
 
     public FlatWidgetBase setW(int w) {
@@ -92,5 +86,9 @@ public abstract class FlatWidgetBase extends DrawableHelper implements Element, 
     public FlatWidgetBase setVisible(boolean visible) {
         this.visible = visible;
         return this;
+    }
+
+    public interface CommonAction {
+        void run(FlatWidgetBase w);
     }
 }

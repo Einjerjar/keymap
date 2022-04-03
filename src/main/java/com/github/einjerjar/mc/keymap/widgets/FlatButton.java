@@ -14,10 +14,16 @@ import java.util.List;
 public class FlatButton extends FlatWidget<FlatButton> implements Selectable, Tooltipped {
     Text text;
     Text tooltip = null;
-    ButtonAction action;
+    CommonAction action;
+
+    public FlatButton(int x, int y, int w, int h, Text text) {
+        super(FlatButton.class, x, y, w, h);
+        this.text = text;
+        this.setDrawBg(true).setDrawBorder(true).setDrawShadow(true);
+    }
 
     public void click() {
-        action.onAction(this);
+        action.run(this);
     }
 
     @Override
@@ -49,25 +55,8 @@ public class FlatButton extends FlatWidget<FlatButton> implements Selectable, To
         return Utils.safeGet(getToolTips(), 0);
     }
 
-    public interface ButtonAction {
-        void onAction(FlatButton button);
-    }
-
-    public FlatButton(int x, int y, int w, int h, Text text) {
-        super(FlatButton.class, x, y, w, h);
-        this.text = text;
-        this.setDrawBg(true).setDrawBorder(true).setDrawShadow(true);
-    }
-
-    public FlatButton(Class<FlatButton> self, int x, int y, int w, int h, Text text) {
-        super(self, x, y, w, h);
-        this.text = text;
-        this.setDrawBg(true).setDrawBorder(true).setDrawShadow(true);
-    }
-
-    public FlatButton setAction(ButtonAction action) {
+    public void setAction(CommonAction action) {
         this.action = action;
-        return self;
     }
 
     @Override
@@ -84,7 +73,7 @@ public class FlatButton extends FlatWidget<FlatButton> implements Selectable, To
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         setFocused(false);
         if (hovered && action != null) {
-            action.onAction(this);
+            action.run(this);
             return true;
         }
         return false;

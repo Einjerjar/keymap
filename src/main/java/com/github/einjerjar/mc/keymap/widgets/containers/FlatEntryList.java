@@ -19,15 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extends FlatWidgetBase implements Selectable, Tooltipped {
+    public boolean dragging;
     protected MinecraftClient client;
     protected int entryHeight;
-
     protected double scrollOffset = 0;
     protected int scrollBarW = 6;
     protected int scrollBarX;
-
-    public boolean dragging;
-
     protected List<T> entries = new ArrayList<>();
     // protected List<Text> tooltips = new ArrayList<>();
 
@@ -100,11 +97,11 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     }
 
     public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        renderScrollbar(matrices);
+        renderScrollbar();
         renderList(matrices);
     }
 
-    public void renderScrollbar(MatrixStack matrices) {
+    public void renderScrollbar() {
         Tessellator   ts = Tessellator.getInstance();
         BufferBuilder bb = ts.getBuffer();
         int           ch = getContentHeight();
@@ -249,13 +246,16 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     }
 
     public abstract static class FlatEntry<T extends FlatEntryList.FlatEntry<T>> extends DrawableHelper implements Tooltipped {
-        protected TextRenderer tr;
         public boolean hovered = false;
         public boolean selected = false;
-
+        protected TextRenderer tr;
         protected ColorGroup colors = ColorGroup.NORMAL;
 
         protected List<Text> tooltips = new ArrayList<>();
+
+        public FlatEntry() {
+            this.tr = MinecraftClient.getInstance().textRenderer;
+        }
 
         public void updateState() {
             colors = selected
@@ -263,10 +263,6 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
                      : hovered
                        ? ColorGroup.GREEN
                        : ColorGroup.NORMAL;
-        }
-
-        public FlatEntry() {
-            this.tr = MinecraftClient.getInstance().textRenderer;
         }
 
         public void render(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta) {

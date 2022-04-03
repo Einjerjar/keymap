@@ -1,14 +1,12 @@
 package com.github.einjerjar.mc.keymap.screen.entrylist;
 
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
-import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
 import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -18,17 +16,12 @@ import java.util.List;
 public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
     FlatKeyListAction onKeyChanged;
 
-    public interface FlatKeyListAction {
-        void run(FlatKeyList fk, int key);
-    }
-
     public FlatKeyList(int x, int y, int w, int h, int entryHeight) {
         super(x, y, w, h, entryHeight);
     }
 
-    public FlatKeyList setOnKeyChanged(FlatKeyListAction onKeyChanged) {
+    public void setOnKeyChanged(FlatKeyListAction onKeyChanged) {
         this.onKeyChanged = onKeyChanged;
-        return this;
     }
 
     public void resetSelected() {
@@ -69,6 +62,10 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
 
     }
 
+    public interface FlatKeyListAction {
+        void run(FlatKeyList fk, int key);
+    }
+
     public static class FlatKeyListEntry extends FlatEntryList.FlatEntry<FlatKeyListEntry> {
         public KeybindHolder holder;
         Text displayText;
@@ -106,7 +103,8 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
                     } else {
                         tooltips.add(holder.getKeyTranslation().getWithStyle(Utils.stylePassive).get(0));
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
         }
 

@@ -19,6 +19,16 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
     protected Element focusedElement;
     protected Element hoveredElement;
 
+    public FlatContainer(int x, int y, int w, int h) {
+        super(FlatContainer.class, x, y, w, h);
+        this.setDrawBg(true).setDrawBorder(true);
+    }
+
+    public FlatContainer(Class<FlatContainer> self, int x, int y, int w, int h) {
+        super(self, x, y, w, h);
+        this.setDrawBg(true).setDrawBorder(true);
+    }
+
     @Override
     public SelectionType getType() {
         if (focused) return SelectionType.FOCUSED;
@@ -33,16 +43,6 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
 
     public Element getFocusedElement() {
         return focusedElement;
-    }
-
-    public FlatContainer(int x, int y, int w, int h) {
-        super(FlatContainer.class, x, y, w, h);
-        this.setDrawBg(true).setDrawBorder(true);
-    }
-
-    public FlatContainer(Class<FlatContainer> self, int x, int y, int w, int h) {
-        super(self, x, y, w, h);
-        this.setDrawBg(true).setDrawBorder(true);
     }
 
     public <T extends Element & Drawable> FlatContainer addDrawable(T element) {
