@@ -7,7 +7,7 @@
 ### New
 
 - Malilib support added! but is currently `UNSTABLE` as it has not gone through much testing,
-will be pushing updates in the following days along with the 1.17 build
+  will be pushing updates in the following days along with the 1.17 build
 
 ### What
 
@@ -16,7 +16,7 @@ will be pushing updates in the following days along with the 1.17 build
 ### Why
 
 - Why not, also, vanilla keybind screen + controlling isn't cutting it, and for some reason, searching with controlling is
-slow on my machine
+  slow on my machine
 - ~~Why use a keybind instead of replacing the keybinds screen? idk, I find it easier to use that way, do hit me up if you prefer to have it replace the keybinds screen as a configurable feature~~ (check "How" section)
 
 ### How
@@ -52,6 +52,7 @@ slow on my machine
   - 🟩 `Set`
   - 🟥 `Conflict`
   - 🟨 `Bound to selected item`
+
   > ![Status](./screenshots/sample-05.png)
 - Malilib
   > ![Malilib](./screenshots/sample-07.png)
