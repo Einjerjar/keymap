@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.screen.containers;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.widgets.FlatButton;
 import com.github.einjerjar.mc.keymap.widgets.FlatContainer;
@@ -26,15 +25,18 @@ public class HotkeyCapture extends FlatContainer {
     FlatButton buttonClear;
     FlatButton buttonCancel;
 
-    CustomAction onOkAction;
-    CustomAction onCancelAction;
-    CustomAction onCloseAction;
-
-    public interface CustomAction {
-        void execute(HotkeyCapture cap);
-    }
-
+    CommonAction onOkAction;
+    CommonAction onCancelAction;
+    CommonAction onCloseAction;
     List<InputUtil.Key> pressed = new ArrayList<>();
+    List<InputUtil.Key> allowedModifiers = new ArrayList<>() {{
+        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_SHIFT));
+        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_SHIFT));
+        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_CONTROL));
+        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_CONTROL));
+        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_ALT));
+        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_ALT));
+    }};
 
     public HotkeyCapture(int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -103,24 +105,22 @@ public class HotkeyCapture extends FlatContainer {
         return keyPressed(btn, 0, 0);
     }
 
-    public HotkeyCapture setOnOkAction(CustomAction onOkAction) {
+    public void setOnOkAction(CommonAction onOkAction) {
         this.onOkAction = onOkAction;
-        return this;
     }
 
-    public HotkeyCapture setOnCancelAction(CustomAction onCancelAction) {
+    public HotkeyCapture setOnCancelAction(CommonAction onCancelAction) {
         this.onCancelAction = onCancelAction;
         return this;
     }
 
-    public HotkeyCapture setOnCloseAction(CustomAction onCloseAction) {
+    public void setOnCloseAction(CommonAction onCloseAction) {
         this.onCloseAction = onCloseAction;
-        return this;
     }
 
     public void ok() {
         if (onOkAction != null) {
-            onOkAction.execute(this);
+            onOkAction.run(this);
         }
         close();
     }
@@ -134,24 +134,13 @@ public class HotkeyCapture extends FlatContainer {
         setEnabled(false);
         setVisible(false);
         if (onCloseAction != null) {
-            onCloseAction.execute(this);
+            onCloseAction.run(this);
         }
     }
-
-    List<InputUtil.Key> allowedModifiers = new ArrayList<>() {{
-        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_SHIFT));
-        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_SHIFT));
-        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_CONTROL));
-        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_CONTROL));
-        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_ALT));
-        add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_ALT));
-    }};
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == InputUtil.GLFW_KEY_ESCAPE) buttonCancel.click();
-
-        // KeymapMain.LOGGER.info(keyCode + "");
 
         InputUtil.Key k = InputUtil.Type.KEYSYM.createFromCode(keyCode);
 

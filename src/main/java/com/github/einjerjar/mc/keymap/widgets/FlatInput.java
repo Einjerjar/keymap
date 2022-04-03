@@ -1,13 +1,10 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
-import com.github.einjerjar.mc.keymap.utils.ColorSet;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -23,20 +20,15 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
     protected int padY = 2;
     protected int tick = 0;
 
-    protected KBAction onEnter;
-    protected KBAction onEscape;
-    protected KBAction onTextChanged;
+    protected CommonAction onEnter;
+    protected CommonAction onEscape;
+    protected CommonAction onTextChanged;
 
     public FlatInput(int x, int y, int w, int h, String text) {
         super(FlatInput.class, x, y, w, h);
         this.text = Utils.or(text, "");
         this.lText = new LiteralText(this.text);
         this.setDrawBg(true).setDrawBorder(true).setVisible(true);
-    }
-
-    public FlatInput setOnTextChanged(KBAction onTextChanged) {
-        this.onTextChanged = onTextChanged;
-        return this;
     }
 
     public FlatInput setText(String text, boolean reset) {
@@ -49,22 +41,26 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
         return this;
     }
 
-    public FlatInput setText(String text) {
-        return setText(text, false);
+    public void setOnTextChanged(CommonAction onTextChanged) {
+        this.onTextChanged = onTextChanged;
     }
 
-    public FlatInput setOnEnter(KBAction onEnter) {
+    public FlatInput setOnEnter(CommonAction onEnter) {
         this.onEnter = onEnter;
         return this;
     }
 
-    public FlatInput setOnEscape(KBAction onEscape) {
+    public FlatInput setOnEscape(CommonAction onEscape) {
         this.onEscape = onEscape;
         return this;
     }
 
     public String getText() {
         return text;
+    }
+
+    public FlatInput setText(String text) {
+        return setText(text, false);
     }
 
     public Text getLiteralText() {
@@ -82,6 +78,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
     // Y is ignored for single line input (extend class for multi)
     protected void moveCursor(int x, int y) {
         cursorPosX += x;
+
         // clamp cursor
         if (cursorPosX < 0) cursorPosX = 0;
         if (cursorPosX >= getTextLength()) cursorPosX = getTextLength();
@@ -89,9 +86,6 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
 
     protected void write(String cc) {
         if (cc.isEmpty()) return;
-        // if (cursorPosX != cursorPosX2) {
-        //     delete(0, 0);
-        // }
 
         StringBuilder sb = new StringBuilder();
         for (Character c : cc.toCharArray()) {
@@ -109,20 +103,10 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
 
     protected void delete(int direction, int charCount) {
         // TODO: REMOVE LAZY
-        // int a = cursorPosX + direction * charCount;
-        // int b = cursorPosX;
-        // if (cursorPosX != cursorPosX2) {
-        //     a = cursorPosX;
-        //     b = cursorPosX2;
-        // }
-        // int left  = Math.min(a, b);
-        // int right = Math.max(a, b);cursorPosX
-        //
-        // if (left < 0) left = 0;
-        // if (right < 0) right = 0;
+
         if (text.length() == 0) return;
         StringBuilder sb = new StringBuilder(text);
-        for (int i = 0; i<charCount; i++) {
+        for (int i = 0; i < charCount; i++) {
             if (direction > 0) sb.deleteCharAt(cursorPosX);
             else if (direction < 0) sb.deleteCharAt(cursorPosX - i - 1);
         }
@@ -165,8 +149,6 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
         write(chr);
         return super.charTyped(chr, modifiers);
     }
-    
-    // TODO: FIX THIS CLUSTERFUCK
 
     public void setCursorPosition(int a) {
         if (a < 0) a = 0;
@@ -211,10 +193,6 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
     @Override
     public void appendNarrations(NarrationMessageBuilder builder) {
 
-    }
-
-    public interface KBAction {
-        void run(FlatInput input);
     }
 
     @Override

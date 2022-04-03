@@ -1,16 +1,24 @@
 package com.github.einjerjar.mc.keymap.utils;
 
 public class ColorSet {
+    public static final ColorSet BG = new ColorSet() {
+    };
+    public static final ColorSet TEXT = new ColorSet() {{
+        normal = 0xff_ffffff;
+        hovered = 0xff_ffffff;
+        disabled = 0xff_888888;
+        active = 0xff_888888;
+    }};
+    public static final ColorSet BORDER = new ColorSet() {{
+        normal = 0xff_ffffff;
+        hovered = 0xff_ffffff;
+        disabled = 0xff_888888;
+        active = 0xff_ffffff;
+    }};
     public int normal = 0x33_ffffff;
     public int hovered = 0x55_ffffff;
     public int disabled = 0x33_888888;
     public int active = 0xdd_ffffff;
-
-    public enum ColorSetType {
-        BG,
-        TEXT,
-        BORDER
-    }
 
     public static ColorSet fromColor(int color, ColorSetType type) {
         color = color & 0x00_ffffff;
@@ -39,23 +47,14 @@ public class ColorSet {
         }};
     }
 
-    public static final ColorSet BG = new ColorSet() {
-    };
-    public static final ColorSet TEXT = new ColorSet() {{
-        normal = 0xff_ffffff;
-        hovered = 0xff_ffffff;
-        disabled = 0xff_888888;
-        active = 0xff_888888;
-    }};
-    public static final ColorSet BORDER = new ColorSet() {{
-        normal = 0xff_ffffff;
-        hovered = 0xff_ffffff;
-        disabled = 0xff_888888;
-        active = 0xff_ffffff;
-    }};
-
     public int getVariant(boolean isEnabled, boolean isActive, boolean isHovered) {
         return !isEnabled ? disabled : isActive ? active : isHovered ? hovered : normal;
+    }
+
+    public enum ColorSetType {
+        BG,
+        TEXT,
+        BORDER
     }
 
 }

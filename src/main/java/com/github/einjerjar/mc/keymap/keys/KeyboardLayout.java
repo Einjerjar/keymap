@@ -8,58 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KeyboardLayout {
-    public static class KeyboardKey {
-        public String text;
-        public int extraWidth = 0;
-        public int extraHeight = 0;
-        public boolean enabled = true;
-        public int keyCode = 0;
-        public InputUtil.Key key;
-        public InputUtil.Type type;
-
-        private void init(String text, int keyCode, int extraWidth, int extraHeight, InputUtil.Type type, boolean enabled) {
-            this.text = text;
-            this.extraWidth = extraWidth;
-            this.extraHeight = extraHeight;
-            this.enabled = enabled;
-            this.keyCode = keyCode;
-            this.type = type;
-            this.key = type.createFromCode(keyCode);
-        }
-
-        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight, InputUtil.Type type, boolean enabled) {
-            init(text, keyCode, extraWidth, extraHeight, type, enabled);
-        }
-
-        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight, boolean enabled) {
-            init(text, keyCode, extraWidth, extraHeight, InputUtil.Type.KEYSYM, enabled);
-        }
-
-        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight) {
-            init(text, keyCode, extraWidth, extraHeight, InputUtil.Type.KEYSYM, true);
-        }
-
-        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight, InputUtil.Type type) {
-            init(text, keyCode, extraWidth, extraHeight, type, true);
-        }
-
-        public KeyboardKey(String text, int keyCode, int extraWidth, InputUtil.Type type) {
-            init(text, keyCode, extraWidth, 0, type, true);
-        }
-
-        public KeyboardKey(String text, int keyCode, int extraWidth) {
-            init(text, keyCode, extraWidth, 0, InputUtil.Type.KEYSYM, true);
-        }
-
-        public KeyboardKey(String text, int keyCode) {
-            init(text, keyCode, 0, 0, InputUtil.Type.KEYSYM, true);
-        }
-
-        public Text getHoverText() {
-            return key.getLocalizedText();
-        }
-    }
-
     // TODO: PORT ENTIRE KEY LAYOUT TO CONFIG FILE
     // FIXME: Convert to static finals on post beta
     public static List<List<KeyboardKey>> getKeys() {
@@ -215,5 +163,57 @@ public class KeyboardLayout {
                 add(new KeyboardKey(">", InputUtil.GLFW_KEY_RIGHT));
             }});
         }};
+    }
+
+    public static class KeyboardKey {
+        public String text;
+        public int extraWidth = 0;
+        public int extraHeight = 0;
+        public boolean enabled = true;
+        public int keyCode = 0;
+        public InputUtil.Key key;
+        public InputUtil.Type type;
+
+        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight, InputUtil.Type type, boolean enabled) {
+            init(text, keyCode, extraWidth, extraHeight, type, enabled);
+        }
+
+        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight, boolean enabled) {
+            init(text, keyCode, extraWidth, extraHeight, InputUtil.Type.KEYSYM, enabled);
+        }
+
+        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight) {
+            init(text, keyCode, extraWidth, extraHeight, InputUtil.Type.KEYSYM, true);
+        }
+
+        public KeyboardKey(String text, int keyCode, int extraWidth, int extraHeight, InputUtil.Type type) {
+            init(text, keyCode, extraWidth, extraHeight, type, true);
+        }
+
+        public KeyboardKey(String text, int keyCode, int extraWidth, InputUtil.Type type) {
+            init(text, keyCode, extraWidth, 0, type, true);
+        }
+
+        public KeyboardKey(String text, int keyCode, int extraWidth) {
+            init(text, keyCode, extraWidth, 0, InputUtil.Type.KEYSYM, true);
+        }
+
+        public KeyboardKey(String text, int keyCode) {
+            init(text, keyCode, 0, 0, InputUtil.Type.KEYSYM, true);
+        }
+
+        private void init(String text, int keyCode, int extraWidth, int extraHeight, InputUtil.Type type, boolean enabled) {
+            this.text = text;
+            this.extraWidth = extraWidth;
+            this.extraHeight = extraHeight;
+            this.enabled = enabled;
+            this.keyCode = keyCode;
+            this.type = type;
+            this.key = type.createFromCode(keyCode);
+        }
+
+        public Text getHoverText() {
+            return key.getLocalizedText();
+        }
     }
 }

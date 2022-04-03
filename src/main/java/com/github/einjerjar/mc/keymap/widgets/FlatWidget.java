@@ -2,20 +2,16 @@ package com.github.einjerjar.mc.keymap.widgets;
 
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 public class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
 
+    protected final T self;
     protected boolean drawBg = false;
     protected boolean drawBorder = false;
     protected boolean drawShadow = false;
     protected ColorGroup color = ColorGroup.NORMAL;
-
-    protected final T self;
 
     public FlatWidget(final Class<T> self, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -79,7 +75,7 @@ public class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
     }
 
     protected void drawCenteredText(MatrixStack matrices, Text text, int x, int y, boolean shadow, int color) {
-        drawCenteredText(matrices, text, x, y, true, true, true, color);
+        drawCenteredText(matrices, text, x, y, shadow, true, true, color);
     }
 
     protected void drawCenteredText(MatrixStack matrices, Text text, int x, int y, int color) {

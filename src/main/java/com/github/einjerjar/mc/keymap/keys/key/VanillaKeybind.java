@@ -46,7 +46,7 @@ public class VanillaKeybind extends KeybindHolder {
 
     @Override
     public void assignHotKey(Integer[] hotkey, boolean mouse) {
-        int hk;
+        int           hk;
         InputUtil.Key newKey;
         if (hotkey.length != 0) {
             hk = hotkey[0];
