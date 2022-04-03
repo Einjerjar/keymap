@@ -74,7 +74,7 @@ public class FlatButton extends FlatWidget<FlatButton> implements Selectable, To
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (hovered) {
             setFocused(true);
-            playDownSound();
+            playClickSound();
             return true;
         }
         return false;

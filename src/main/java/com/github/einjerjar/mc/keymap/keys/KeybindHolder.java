@@ -4,16 +4,18 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-public interface KeybindHolder {
-    List<Integer> getCode();
+public abstract class KeybindHolder {
+    public CategoryHolder category;
 
-    Text getKeyTranslation();
+    public abstract List<Integer> getCode();
 
-    Text getTranslation();
+    public abstract Text getKeyTranslation();
 
-    String getTranslationKey();
+    public abstract Text getTranslation();
 
-    void assignHotKey(int[] hotkey, boolean mouse);
+    public abstract String getTranslationKey();
 
-    void resetHotkey();
+    public abstract void assignHotKey(Integer[] hotkey, boolean mouse);
+
+    public abstract void resetHotkey();
 }

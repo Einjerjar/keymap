@@ -1,12 +1,16 @@
 package com.github.einjerjar.mc.keymap.screen.containers;
 
+import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.widgets.FlatButton;
 import com.github.einjerjar.mc.keymap.widgets.FlatContainer;
 import com.github.einjerjar.mc.keymap.widgets.FlatText;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlexContainer;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ public class HotkeyCapture extends FlatContainer {
 
     CustomAction onOkAction;
     CustomAction onCancelAction;
+    CustomAction onCloseAction;
 
     public interface CustomAction {
         void execute(HotkeyCapture cap);
@@ -33,6 +38,9 @@ public class HotkeyCapture extends FlatContainer {
 
     public HotkeyCapture(int x, int y, int w, int h) {
         super(x, y, w, h);
+
+        color = ColorGroup.fromBaseColor(0xff_333333);
+        color.bg.normal = (color.bg.normal & 0x00_ffffff) | 0xee_000000;
 
         labelContainer = new FlatText(w / 2 + x, h / 2 + y - tr.fontHeight * 2, 0, 0, new LiteralText("Set Hotkey"));
         labelHotkey = new FlatText(w / 2 + x, h / 2 + y, 0, 0, new LiteralText("A + B + C"));
@@ -64,8 +72,35 @@ public class HotkeyCapture extends FlatContainer {
         addSelectable(parentContainer);
     }
 
+    public void clear() {
+        pressed.clear();
+    }
+
+    public void add(InputUtil.Key k) {
+        pressed.add(k);
+    }
+
     public List<InputUtil.Key> getPressed() {
         return pressed;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) return true;
+        int btn = 0;
+
+        switch (button) {
+            case GLFW.GLFW_MOUSE_BUTTON_1 -> btn = KeyCodes.MOUSE_BUTTON_1;
+            case GLFW.GLFW_MOUSE_BUTTON_2 -> btn = KeyCodes.MOUSE_BUTTON_2;
+            case GLFW.GLFW_MOUSE_BUTTON_3 -> btn = KeyCodes.MOUSE_BUTTON_3;
+            case GLFW.GLFW_MOUSE_BUTTON_4 -> btn = KeyCodes.MOUSE_BUTTON_4;
+            case GLFW.GLFW_MOUSE_BUTTON_5 -> btn = KeyCodes.MOUSE_BUTTON_5;
+            case GLFW.GLFW_MOUSE_BUTTON_6 -> btn = KeyCodes.MOUSE_BUTTON_6;
+            case GLFW.GLFW_MOUSE_BUTTON_7 -> btn = KeyCodes.MOUSE_BUTTON_7;
+            case GLFW.GLFW_MOUSE_BUTTON_8 -> btn = KeyCodes.MOUSE_BUTTON_8;
+        }
+
+        return keyPressed(btn, 0, 0);
     }
 
     public HotkeyCapture setOnOkAction(CustomAction onOkAction) {
@@ -75,6 +110,11 @@ public class HotkeyCapture extends FlatContainer {
 
     public HotkeyCapture setOnCancelAction(CustomAction onCancelAction) {
         this.onCancelAction = onCancelAction;
+        return this;
+    }
+
+    public HotkeyCapture setOnCloseAction(CustomAction onCloseAction) {
+        this.onCloseAction = onCloseAction;
         return this;
     }
 
@@ -93,6 +133,9 @@ public class HotkeyCapture extends FlatContainer {
     public void close() {
         setEnabled(false);
         setVisible(false);
+        if (onCloseAction != null) {
+            onCloseAction.execute(this);
+        }
     }
 
     List<InputUtil.Key> allowedModifiers = new ArrayList<>() {{
@@ -107,6 +150,8 @@ public class HotkeyCapture extends FlatContainer {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == InputUtil.GLFW_KEY_ESCAPE) buttonCancel.click();
+
+        // KeymapMain.LOGGER.info(keyCode + "");
 
         InputUtil.Key k = InputUtil.Type.KEYSYM.createFromCode(keyCode);
 
@@ -125,6 +170,15 @@ public class HotkeyCapture extends FlatContainer {
         }
 
         return true;
+    }
+
+    public void updateState() {
+        StringBuilder sb = new StringBuilder();
+        for (InputUtil.Key kk : pressed) {
+            sb.append(kk.getLocalizedText().getString()).append(" + ");
+        }
+        if (sb.length() > 3) sb.delete(sb.length() - 3, sb.length());
+        labelHotkey.setText(new LiteralText(sb.toString()));
     }
 
     @Override

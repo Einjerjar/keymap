@@ -33,12 +33,14 @@ public class KeymapMain implements ModInitializer {
         AutoConfig.register(KeymapConfig.class, JanksonConfigSerializer::new);
         cfg = AutoConfig.getConfigHolder(KeymapConfig.class).getConfig();
 
-        Optional<ModContainer> malilibContainer = FabricLoader.getInstance().getModContainer("malilib");
-        if (malilibContainer.isPresent()) {
-            ModContainer malilibMod = malilibContainer.get();
-            LOGGER.info(String.format("Found malilib version %s, keymap support will be enabled",
-                malilibMod.getMetadata().getVersion().getFriendlyString()));
-            malilibSupport = true;
+        if (cfg.malilibSupport) {
+            Optional<ModContainer> malilibContainer = FabricLoader.getInstance().getModContainer("malilib");
+            if (malilibContainer.isPresent()) {
+                ModContainer malilibMod = malilibContainer.get();
+                LOGGER.info(String.format("Found malilib version %s, keymap support will be enabled",
+                    malilibMod.getMetadata().getVersion().getFriendlyString()));
+                malilibSupport = true;
+            }
         }
 
         KBOpenKBScreen = KeyBindingHelper.registerKeyBinding(new KeyBinding(

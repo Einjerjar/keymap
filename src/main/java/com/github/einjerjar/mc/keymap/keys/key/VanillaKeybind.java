@@ -9,7 +9,7 @@ import net.minecraft.text.TranslatableText;
 import java.util.Collections;
 import java.util.List;
 
-public class VanillaKeybind implements KeybindHolder {
+public class VanillaKeybind extends KeybindHolder {
     KeyBinding key;
     List<Integer> keyCode;
     Text boundKeyTranslation;
@@ -45,11 +45,16 @@ public class VanillaKeybind implements KeybindHolder {
     }
 
     @Override
-    public void assignHotKey(int[] hotkey, boolean mouse) {
-        int hk = hotkey[0];
-        InputUtil.Key newKey = mouse
-                               ? InputUtil.Type.MOUSE.createFromCode(hk)
-                               : InputUtil.Type.KEYSYM.createFromCode(hk);
+    public void assignHotKey(Integer[] hotkey, boolean mouse) {
+        int           hk = hotkey[0];
+        InputUtil.Key newKey;
+        if (hk == InputUtil.GLFW_KEY_ESCAPE) {
+            newKey = InputUtil.UNKNOWN_KEY;
+        } else {
+            newKey = mouse
+                     ? InputUtil.Type.MOUSE.createFromCode(hk)
+                     : InputUtil.Type.KEYSYM.createFromCode(hk);
+        }
         key.setBoundKey(newKey);
 
         this.keyCode = Collections.singletonList(key.boundKey.getCode());

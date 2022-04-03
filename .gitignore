@@ -35,6 +35,7 @@ run/
 # icon
 *.aseprite
 *-export.png
+extra/
 
 # malilib
 lib/

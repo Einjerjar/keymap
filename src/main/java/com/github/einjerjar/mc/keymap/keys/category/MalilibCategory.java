@@ -2,8 +2,11 @@ package com.github.einjerjar.mc.keymap.keys.category;
 
 import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
+import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
+import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -21,10 +24,13 @@ public class MalilibCategory implements CategoryHolder {
 
     public MalilibCategory(KeybindCategory category) {
         this.category = category;
-        this.categoryName = new TranslatableText(category.getCategory());
+        this.categoryName = new LiteralText(category.getModName());
 
-        for (IHotkey hk : category.getHotkeys()) {
-            // MalilibKeybind mk = new MalilibKeybind()
+        for (ConfigHotkey hk : category.getHotkeys().stream().filter(hotkey -> hotkey instanceof ConfigHotkey).map(hotkey -> (ConfigHotkey)hotkey).toList()) {
+            MalilibKeybind mk = new MalilibKeybind(hk);
+            mk.setModName(category.getModName());
+            mk.category = this;
+            bindings.add(mk);
         }
     }
 
@@ -35,7 +41,7 @@ public class MalilibCategory implements CategoryHolder {
 
     @Override
     public String getCategoryKey() {
-        return category.getCategory();
+        return category.getModName();
     }
 
     @Override
@@ -44,7 +50,7 @@ public class MalilibCategory implements CategoryHolder {
 
     @Override
     public List<KeybindHolder> getKeybinds() {
-        return null;
+        return bindings;
     }
 
     @Override
