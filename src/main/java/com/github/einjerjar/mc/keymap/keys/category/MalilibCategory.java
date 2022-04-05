@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.keys.category;
 
+import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
@@ -21,7 +22,11 @@ public class MalilibCategory implements CategoryHolder {
         this.category = category;
         this.categoryName = new LiteralText(category.getModName());
 
+
+        // KeymapMain.LOGGER.info(category.getModName() + " :: " + category.getCategory());
+
         for (ConfigHotkey hk : category.getHotkeys().stream().filter(hotkey -> hotkey instanceof ConfigHotkey).map(hotkey -> (ConfigHotkey) hotkey).toList()) {
+            // KeymapMain.LOGGER.info(category.getModName() + " :: " + hk.getPrettyName());
             MalilibKeybind mk = new MalilibKeybind(hk);
             mk.setModName(category.getModName());
             mk.category = this;

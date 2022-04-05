@@ -44,10 +44,10 @@ dependencies {
 
     // Malilib
     modImplementation name: "malilib-fabric-${project.version_malilib}"
-    modRuntimeOnly name: "malilib-fabric-${project.version_malilib}"
 
     // Malilib Testing
     modRuntimeOnly name: "litematica-fabric-${project.version_litematica}"
+    modRuntimeOnly name: "tweakeroo-fabric-${project.version_tweakeroo}"
 
     // Performance
     modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"

@@ -38,7 +38,7 @@ public class MalilibKeybind extends KeybindHolder {
 
     public void setModName(String modName) {
         this.modName = modName;
-        this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + this.hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
+        this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + this.hotkey.getPrettyName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
     }
 
     @Override
@@ -75,13 +75,13 @@ public class MalilibKeybind extends KeybindHolder {
         InputUtil.Key firstKey = InputUtil.Type.KEYSYM.createFromCode(Utils.safeGet(hotkey.getKeybind().getKeys(), 0, -1));
         this.boundKeyTranslation = firstKey.getLocalizedText();
         this.translation = new LiteralText(hotkey.getConfigGuiDisplayName());
-        // this.translationKey = "config.name." + hotkey.getName().toLowerCase();
+        // this.translationKey = "config.name." + hotkey.getPrettyName().toLowerCase();
         this.keyCode = hotkey.getKeybind().getKeys();
 
         if (modName != null) {
-            this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
+            this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + hotkey.getPrettyName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
         } else {
-            this.translationKey = hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
+            this.translationKey = hotkey.getPrettyName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
         }
     }
 

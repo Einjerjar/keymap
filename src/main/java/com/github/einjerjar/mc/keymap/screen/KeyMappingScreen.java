@@ -183,7 +183,8 @@ public class KeyMappingScreen extends FlatScreen {
             InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
             for (KeybindCategory cat : handler.getKeybindCategories()) {
                 MalilibCategory c = new MalilibCategory(cat);
-                mappedCategories.put(cat.getModName(), c);
+                if (!cat.getCategory().toLowerCase().contains("generic")) continue;
+                mappedCategories.put(cat.getModName() + "." + cat.getCategory(), c);
             }
         }
 
