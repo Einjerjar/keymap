@@ -330,9 +330,9 @@ public class KeyMappingScreen extends FlatScreen {
             return;
         }
         inputSearch.setText(String.format(
-            "[%s]",
+            "[%s",
             k.key.key.getLocalizedText().getString()
-        ));
+        ), true);
     }
 
     private int[] addKeys(List<List<KeyLayoutConfig.BasicKeyData>> keys, int x, int y) {
