@@ -86,7 +86,7 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         }
 
         public void updateDisplayText() {
-            KeymapMain.LOGGER.info("UPDATESTATE2");
+            // CLog.info("UPDATESTATE2");
             String keys = holder.getKeyTranslation().getString();
 
             if (holder instanceof MalilibKeybind mk) {

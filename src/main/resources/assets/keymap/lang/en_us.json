@@ -7,6 +7,7 @@
   "key.keymap.tip.reset_all": "Reset all assigned keys to default",
   "key.keymap.tip.reset_selected": "Reset selected keybind to default",
   "key.keymap.stat.not_assigned": "NOT ASSIGNED",
+  "key.keymap.message.reload_keys": "§a[Keymap] §rSuccessfully reloaded key layout!",
   "text.autoconfig.keymap.title": "Keymap",
   "text.autoconfig.keymap.option.replaceKeybindScreen.@PrefixText": "§n§lGeneral",
   "text.autoconfig.keymap.option.keybindNameOnHover.@PrefixText": "§n§lKeybind List",

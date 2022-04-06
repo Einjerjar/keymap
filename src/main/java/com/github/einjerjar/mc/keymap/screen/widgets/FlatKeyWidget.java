@@ -30,6 +30,7 @@ public class FlatKeyWidget extends FlatButton implements Tooltipped {
     public FlatKeyWidget(int x, int y, KeyboardLayout.KeyboardKey key, Map<Integer, List<KeybindHolder>> mappedKeys) {
         super(x, y, 16 + key.extraWidth, 16 + key.extraHeight, new LiteralText(""));
         this.key = key;
+        this.enabled = key.enabled;
         this.mappedKeybindHolders = mappedKeys;
         this.displayText = new LiteralText(key.text);
         updateState();

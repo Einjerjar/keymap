@@ -1,5 +1,7 @@
 package com.github.einjerjar.mc.keymap.screen;
 
+import com.github.einjerjar.mc.keymap.CLog;
+import com.github.einjerjar.mc.keymap.KeyLayoutConfig;
 import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
@@ -87,10 +89,14 @@ public class KeyMappingScreen extends FlatScreen {
         right = left + expectedScreenWidth - outPadX * 2;
         bottom = height - outPadY;
 
-        int[] kbKeys   = addKeys(KeyboardLayout.getKeys(), left + padX, top + padY);
-        int[] kbExtra  = addKeys(KeyboardLayout.getExtra(), left + padX, top + padY * 2 + kbKeys[1] - gapY);
-        int[] kbMouse  = addKeys(KeyboardLayout.getMouse(), left + padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
-        int[] kbNumpad = addKeys(KeyboardLayout.getNumpad(), left + padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
+        // int[] kbKeys   = addKeys(KeyboardLayout.getKeys(), left + padX, top + padY);
+        // int[] kbExtra  = addKeys(KeyboardLayout.getExtra(), left + padX, top + padY * 2 + kbKeys[1] - gapY);
+        // int[] kbMouse  = addKeys(KeyboardLayout.getMouse(), left + padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
+        // int[] kbNumpad = addKeys(KeyboardLayout.getNumpad(), left + padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
+        int[] kbKeys   = addKeys(KeymapMain.keys.keys, left + padX, top + padY);
+        int[] kbExtra  = addKeys(KeymapMain.keys.extra, left + padX, top + padY * 2 + kbKeys[1] - gapY);
+        int[] kbMouse  = addKeys(KeymapMain.keys.mouse, left + padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
+        int[] kbNumpad = addKeys(KeymapMain.keys.numpad, left + padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
 
         int leftSpaceX = expectedScreenWidth - outPadX * 2 - kbKeys[0] - padX * 3;
 
@@ -188,7 +194,7 @@ public class KeyMappingScreen extends FlatScreen {
             InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
             for (KeybindCategory cat : handler.getKeybindCategories()) {
                 MalilibCategory c = new MalilibCategory(cat);
-                KeymapMain.LOGGER.info(String.format(
+                CLog.info(String.format(
                     "%s :: %s :: %s",
                     cat.getModName(),
                     cat.getCategory(),
@@ -302,43 +308,48 @@ public class KeyMappingScreen extends FlatScreen {
         }
     }
 
-    private int[] addKeys(List<List<KeyboardLayout.KeyboardKey>> keys, int x, int y) {
+    private void keyWidgetAction(KeyboardLayout.KeyboardKey key, FlatKeyWidget k) {
+        FlatKeyList.FlatKeyListEntry fke = listKeybinds.getSelectedEntry();
+        if (fke != null) {
+            if (fke.holder instanceof VanillaKeybind vk) {
+                vk.assignHotKey(new Integer[]{k.key.keyCode}, key.type == InputUtil.Type.MOUSE);
+                updateMappedKeybinds();
+                updateKeyWidgets();
+                listKeybinds.setSelectedEntry(null);
+            } else if (malilib && fke.holder instanceof MalilibKeybind mk) {
+                if (key.type == InputUtil.Type.MOUSE) {
+                    mk.assignHotKey(new Integer[]{key.keyCode - 100}, false);
+
+                    refreshKeys();
+                    fke.updateDisplayText();
+                    listKeybinds.setSelectedEntry(null);
+                    return;
+                }
+                handleHotkeyCapture(fke, k.key.key);
+            }
+            return;
+        }
+        inputSearch.setText(String.format(
+            "[%s]",
+            k.key.key.getLocalizedText().getString()
+        ));
+    }
+
+    private int[] addKeys(List<List<KeyLayoutConfig.BasicKeyData>> keys, int x, int y) {
         int sizeX    = 0;
         int sizeY    = 0;
         int currentX = x;
         int currentY = y;
 
-        for (List<KeyboardLayout.KeyboardKey> row : keys) {
+        for (List<KeyLayoutConfig.BasicKeyData> row : keys) {
             int minItemHeight = height;
-            for (KeyboardLayout.KeyboardKey key : row) {
-                FlatKeyWidget k    = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
-                int           code = key.keyCode;
+            for (KeyLayoutConfig.BasicKeyData keyData : row) {
+                KeyboardLayout.KeyboardKey key  = new KeyboardLayout.KeyboardKey(keyData);
+                FlatKeyWidget              k    = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
+                int                        code = key.keyCode;
 
                 k.setAction(button -> {
-                    FlatKeyList.FlatKeyListEntry fke = listKeybinds.getSelectedEntry();
-                    if (fke != null) {
-                        if (fke.holder instanceof VanillaKeybind vk) {
-                            vk.assignHotKey(new Integer[]{k.key.keyCode}, key.type == InputUtil.Type.MOUSE);
-                            updateMappedKeybinds();
-                            updateKeyWidgets();
-                            listKeybinds.setSelectedEntry(null);
-                        } else if (malilib && fke.holder instanceof MalilibKeybind mk) {
-                            if (key.type == InputUtil.Type.MOUSE) {
-                                mk.assignHotKey(new Integer[]{key.keyCode - 100}, false);
-
-                                refreshKeys();
-                                fke.updateDisplayText();
-                                listKeybinds.setSelectedEntry(null);
-                                return;
-                            }
-                            handleHotkeyCapture(fke, k.key.key);
-                        }
-                        return;
-                    }
-                    inputSearch.setText(String.format(
-                        "[%s]",
-                        k.key.key.getLocalizedText().getString()
-                    ));
+                    keyWidgetAction(key, k);
                 });
 
                 if (!mappedKeyWidgets.containsKey(code)) {
