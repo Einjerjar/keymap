@@ -62,23 +62,23 @@ public class VanillaKeybind extends KeybindHolder {
         }
         key.setBoundKey(newKey);
 
-        this.keyCode = Collections.singletonList(key.boundKey.getCode());
-        this.boundKeyTranslation = key.getBoundKeyLocalizedText();
-        this.translation = new TranslatableText(key.getTranslationKey());
-        this.translationKey = key.getTranslationKey();
-
-        KeyBinding.updateKeysByCode();
+        updateState();
     }
 
     @Override
     public void resetHotkey() {
         key.setBoundKey(key.getDefaultKey());
 
+        updateState();
+
+        KeyBinding.updateKeysByCode();
+    }
+
+    @Override
+    public void updateState() {
         this.keyCode = Collections.singletonList(key.boundKey.getCode());
         this.boundKeyTranslation = key.getBoundKeyLocalizedText();
         this.translation = new TranslatableText(key.getTranslationKey());
         this.translationKey = key.getTranslationKey();
-
-        KeyBinding.updateKeysByCode();
     }
 }

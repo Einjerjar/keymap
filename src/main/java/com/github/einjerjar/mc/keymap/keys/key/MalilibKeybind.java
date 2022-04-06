@@ -71,6 +71,7 @@ public class MalilibKeybind extends KeybindHolder {
         updateState();
     }
 
+    @Override
     public void updateState() {
         InputUtil.Key firstKey = InputUtil.Type.KEYSYM.createFromCode(Utils.safeGet(hotkey.getKeybind().getKeys(), 0, -1));
         this.boundKeyTranslation = firstKey.getLocalizedText();
