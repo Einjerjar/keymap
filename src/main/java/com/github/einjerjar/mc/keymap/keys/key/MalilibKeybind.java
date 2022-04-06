@@ -64,9 +64,10 @@ public class MalilibKeybind extends KeybindHolder {
     @Override
     public void assignHotKey(Integer[] hotkeys, boolean mouse) {
         hotkey.getKeybind().getKeys().clear();
-        if (hotkeys.length == 0) return;
-        for (int i : hotkeys) {
-            hotkey.getKeybind().addKey(i);
+        if (hotkeys.length != 0) {
+            for (int i : hotkeys) {
+                hotkey.getKeybind().addKey(i);
+            }
         }
         updateState();
     }

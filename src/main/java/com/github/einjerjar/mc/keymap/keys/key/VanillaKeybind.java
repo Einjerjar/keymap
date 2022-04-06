@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.keys.key;
 
+import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -76,6 +77,7 @@ public class VanillaKeybind extends KeybindHolder {
 
     @Override
     public void updateState() {
+        // KeymapMain.LOGGER.info("UPDATESTATE" + key.getBoundKeyLocalizedText().getString());
         this.keyCode = Collections.singletonList(key.boundKey.getCode());
         this.boundKeyTranslation = key.getBoundKeyLocalizedText();
         this.translation = new TranslatableText(key.getTranslationKey());

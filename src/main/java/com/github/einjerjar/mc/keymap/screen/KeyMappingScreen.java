@@ -156,11 +156,17 @@ public class KeyMappingScreen extends FlatScreen {
             FlatKeyList.FlatKeyListEntry fke = fk.getSelectedEntry();
             if (k == InputUtil.GLFW_KEY_ESCAPE) {
                 fke.holder.assignHotKey(new Integer[0], false);
-                if (malilib && fke.holder instanceof MalilibKeybind mk) mk.updateState();
+                fke.holder.updateState();
 
                 refreshKeys();
-                fke.updateState2();
-                listKeybinds.setSelectedEntry(null);
+                fke.updateDisplayText();
+
+            } else if (fke.holder instanceof VanillaKeybind) {
+                fke.holder.assignHotKey(new Integer[]{k}, false);
+
+                refreshKeys();
+                fke.updateDisplayText();
+
             } else if (malilib && fke.holder instanceof MalilibKeybind) {
                 handleHotkeyCapture(fke, k);
             }
@@ -230,7 +236,7 @@ public class KeyMappingScreen extends FlatScreen {
 
 
             refreshKeys();
-            fke.updateState2();
+            fke.updateDisplayText();
             listKeybinds.setSelectedEntry(null);
         });
     }
