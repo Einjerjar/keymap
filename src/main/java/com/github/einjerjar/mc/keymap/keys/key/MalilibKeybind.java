@@ -24,12 +24,8 @@ public class MalilibKeybind extends KeybindHolder {
     }
 
     public String getKeysString(boolean format) {
-        String b = String.join(" + ", hotkey.getKeybind().getKeys().stream().map(i -> (i < 0
-                                                                                       ? InputUtil.Type.MOUSE.createFromCode((i + 100))
-                                                                                       : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString()).toList());
-        return format
-               ? " §a[" + b + "]"
-               : b;
+        String b = String.join(" + ", hotkey.getKeybind().getKeys().stream().map(i -> (i < 0 ? InputUtil.Type.MOUSE.createFromCode((i + 100)) : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString()).toList());
+        return format ? " §a[" + b + "]" : b;
     }
 
     public String getKeysString() {
