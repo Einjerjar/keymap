@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.keys.key;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;

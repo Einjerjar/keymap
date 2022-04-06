@@ -188,6 +188,12 @@ public class KeyMappingScreen extends FlatScreen {
             InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
             for (KeybindCategory cat : handler.getKeybindCategories()) {
                 MalilibCategory c = new MalilibCategory(cat);
+                KeymapMain.LOGGER.info(String.format(
+                    "%s :: %s :: %s",
+                    cat.getModName(),
+                    cat.getCategory(),
+                    cat.getHotkeys().size()
+                ));
                 if (mappedCategories.containsKey(cat.getModName()) && mappedCategories.get(cat.getModName()) instanceof MalilibCategory mc) {
                     mc.appendCategory(cat);
                     continue;

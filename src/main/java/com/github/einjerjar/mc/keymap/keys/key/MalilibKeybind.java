@@ -3,7 +3,7 @@ package com.github.einjerjar.mc.keymap.keys.key;
 import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.utils.Utils;
-import fi.dy.masa.malilib.config.options.ConfigHotkey;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -11,14 +11,14 @@ import net.minecraft.text.Text;
 import java.util.List;
 
 public class MalilibKeybind extends KeybindHolder {
-    ConfigHotkey hotkey;
+    public String modName = null;
+    IHotkey hotkey;
     List<Integer> keyCode;
     Text boundKeyTranslation;
     Text translation;
     String translationKey;
-    public String modName = null;
 
-    public MalilibKeybind(ConfigHotkey hotkey) {
+    public MalilibKeybind(IHotkey hotkey) {
         this.hotkey = hotkey;
         updateState();
     }

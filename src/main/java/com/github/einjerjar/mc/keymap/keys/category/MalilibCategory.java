@@ -5,6 +5,7 @@ import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -22,11 +23,7 @@ public class MalilibCategory implements CategoryHolder {
         this.category = category;
         this.categoryName = new LiteralText(category.getModName());
 
-
-        // KeymapMain.LOGGER.info(category.getModName() + " :: " + category.getCategory());
-
         for (ConfigHotkey hk : category.getHotkeys().stream().filter(hotkey -> hotkey instanceof ConfigHotkey).map(hotkey -> (ConfigHotkey) hotkey).toList()) {
-            // KeymapMain.LOGGER.info(category.getModName() + " :: " + hk.getPrettyName());
             MalilibKeybind mk = new MalilibKeybind(hk);
             mk.setModName(category.getModName());
             mk.category = this;
@@ -35,13 +32,31 @@ public class MalilibCategory implements CategoryHolder {
     }
 
     public void appendCategory(KeybindCategory category) {
-        for (ConfigHotkey hk : category.getHotkeys().stream().filter(hotkey -> hotkey instanceof ConfigHotkey).map(hotkey -> (ConfigHotkey) hotkey).toList()) {
-            // KeymapMain.LOGGER.info(category.getModName() + " :: " + hk.getPrettyName());
+        KeymapMain.LOGGER.info(String.format(
+            "APPEND %s :: %s :: %s :: %s",
+            category.getModName(),
+            category.getCategory(),
+            category.getHotkeys().size(),
+            bindings.size()
+        ));
+
+        for (IHotkey hk : category.getHotkeys()) {
+            KeymapMain.LOGGER.info(hk.getPrettyName() + " :: " + hk.getClass().getName());
+        }
+
+        for (IHotkey hk : category.getHotkeys()) {
             MalilibKeybind mk = new MalilibKeybind(hk);
             mk.setModName(category.getModName());
             mk.category = this;
             bindings.add(mk);
         }
+        KeymapMain.LOGGER.info(String.format(
+            "APPEND2 %s :: %s :: %s :: %s",
+            category.getModName(),
+            category.getCategory(),
+            category.getHotkeys().size(),
+            bindings.size()
+        ));
     }
 
     @Override
