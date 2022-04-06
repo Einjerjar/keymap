@@ -93,18 +93,20 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         public void updateState() {
             super.updateState();
             tooltips.clear();
-            tooltips.add(holder.getTranslation().getWithStyle(Utils.styleKey).get(0));
+            if (KeymapMain.cfg.keybindNameOnHover) tooltips.add(holder.getTranslation().getWithStyle(Utils.styleKey).get(0));
             int maxL = holder.getTranslation().getString().length();
-            if (holder.getCode().size() > 0 && holder.getCode().get(0) != -1) {
+            if (KeymapMain.cfg.keybindKeyOnHover && holder.getCode().size() > 0 && holder.getCode().get(0) != -1) {
                 maxL = Math.max(maxL, holder.getKeyTranslation().getString().length());
                 try {
-                    tooltips.add(new LiteralText("-".repeat(maxL)).getWithStyle(Utils.stylePassive).get(0));
                     if (holder instanceof MalilibKeybind ml) {
                         tooltips.add(new LiteralText(ml.getKeysString(false)));
                     } else {
                         tooltips.add(holder.getKeyTranslation().getWithStyle(Utils.stylePassive).get(0));
                     }
                 } catch (Exception ignored) {
+                }
+                if (tooltips.size() > 1) {
+                    tooltips.add(1, new LiteralText("-".repeat(maxL)).getWithStyle(Utils.stylePassive).get(0));
                 }
             }
         }
