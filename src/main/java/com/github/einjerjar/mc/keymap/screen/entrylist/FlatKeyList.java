@@ -73,19 +73,30 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         public FlatKeyListEntry(KeybindHolder holder) {
             super();
             this.holder = holder;
+            String keys = holder.getKeyTranslation().getString();
+
+            if (holder instanceof MalilibKeybind mk) {
+                keys = mk.getKeysString(false);
+            }
             this.displayText = new LiteralText(String.format(
                 "%s §a[%s]",
                 holder.getTranslation().getString(),
-                holder.getKeyTranslation().getString()
+                keys
             ));
         }
 
         public void updateDisplayText() {
             KeymapMain.LOGGER.info("UPDATESTATE2");
+            String keys = holder.getKeyTranslation().getString();
+
+            if (holder instanceof MalilibKeybind mk) {
+                keys = mk.getKeysString(false);
+            }
+
             displayText = new LiteralText(String.format(
                 "%s §a[%s]",
                 holder.getTranslation().getString(),
-                holder.getKeyTranslation().getString()
+                keys
             ));
         }
 
@@ -99,7 +110,7 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
                 maxL = Math.max(maxL, holder.getKeyTranslation().getString().length());
                 try {
                     if (holder instanceof MalilibKeybind ml) {
-                        tooltips.add(new LiteralText(ml.getKeysString(false)));
+                        tooltips.add(new LiteralText(ml.getKeysString(false)).getWithStyle(Utils.stylePassive).get(0));
                     } else {
                         tooltips.add(holder.getKeyTranslation().getWithStyle(Utils.stylePassive).get(0));
                     }

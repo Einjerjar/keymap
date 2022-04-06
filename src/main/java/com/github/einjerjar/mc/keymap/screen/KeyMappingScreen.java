@@ -173,7 +173,6 @@ public class KeyMappingScreen extends FlatScreen {
         });
 
         // Gather standard keybinds
-        //noinspection ConstantConditions
         for (KeyBinding kb : client.options.keysAll) {
             String cat = kb.getCategory();
             if (!mappedCategories.containsKey(cat)) {
@@ -266,6 +265,7 @@ public class KeyMappingScreen extends FlatScreen {
             for (KeybindHolder kb : mappedCategories.get(cat).getKeybinds()) {
                 if (kb.getCode().size() == 0) continue;
                 int kCode = kb.getCode().get(0);
+                if (kCode < 0) kCode += 100;
                 if (!mappedKeybindHolders.containsKey(kCode)) mappedKeybindHolders.put(kCode, new ArrayList<>());
                 mappedKeybindHolders.get(kCode).add(kb);
             }
@@ -282,10 +282,14 @@ public class KeyMappingScreen extends FlatScreen {
         for (CategoryHolder cat : mappedCategories.values().stream().sorted(Comparator.comparing(o -> o.getCategoryName().getString())).toList()) {
             if (!isBlank && !cat.getCategoryKey().equals(catE.category)) continue;
             for (KeybindHolder kb : cat.getKeybinds()) {
+                String keyFilter = String.format("[%s]", kb.getKeyTranslation().getString().toLowerCase());
+                if (kb instanceof MalilibKeybind mk) {
+                    keyFilter = mk.getKeysString().toLowerCase();
+                }
                 if (
                     filter.isBlank()
                         || kb.getTranslation().getString().toLowerCase().contains(filter)
-                        || String.format("[%s]", kb.getKeyTranslation().getString().toLowerCase()).contains(filter)
+                        || keyFilter.contains(filter)
                 )
                     listKeybinds.addEntry(new FlatKeyList.FlatKeyListEntry(kb));
             }
@@ -312,7 +316,15 @@ public class KeyMappingScreen extends FlatScreen {
                             updateMappedKeybinds();
                             updateKeyWidgets();
                             listKeybinds.setSelectedEntry(null);
-                        } else if (malilib && fke.holder instanceof MalilibKeybind) {
+                        } else if (malilib && fke.holder instanceof MalilibKeybind mk) {
+                            if (key.type == InputUtil.Type.MOUSE) {
+                                mk.assignHotKey(new Integer[]{key.keyCode - 100}, false);
+
+                                refreshKeys();
+                                fke.updateDisplayText();
+                                listKeybinds.setSelectedEntry(null);
+                                return;
+                            }
                             handleHotkeyCapture(fke, k.key.key);
                         }
                     }
