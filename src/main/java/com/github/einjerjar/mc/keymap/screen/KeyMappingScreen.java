@@ -156,11 +156,17 @@ public class KeyMappingScreen extends FlatScreen {
             FlatKeyList.FlatKeyListEntry fke = fk.getSelectedEntry();
             if (k == InputUtil.GLFW_KEY_ESCAPE) {
                 fke.holder.assignHotKey(new Integer[0], false);
-                if (malilib && fke.holder instanceof MalilibKeybind mk) mk.updateState();
-                fke.updateState2();
+                fke.holder.updateState();
 
-                listKeybinds.setSelectedEntry(null);
                 refreshKeys();
+                fke.updateDisplayText();
+
+            } else if (fke.holder instanceof VanillaKeybind) {
+                fke.holder.assignHotKey(new Integer[]{k}, false);
+
+                refreshKeys();
+                fke.updateDisplayText();
+
             } else if (malilib && fke.holder instanceof MalilibKeybind) {
                 handleHotkeyCapture(fke, k);
             }
@@ -183,6 +189,10 @@ public class KeyMappingScreen extends FlatScreen {
             InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
             for (KeybindCategory cat : handler.getKeybindCategories()) {
                 MalilibCategory c = new MalilibCategory(cat);
+                if (mappedCategories.containsKey(cat.getModName()) && mappedCategories.get(cat.getModName()) instanceof MalilibCategory mc) {
+                    mc.appendCategory(cat);
+                    continue;
+                }
                 mappedCategories.put(cat.getModName(), c);
             }
         }
@@ -227,16 +237,15 @@ public class KeyMappingScreen extends FlatScreen {
             }
             mk.assignHotKey(_keys, false);
 
-            fke.updateState2();
 
-            ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
-            updateMappedKeybinds();
-            updateKeyWidgets();
+            refreshKeys();
+            fke.updateDisplayText();
             listKeybinds.setSelectedEntry(null);
         });
     }
 
     public void refreshKeys() {
+        KeyBinding.updateKeysByCode();
         if (malilib) ((InputEventHandler) InputEventHandler.getInputManager()).updateUsedKeys();
         updateMappedKeybinds();
         updateKeyWidgets();

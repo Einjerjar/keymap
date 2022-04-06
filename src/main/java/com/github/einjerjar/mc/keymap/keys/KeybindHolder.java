@@ -18,4 +18,6 @@ public abstract class KeybindHolder {
     public abstract void assignHotKey(Integer[] hotkey, boolean mouse);
 
     public abstract void resetHotkey();
+
+    public abstract void updateState();
 }

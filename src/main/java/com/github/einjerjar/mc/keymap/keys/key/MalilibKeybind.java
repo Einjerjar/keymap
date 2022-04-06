@@ -24,12 +24,8 @@ public class MalilibKeybind extends KeybindHolder {
     }
 
     public String getKeysString(boolean format) {
-        String b = String.join(" + ", hotkey.getKeybind().getKeys().stream().map(i -> (i < 0
-                                                                                       ? InputUtil.Type.MOUSE.createFromCode((i + 100))
-                                                                                       : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString()).toList());
-        return format
-               ? " §a[" + b + "]"
-               : b;
+        String b = String.join(" + ", hotkey.getKeybind().getKeys().stream().map(i -> (i < 0 ? InputUtil.Type.MOUSE.createFromCode((i + 100)) : InputUtil.Type.KEYSYM.createFromCode(i)).getLocalizedText().getString()).toList());
+        return format ? " §a[" + b + "]" : b;
     }
 
     public String getKeysString() {
@@ -38,7 +34,7 @@ public class MalilibKeybind extends KeybindHolder {
 
     public void setModName(String modName) {
         this.modName = modName;
-        this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + this.hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
+        this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + this.hotkey.getPrettyName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
     }
 
     @Override
@@ -64,24 +60,26 @@ public class MalilibKeybind extends KeybindHolder {
     @Override
     public void assignHotKey(Integer[] hotkeys, boolean mouse) {
         hotkey.getKeybind().getKeys().clear();
-        if (hotkeys.length == 0) return;
-        for (int i : hotkeys) {
-            hotkey.getKeybind().addKey(i);
+        if (hotkeys.length != 0) {
+            for (int i : hotkeys) {
+                hotkey.getKeybind().addKey(i);
+            }
         }
         updateState();
     }
 
+    @Override
     public void updateState() {
         InputUtil.Key firstKey = InputUtil.Type.KEYSYM.createFromCode(Utils.safeGet(hotkey.getKeybind().getKeys(), 0, -1));
         this.boundKeyTranslation = firstKey.getLocalizedText();
         this.translation = new LiteralText(hotkey.getConfigGuiDisplayName());
-        // this.translationKey = "config.name." + hotkey.getName().toLowerCase();
+        // this.translationKey = "config.name." + hotkey.getPrettyName().toLowerCase();
         this.keyCode = hotkey.getKeybind().getKeys();
 
         if (modName != null) {
-            this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
+            this.translationKey = (KeymapMain.cfg.keyButtonModName ? "[" + modName + "] " : "") + hotkey.getPrettyName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
         } else {
-            this.translationKey = hotkey.getName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
+            this.translationKey = hotkey.getPrettyName() + (KeymapMain.cfg.keyButtonMalilibKeybinds ? getKeysString() : "");
         }
     }
 
