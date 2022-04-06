@@ -16,7 +16,7 @@ public class MalilibKeybind extends KeybindHolder {
     Text boundKeyTranslation;
     Text translation;
     String translationKey;
-    String modName = null;
+    public String modName = null;
 
     public MalilibKeybind(ConfigHotkey hotkey) {
         this.hotkey = hotkey;
