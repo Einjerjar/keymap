@@ -86,7 +86,7 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         }
 
         public void updateDisplayText() {
-            KeymapMain.LOGGER.info("UPDATESTATE2");
+            // CLog.info("UPDATESTATE2");
             String keys = holder.getKeyTranslation().getString();
 
             if (holder instanceof MalilibKeybind mk) {
@@ -104,7 +104,8 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         public void updateState() {
             super.updateState();
             tooltips.clear();
-            if (KeymapMain.cfg.keybindNameOnHover) tooltips.add(holder.getTranslation().getWithStyle(Utils.styleKey).get(0));
+            if (KeymapMain.cfg.keybindNameOnHover)
+                tooltips.add(holder.getTranslation().getWithStyle(Utils.styleKey).get(0));
             int maxL = holder.getTranslation().getString().length();
             if (KeymapMain.cfg.keybindKeyOnHover && holder.getCode().size() > 0 && holder.getCode().get(0) != -1) {
                 maxL = Math.max(maxL, holder.getKeyTranslation().getString().length());

@@ -1,6 +1,6 @@
 package com.github.einjerjar.mc.keymap.utils;
 
-import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.CLog;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -15,7 +15,7 @@ public class WidgetUtils {
 
     public static void drawBoxFilled(DrawableHelper d, MatrixStack m, int x, int y, int w, int h, int colBorder, int colFill) {
         if (d == null) {
-            KeymapMain.LOGGER.warn("Empty DrawableHelper passed to drawBox");
+            CLog.warn("Empty DrawableHelper passed to drawBox");
             return;
         }
 

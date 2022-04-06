@@ -48,6 +48,7 @@ dependencies {
     // Malilib Testing
     modRuntimeOnly name: "litematica-fabric-${project.version_litematica}"
     modRuntimeOnly name: "tweakeroo-fabric-${project.version_tweakeroo}"
+    modRuntimeOnly name: "minihud-fabric-${project.version_minihud}"
 
     // Performance
     modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"

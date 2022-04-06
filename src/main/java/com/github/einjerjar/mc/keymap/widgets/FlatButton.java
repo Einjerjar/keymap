@@ -23,7 +23,7 @@ public class FlatButton extends FlatWidget<FlatButton> implements Selectable, To
     }
 
     public void click() {
-        action.run(this);
+        if (enabled) action.run(this);
     }
 
     @Override
