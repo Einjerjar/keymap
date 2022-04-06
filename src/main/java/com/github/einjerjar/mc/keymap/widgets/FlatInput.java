@@ -38,6 +38,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
             onTextChanged.run(this);
         }
         if (reset) setCursorPosition(text.length());
+        if (cursorPosX > text.length()) cursorPosX = text.length();
         return this;
     }
 
