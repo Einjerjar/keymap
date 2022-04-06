@@ -80,7 +80,12 @@
 - Click on virtual key to quickly filter bound keys
 - Removed duplicate 'I' key (_finally, lol_)
 
-#### 0.3.0 beta 0
+#### 0.3.0-beta-3
+- bugfixes
+- checks to prevent malilib related code from leaking when malilib is not available
+- text input cursor and basic navigation
+
+#### 0.3.0 beta 2
 - Malilib support (_support custom chained keybinds like normal malilib hotkey config, currently keypresses except modifiers are limited to 2 keys_)
 - UI rewrite
 - New custom widgets from scratch, no more mojank code (_except legacy deprecated code kept for reference, will remove soon_)

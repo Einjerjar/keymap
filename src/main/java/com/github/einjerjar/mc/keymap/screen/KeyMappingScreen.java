@@ -329,6 +329,7 @@ public class KeyMappingScreen extends FlatScreen {
             }
             return;
         }
+        listCategories.setSelectedEntry(null);
         inputSearch.setText(String.format(
             "[%s",
             k.key.key.getLocalizedText().getString()
