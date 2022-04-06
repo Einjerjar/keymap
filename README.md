@@ -6,8 +6,11 @@
 
 ### New
 
-- Malilib support added! but is currently `UNSTABLE` as it has not gone through much testing,
-  will be pushing updates in the following days along with the 1.17 build
+- Malilib support is pretty stable now!
+- Support for custom keyboard layout (_currently a manual process, see ###How_)
+- Fixed most malilib related bugs
+- Click on virtual key to quickly filter bound keys
+- Removed duplicate 'I' key (_finally, lol_)
 
 ### What
 
@@ -21,8 +24,14 @@
 
 ### How
 
+#### to open the keymapper
 - The default keybind is ```" ` "```, aka, the grave accent key, the key below the escape key, or the key along with the tilde `" ~ "`
+
+#### to restore old keybind UI
 - If you'd like to have the old Keybinding screen on the options>controls>keybinds menu, then disable `Override Keybind Screen` (access it via ModMenu)
+
+#### to use a custom keyboard layout
+- Currently, this is only doable by running the game once to generate the config then modifying the `<minecraft_dir>/config/keymap_keys.json` file, unfortunately this requires you to know the exact keyCodes for your current keyboard layout (_I'm open for help on this one, tho I will still look into it as much as I could_).
 
 ### Required Mods
 
@@ -65,6 +74,13 @@
 
 ### Latest Changes
 
+#### 0.3.2 beta 0
+- Support for custom keyboard layout (_currently a manual process, see ###How_)
+- Fixed most malilib related bugs
+- Click on virtual key to quickly filter bound keys
+- Removed duplicate 'I' key (_finally, lol_)
+
+#### 0.3.0 beta 0
 - Malilib support (_support custom chained keybinds like normal malilib hotkey config, currently keypresses except modifiers are limited to 2 keys_)
 - UI rewrite
 - New custom widgets from scratch, no more mojank code (_except legacy deprecated code kept for reference, will remove soon_)
@@ -86,14 +102,14 @@
 
 ### TODO
 - [x] Support Malilib hotkeys
-- [ ] ~~Add conflict counter in the case that a key has more than 2 keys bound to it~~ (_replaced by hover tooltips_)
+- [x] ~~Add conflict counter in the case that a key has more than 2 keys bound to it~~ (_replaced by hover tooltips_)
 - [x] Show the actions bound to the key on hover
 - [x] Show the key bound to the action on hover
 - [x] Show the mod bound to a category on hover ~~(_if that's even possible_)~~ (_currently only works for malilib mods, will look into support for other mods soon_)
 - [x] Support overriding the default keybind screen
-- [ ] Support different keyboard layouts
+- [ ] Support different keyboard layouts (_kinda halfway there_)
 - [ ] Differentiate conflicting keybinds from keybinds with malilib chains for easier navigation
-- [ ] Clicking on virtual key wil filter the keybind list
+- [x] Clicking on virtual key wil filter the keybind list
 
 ---
 
