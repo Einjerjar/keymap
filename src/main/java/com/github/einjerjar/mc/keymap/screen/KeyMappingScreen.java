@@ -333,7 +333,12 @@ public class KeyMappingScreen extends FlatScreen {
                             }
                             handleHotkeyCapture(fke, k.key.key);
                         }
+                        return;
                     }
+                    inputSearch.setText(String.format(
+                        "[%s]",
+                        k.key.key.getLocalizedText().getString()
+                    ));
                 });
 
                 if (!mappedKeyWidgets.containsKey(code)) {
