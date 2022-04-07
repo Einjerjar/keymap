@@ -275,12 +275,12 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
         @Override
         public List<Text> getToolTips() {
-            return null;
+            return tooltips;
         }
 
         @Override
         public Text getFirstToolTip() {
-            return null;
+            return Utils.safeGet(getToolTips(), 0, null);
         }
     }
 }

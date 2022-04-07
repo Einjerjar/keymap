@@ -99,6 +99,9 @@ public class FlatScreen extends Screen {
             if (!(drilled instanceof FlatContainer)) topFocus = drilled;
             if (drilled instanceof HotkeyCapture) topFocus = drilled;
             super.setFocused(topFocus);
+            if (topFocus instanceof FlatWidgetBase tf) {
+                tf.focused = true;
+            }
             return;
         }
         super.setFocused(focused);
