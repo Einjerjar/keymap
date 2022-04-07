@@ -6,8 +6,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+
+import java.util.List;
 
 public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategoryEntry> {
     CommonAction onSelectedAction;
@@ -43,6 +46,8 @@ public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategor
     public static class FlatCategoryEntry extends FlatEntryList.FlatEntry<FlatCategoryEntry> {
         public String category;
         protected Text categoryTranslation;
+        String categoryTranslationString;
+        String trimmedCategoryString = null;
         TextRenderer tr;
 
         public FlatCategoryEntry(String category) {
@@ -53,11 +58,19 @@ public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategor
             } else {
                 this.categoryTranslation = new TranslatableText(category);
             }
+            this.categoryTranslationString = this.categoryTranslation.getString();
         }
 
         @Override
         public void renderWidget(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta) {
-            WidgetUtils.drawCenteredText(matrices, tr, categoryTranslation, x, y, w, h, true, false, true, colors.text.normal);
+            if (trimmedCategoryString == null) {
+                trimmedCategoryString = tr.trimToWidth(categoryTranslation, w).getString();
+                if (!trimmedCategoryString.equalsIgnoreCase(categoryTranslationString)) {
+                    tooltips.clear();
+                    tooltips.add(categoryTranslation);
+                }
+            }
+            WidgetUtils.drawCenteredText(matrices, tr, new LiteralText(trimmedCategoryString), x, y, w, h, true, false, true, colors.text.normal);
         }
     }
 }
