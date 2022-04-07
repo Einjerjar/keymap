@@ -74,7 +74,13 @@
 
 ### Latest Changes
 
-#### 0.3.2 beta 0
+#### 0.3.2 beta 2
+
+- text clipping in category as per #6
+- fix input widget crashes
+- fix input widget delete navigation
+
+#### 0.3.2 beta 1
 - Support for custom keyboard layout (_currently a manual process, see ###How_)
 - Fixed most malilib related bugs
 - Click on virtual key to quickly filter bound keys
