@@ -167,6 +167,7 @@ public class KeyMappingScreen extends FlatScreen {
             inputSearch.setText("");
             listKeybinds.setSelectedEntry(null);
             filterListKeys();
+            listKeybinds.setScrollOffset(0);
         });
 
         // Key pressed on keybind list

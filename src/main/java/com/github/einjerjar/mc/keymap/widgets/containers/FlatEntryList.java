@@ -43,6 +43,14 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         this.scrollBarX = x + w - scrollBarW;
     }
 
+    public void setScrollOffset(double scrollOffset) {
+        this.scrollOffset = Math.min(Math.max(getContentHeight() - h, 0), Math.max(0, scrollOffset));
+    }
+
+    public void setScrollOffsetR(double scrollOffset) {
+        setScrollOffset(this.scrollOffset + scrollOffset);
+    }
+
     @Override
     protected void updateSize() {
         this.scrollBarX = x + w - scrollBarW;
@@ -180,14 +188,12 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         if (lastClickX > scrollBarX && lastClickX < scrollBarX + scrollBarW) direction *= -1;
 
         if (mouseY - y != lastDragY) {
-            // positive if down
-            double delta = (mouseY - y - lastClickY) * direction;
-            lastDragY = (mouseY - y);
-            scrollOffset = (lastScrollPosY + delta);
+            // mojank magic, still doesn't make much sense for me tho
+            double d = Math.max(1d, getContentHeight() - h);
+            int j = Math.min(h, Math.max(32, (int)((float)(h * h) / (float)(this.getContentHeight() + 10))));
+            double e = Math.max(1d, d / (double)(h-j));
 
-            // clamp scroll
-            if (scrollOffset < 0) scrollOffset = 0;
-            if (scrollOffset > getContentHeight() - h) scrollOffset = Math.max(getContentHeight() - h, 0);
+            setScrollOffsetR(deltaY * e * 0.85);
         }
         return true;
     }
