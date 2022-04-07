@@ -108,11 +108,13 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
         if (text.length() == 0) return;
         StringBuilder sb = new StringBuilder(text);
         for (int i = 0; i < charCount; i++) {
+            if (cursorPosX + direction < 0) continue;
+            if (cursorPosX + direction > text.length()) continue;
             if (direction > 0) sb.deleteCharAt(cursorPosX);
             else if (direction < 0) sb.deleteCharAt(cursorPosX - i - 1);
         }
+        if (direction < 0) setCursorPositionR(direction * charCount);
         setText(sb.toString(), false);
-        setCursorPositionR(direction * charCount);
     }
 
     @Override

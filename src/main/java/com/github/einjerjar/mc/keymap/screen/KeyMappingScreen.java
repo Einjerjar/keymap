@@ -49,6 +49,7 @@ public class KeyMappingScreen extends FlatScreen {
     int left;
     int right;
     int bottom;
+    boolean firstClick = false;
     FlatInput inputSearch;
     FlatKeyList listKeybinds;
     FlatCategoryList listCategories;
@@ -69,9 +70,21 @@ public class KeyMappingScreen extends FlatScreen {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (!firstClick) return false;
         boolean ret = super.mouseReleased(mouseX, mouseY, button);
         if (hotkeyCapture.isActive()) setFocused(hotkeyCapture, false);
         return ret;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
+            // TODO: move to FlatScreen class
+            // prevents mouseReleased event on first open of the screen
+            firstClick = true;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -334,6 +347,7 @@ public class KeyMappingScreen extends FlatScreen {
             "[%s",
             k.key.key.getLocalizedText().getString()
         ), true);
+        setFocused(inputSearch);
     }
 
     private int[] addKeys(List<List<KeyLayoutConfig.BasicKeyData>> keys, int x, int y) {
