@@ -37,16 +37,14 @@ public class TestingScreen extends FlatScreen {
     }
 
     @Override
-    public void render(MatrixStack m, int mouseX, int mouseY, float delta) {
-        renderBackground(m);
-        super.render(m, mouseX, mouseY, delta);
-        keyList.render(m, mouseX, mouseY, delta);
+    public void renderScreen(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        keyList.render(matrices, mouseX, mouseY, delta);
 
-        renderTooltips(m, mouseX, mouseY);
+        renderTooltips(matrices, mouseX, mouseY);
         if (hovered != null)
-            WidgetUtils.drawCenteredText(m, textRenderer, new LiteralText(hovered.getClass().getName()), 0, 0, 0, 0, true, false, false, 0xff_00ff00);
+            WidgetUtils.drawCenteredText(matrices, textRenderer, new LiteralText(hovered.getClass().getName()), 0, 0, 0, 0, true, false, false, 0xff_00ff00);
         if (getFocused() != null)
-            WidgetUtils.drawCenteredText(m, textRenderer, new LiteralText(getFocused().getClass().getName()), 0, 10, 0, 0, true, false, false, 0xff_ff0000);
+            WidgetUtils.drawCenteredText(matrices, textRenderer, new LiteralText(getFocused().getClass().getName()), 0, 10, 0, 0, true, false, false, 0xff_ff0000);
     }
 
     @Override

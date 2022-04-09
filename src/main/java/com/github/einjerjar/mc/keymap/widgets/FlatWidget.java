@@ -5,12 +5,8 @@ import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
-public class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
-
+public abstract class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
     protected final T self;
-    protected boolean drawBg = false;
-    protected boolean drawBorder = false;
-    protected boolean drawShadow = false;
     protected ColorGroup color = ColorGroup.NORMAL;
 
     public FlatWidget(final Class<T> self, int x, int y, int w, int h) {
@@ -18,43 +14,7 @@ public class FlatWidget<T extends FlatWidget<?>> extends FlatWidgetBase {
         this.self = self.cast(this);
     }
 
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public T setFocused(boolean focused) {
-        this.focused = focused;
-        return self;
-    }
-
-    public T setDrawBg(boolean drawBg) {
-        this.drawBg = drawBg;
-        return self;
-    }
-
-    public T setDrawBorder(boolean drawBorder) {
-        this.drawBorder = drawBorder;
-        return self;
-    }
-
-    public T setDrawShadow(boolean drawShadow) {
-        this.drawShadow = drawShadow;
-        return self;
-    }
-
-    public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-    }
-
-    public boolean isActive() {
-        return enabled && visible;
-    }
-
-    public T setActive(boolean active) {
-        this.enabled = active;
-        this.visible = active;
-        return self;
-    }
+    public abstract void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta);
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {

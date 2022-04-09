@@ -60,12 +60,12 @@ public class MalilibCategory implements CategoryHolder {
     }
 
     @Override
-    public Text getCategoryName() {
+    public Text categoryName() {
         return categoryName;
     }
 
     @Override
-    public String getCategoryKey() {
+    public String categoryKey() {
         return category.getModName();
     }
 
@@ -74,23 +74,13 @@ public class MalilibCategory implements CategoryHolder {
     }
 
     @Override
-    public List<KeybindHolder> getKeybinds() {
+    public List<KeybindHolder> keybinds() {
         return bindings;
-    }
-
-    @Override
-    public KeybindHolder getKeyByTranslationKey(String key) {
-        return null;
     }
 
     @Override
     public String getModName() {
         return category.getModName();
-    }
-
-    @Override
-    public void sortKeybinds() {
-
     }
 
     @Override

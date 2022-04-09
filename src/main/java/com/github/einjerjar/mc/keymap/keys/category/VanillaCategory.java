@@ -23,40 +23,26 @@ public class VanillaCategory implements CategoryHolder {
     }
 
     @Override
-    public Text getCategoryName() {
+    public Text categoryName() {
         return categoryName;
     }
 
     @Override
-    public String getCategoryKey() {
+    public String categoryKey() {
         return category;
-    }
-
-    @Override
-    public void sortKeybinds() {
-        bindings.sort((o1, o2) ->
-            o1.getTranslation().getString().compareToIgnoreCase(
-                o2.getTranslation().getString()));
     }
 
     @Override
     public void addKeybind(KeybindHolder kb) {
         if (bindings.contains(kb)) return;
         bindings.add(kb);
-        bindingMap.put(kb.getTranslationKey(), kb);
+        bindingMap.put(kb.translationKey(), kb);
         kb.category = this;
     }
 
     @Override
-    public List<KeybindHolder> getKeybinds() {
+    public List<KeybindHolder> keybinds() {
         return bindings;
-    }
-
-    @Override
-    public KeybindHolder getKeyByTranslationKey(String key) {
-        if (!bindingMap.containsKey(key)) return null;
-
-        return bindingMap.get(key);
     }
 
     @Override

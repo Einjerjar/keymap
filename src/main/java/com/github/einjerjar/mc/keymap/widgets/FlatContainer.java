@@ -1,32 +1,36 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
+import com.github.einjerjar.mc.keymap.screen.Tooltipped;
+import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FlatContainer extends FlatWidget<FlatContainer> implements Selectable {
+@SuppressWarnings("UnusedReturnValue")
+@Accessors(fluent = true, chain = true)
+public abstract class FlatContainer extends FlatWidget<FlatContainer> implements Selectable, Tooltipped {
     protected final List<Element> childStack = new ArrayList<>();
     protected final List<Selectable> childSelectable = new ArrayList<>();
     protected final List<Drawable> childDrawable = new ArrayList<>();
 
-    protected Element focusedElement;
-    protected Element hoveredElement;
+    @Getter protected Element focusedElement;
+    @Getter protected Element hoveredElement;
 
     public FlatContainer(int x, int y, int w, int h) {
         super(FlatContainer.class, x, y, w, h);
-        this.setDrawBg(true).setDrawBorder(true);
-    }
-
-    public FlatContainer(Class<FlatContainer> self, int x, int y, int w, int h) {
-        super(self, x, y, w, h);
-        this.setDrawBg(true).setDrawBorder(true);
+        this.drawBg(true)
+            .drawBorder(true);
     }
 
     @Override
@@ -37,12 +41,14 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-
+    public List<Text> getToolTips() {
+        if (hoveredElement != null && hoveredElement instanceof Tooltipped tipped) return tipped.getToolTips();
+        return new ArrayList<>();
     }
 
-    public Element getFocusedElement() {
-        return focusedElement;
+    @Override
+    public Text getFirstToolTip() {
+        return Utils.safeGet(getToolTips(), 0, new LiteralText(""));
     }
 
     public <T extends Element & Drawable> FlatContainer addDrawable(T element) {
@@ -83,6 +89,7 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
                 ((Drawable) e).render(matrices, mouseX, mouseY, delta);
             }
         }
+
         RenderSystem.disableBlend();
     }
 
@@ -159,11 +166,11 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
                 return true;
             }
             int add = lookForwards ? 1 : -1;
-            int ix  = childStack.indexOf(focusedElement);
-            int ixa = ix + add;
-            if (ixa >= childStack.size()) ixa -= childStack.size();
-            if (ixa < 0) ixa += childStack.size();
-            focusedElement = childStack.get(ixa);
+            int focusIndex  = childStack.indexOf(focusedElement);
+            int nextIndex = focusIndex + add;
+            if (nextIndex >= childStack.size()) nextIndex -= childStack.size();
+            if (nextIndex < 0) nextIndex += childStack.size();
+            focusedElement = childStack.get(nextIndex);
             return true;
         }
         if (childStack.size() > 0) {
@@ -172,4 +179,7 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
         }
         return false;
     }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder builder) {}
 }

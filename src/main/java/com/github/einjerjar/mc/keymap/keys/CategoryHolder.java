@@ -7,20 +7,15 @@ import java.util.List;
 
 public interface CategoryHolder {
 
-    Text getCategoryName();
+    Text categoryName();
 
-    String getCategoryKey();
+    String categoryKey();
 
     void addKeybind(KeybindHolder kb);
 
-    List<KeybindHolder> getKeybinds();
-
-    @Nullable
-    KeybindHolder getKeyByTranslationKey(String key);
+    List<KeybindHolder> keybinds();
 
     String getModName();
-
-    void sortKeybinds();
 
     int size();
 }

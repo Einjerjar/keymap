@@ -7,13 +7,13 @@ import java.util.List;
 public abstract class KeybindHolder {
     public CategoryHolder category;
 
-    public abstract List<Integer> getCode();
+    public abstract List<Integer> code();
 
-    public abstract Text getKeyTranslation();
+    public abstract Text keyTranslation();
 
-    public abstract Text getTranslation();
+    public abstract Text translation();
 
-    public abstract String getTranslationKey();
+    public abstract String translationKey();
 
     public abstract void assignHotKey(Integer[] hotkey, boolean mouse);
 

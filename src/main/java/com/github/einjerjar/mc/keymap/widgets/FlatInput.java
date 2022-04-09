@@ -3,86 +3,63 @@ package com.github.einjerjar.mc.keymap.widgets;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
-public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
-    protected String text;
-    protected Text lText;
-    protected int cursorPosX;
-    protected int cursorPosX2;
+@SuppressWarnings("UnusedReturnValue")
+@Accessors(fluent = true, chain = true)
+public class FlatInput extends FlatSelectableWidget<FlatInput> {
+    @Getter protected String text;
+    @Getter protected Text lText;
+    @Getter protected int cursorPosX;
     protected int padX = 4;
-    protected int padY = 2;
     protected int tick = 0;
 
-    protected CommonAction onEnter;
-    protected CommonAction onEscape;
-    protected CommonAction onTextChanged;
+    @Setter protected CommonAction onEnter;
+    @Setter protected CommonAction onEscape;
+    @Setter protected CommonAction onTextChanged;
 
     public FlatInput(int x, int y, int w, int h, String text) {
         super(FlatInput.class, x, y, w, h);
         this.text = Utils.or(text, "");
         this.lText = new LiteralText(this.text);
-        this.setDrawBg(true).setDrawBorder(true).setVisible(true);
+        this.drawBg(true)
+            .drawBorder(true);
+    }
+
+    public int length() {
+        return text.length();
     }
 
     public FlatInput setText(String text, boolean reset) {
         this.text = text;
         this.lText = new LiteralText(this.text);
-        if (onTextChanged != null) {
-            onTextChanged.run(this);
-        }
-        if (reset) setCursorPosition(text.length());
-        if (cursorPosX > text.length()) cursorPosX = text.length();
+
+        if (onTextChanged != null) { onTextChanged.run(this); }
+        if (reset) cursorPosX(text.length());
+        else cursorPosX(cursorPosX);
         return this;
-    }
-
-    public void setOnTextChanged(CommonAction onTextChanged) {
-        this.onTextChanged = onTextChanged;
-    }
-
-    public FlatInput setOnEnter(CommonAction onEnter) {
-        this.onEnter = onEnter;
-        return this;
-    }
-
-    public FlatInput setOnEscape(CommonAction onEscape) {
-        this.onEscape = onEscape;
-        return this;
-    }
-
-    public String getText() {
-        return text;
     }
 
     public FlatInput setText(String text) {
         return setText(text, false);
     }
 
-    public Text getLiteralText() {
-        return lText;
+    public void cursorPosX(int a) {
+        if (a < 0) a = 0;
+        if (a > text.length()) a = text.length();
+        this.cursorPosX = a;
     }
 
-    public int getTextLength() {
-        return text.length();
-    }
-
-    public int getCursorPosX() {
-        return cursorPosX;
-    }
-
-    // Y is ignored for single line input (extend class for multi)
-    protected void moveCursor(int x, int y) {
-        cursorPosX += x;
-
-        // clamp cursor
-        if (cursorPosX < 0) cursorPosX = 0;
-        if (cursorPosX >= getTextLength()) cursorPosX = getTextLength();
+    public void cursorPosXR(int a) {
+        cursorPosX(cursorPosX + a);
     }
 
     protected void write(String cc) {
@@ -95,7 +72,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
             }
         }
         setText(text.substring(0, cursorPosX) + sb + text.substring(cursorPosX), false);
-        setCursorPositionR(cc.length());
+        cursorPosXR(cc.length());
     }
 
     protected void write(Character c) {
@@ -113,7 +90,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
             if (direction > 0) sb.deleteCharAt(cursorPosX);
             else if (direction < 0) sb.deleteCharAt(cursorPosX - i - 1);
         }
-        if (direction < 0) setCursorPositionR(direction * charCount);
+        if (direction < 0) cursorPosXR(direction * charCount);
         setText(sb.toString(), false);
     }
 
@@ -153,16 +130,6 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
         return super.charTyped(chr, modifiers);
     }
 
-    public void setCursorPosition(int a) {
-        if (a < 0) a = 0;
-        if (a > text.length()) a = text.length();
-        this.cursorPosX = a;
-    }
-
-    public void setCursorPositionR(int a) {
-        setCursorPosition(cursorPosX + a);
-    }
-
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         switch (keyCode) {
@@ -170,10 +137,10 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
             case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> {
                 if (onEnter != null) onEnter.run(this);
             }
-            case GLFW.GLFW_KEY_END -> setCursorPosition(getTextLength() + 1);
-            case GLFW.GLFW_KEY_HOME -> setCursorPosition(0);
-            case GLFW.GLFW_KEY_RIGHT -> setCursorPositionR(1);
-            case GLFW.GLFW_KEY_LEFT -> setCursorPositionR(-1);
+            case GLFW.GLFW_KEY_END -> cursorPosX(length() + 1);
+            case GLFW.GLFW_KEY_HOME -> cursorPosX(0);
+            case GLFW.GLFW_KEY_RIGHT -> cursorPosXR(1);
+            case GLFW.GLFW_KEY_LEFT -> cursorPosXR(-1);
             case GLFW.GLFW_KEY_BACKSPACE -> delete(-1, 1);
             case GLFW.GLFW_KEY_DELETE -> delete(1, 1);
             default -> {
@@ -182,20 +149,6 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
         }
         return true;
         // return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public SelectionType getType() {
-        return focused
-               ? SelectionType.FOCUSED
-               : hovered
-                 ? SelectionType.HOVERED
-                 : SelectionType.NONE;
-    }
-
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-
     }
 
     @Override
@@ -213,4 +166,7 @@ public class FlatInput extends FlatWidget<FlatInput> implements Selectable {
         this.focused = false;
         return false;
     }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder builder) {}
 }
