@@ -38,22 +38,22 @@ public class MalilibKeybind extends KeybindHolder {
     }
 
     @Override
-    public List<Integer> getCode() {
+    public List<Integer> code() {
         return keyCode;
     }
 
     @Override
-    public Text getKeyTranslation() {
+    public Text keyTranslation() {
         return boundKeyTranslation;
     }
 
     @Override
-    public Text getTranslation() {
+    public Text translation() {
         return translation;
     }
 
     @Override
-    public String getTranslationKey() {
+    public String translationKey() {
         return translationKey;
     }
 

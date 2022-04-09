@@ -6,22 +6,19 @@ import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-import java.util.List;
-
+@Accessors(fluent = true, chain = true)
 public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
-    FlatKeyListAction onKeyChanged;
+    @Setter protected FlatKeyListAction onKeyChanged;
 
     public FlatKeyList(int x, int y, int w, int h, int entryHeight) {
         super(x, y, w, h, entryHeight);
-    }
-
-    public void setOnKeyChanged(FlatKeyListAction onKeyChanged) {
-        this.onKeyChanged = onKeyChanged;
     }
 
     public void resetSelected() {
@@ -43,10 +40,6 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (selectedEntry == null) return false;
 
-        // if (selectedEntry.holder instanceof VanillaKeybind vk) {
-        //     vk.assignHotKey(new Integer[]{keyCode}, false);
-        // }
-
         if (onKeyChanged != null) onKeyChanged.run(this, keyCode);
 
         if (selectedEntry != null) {
@@ -57,37 +50,33 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         return true;
     }
 
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
-
-    }
-
     public interface FlatKeyListAction {
         void run(FlatKeyList fk, int key);
     }
 
+    @Accessors(fluent = true, chain = true)
     public static class FlatKeyListEntry extends FlatEntryList.FlatEntry<FlatKeyListEntry> {
-        public KeybindHolder holder;
-        Text displayText;
+        @Getter protected KeybindHolder holder;
+        protected Text displayText;
 
         public FlatKeyListEntry(KeybindHolder holder) {
             super();
             this.holder = holder;
-            String keys = holder.getKeyTranslation().getString();
+            String keys = holder.keyTranslation().getString();
 
             if (holder instanceof MalilibKeybind mk) {
                 keys = mk.getKeysString(false);
             }
+
             this.displayText = new LiteralText(String.format(
                 "%s §a[%s]",
-                holder.getTranslation().getString(),
+                holder.translation().getString(),
                 keys
             ));
         }
 
         public void updateDisplayText() {
-            // CLog.info("UPDATESTATE2");
-            String keys = holder.getKeyTranslation().getString();
+            String keys = holder.keyTranslation().getString();
 
             if (holder instanceof MalilibKeybind mk) {
                 keys = mk.getKeysString(false);
@@ -95,7 +84,7 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
 
             displayText = new LiteralText(String.format(
                 "%s §a[%s]",
-                holder.getTranslation().getString(),
+                holder.translation().getString(),
                 keys
             ));
         }
@@ -105,15 +94,15 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
             super.updateState();
             tooltips.clear();
             if (KeymapMain.cfg.keybindNameOnHover)
-                tooltips.add(holder.getTranslation().getWithStyle(Utils.styleKey).get(0));
-            int maxL = holder.getTranslation().getString().length();
-            if (KeymapMain.cfg.keybindKeyOnHover && holder.getCode().size() > 0 && holder.getCode().get(0) != -1) {
-                maxL = Math.max(maxL, holder.getKeyTranslation().getString().length());
+                tooltips.add(holder.translation().getWithStyle(Utils.styleKey).get(0));
+            int maxL = holder.translation().getString().length();
+            if (KeymapMain.cfg.keybindKeyOnHover && holder.code().size() > 0 && holder.code().get(0) != -1) {
+                maxL = Math.max(maxL, holder.keyTranslation().getString().length());
                 try {
                     if (holder instanceof MalilibKeybind ml) {
                         tooltips.add(new LiteralText(ml.getKeysString(false)).getWithStyle(Utils.stylePassive).get(0));
                     } else {
-                        tooltips.add(holder.getKeyTranslation().getWithStyle(Utils.stylePassive).get(0));
+                        tooltips.add(holder.keyTranslation().getWithStyle(Utils.stylePassive).get(0));
                     }
                 } catch (Exception ignored) {
                 }
@@ -126,11 +115,6 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         @Override
         public void renderWidget(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta) {
             WidgetUtils.drawCenteredText(matrices, tr, new LiteralText(tr.trimToWidth(this.displayText, w).getString()), x, y, w, h, true, false, true, colors.text.normal);
-        }
-
-        @Override
-        public List<Text> getToolTips() {
-            return tooltips;
         }
     }
 }

@@ -11,10 +11,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FlatScreen extends Screen {
+public abstract class FlatScreen extends Screen {
     protected Screen parent;
-
     protected Element hovered;
+    protected boolean firstClick = false;
 
     protected FlatScreen(Text title) {
         super(title);
@@ -38,7 +38,7 @@ public class FlatScreen extends Screen {
     protected void renderChildren(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         for (Element e : children()) {
             if (e instanceof FlatWidgetBase ee) {
-                if (ee.visible) {
+                if (ee.visible()) {
                     ee.render(matrices, mouseX, mouseY, delta);
                 }
             }
@@ -56,7 +56,11 @@ public class FlatScreen extends Screen {
                 hovered = c;
             }
         }
+
+        renderScreen(matrices, mouseX, mouseY, delta);
     }
+
+    public abstract void renderScreen(MatrixStack matrices, int mouseX, int mouseY, float delta);
 
     public void renderTooltips(MatrixStack matrices, int mouseX, int mouseY) {
         if (hovered != null && hovered instanceof Tooltipped tipped) {
@@ -68,12 +72,11 @@ public class FlatScreen extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!firstClick) {
+            firstClick = true;
+            return false;
+        }
         if (hovered != null) {
             if (hovered.mouseClicked(mouseX, mouseY, button)) {
                 setFocused(hovered);
@@ -121,11 +124,6 @@ public class FlatScreen extends Screen {
         }
         if (hovered != null) return hovered.mouseReleased(mouseX, mouseY, button);
         return false;
-    }
-
-    @Override
-    public boolean charTyped(char chr, int modifiers) {
-        return super.charTyped(chr, modifiers);
     }
 
     @Override

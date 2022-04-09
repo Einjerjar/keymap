@@ -1,23 +1,35 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 
+@SuppressWarnings("UnusedReturnValue")
+@Accessors(fluent = true, chain = true)
 public abstract class FlatWidgetBase extends DrawableHelper implements Element, Drawable {
-    public boolean hovered = false;
-    public boolean focused = false;
-    public boolean visible = true;
-    public boolean enabled = true;
+    @Getter @Setter protected boolean hovered = false;
+    @Getter @Setter protected boolean focused = false;
+    @Getter @Setter protected boolean visible = true;
+    @Getter @Setter protected boolean enabled = true;
+
+    @Setter protected boolean drawBg = false;
+    @Setter protected boolean drawBorder = false;
+    @Setter protected boolean drawShadow = false;
+
+    @Getter @Setter protected int x;
+    @Getter @Setter protected int y;
+    @Getter @Setter protected int w;
+    @Getter @Setter protected int h;
+
     protected TextRenderer tr;
-    protected int x;
-    protected int y;
-    protected int w;
-    protected int h;
 
     public FlatWidgetBase(int x, int y, int w, int h) {
         this.x = x;
@@ -31,60 +43,24 @@ public abstract class FlatWidgetBase extends DrawableHelper implements Element, 
         MinecraftClient.getInstance().getSoundManager().play(p);
     }
 
+    public void playSound(SoundEvent sound, float pitch) {
+        playSound(PositionedSoundInstance.master(sound, pitch));
+    }
+
     public void playClickSound() {
-        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        playSound(SoundEvents.UI_BUTTON_CLICK, 1.0F);
     }
 
-    protected void updateSize() {
+    public void updateSize() {
     }
 
-    public int getX() {
-        return x;
+    public boolean active() {
+        return enabled && visible;
     }
 
-    public FlatWidgetBase setX(int x) {
-        this.x = x;
-        updateSize();
-        return this;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public FlatWidgetBase setY(int y) {
-        this.y = y;
-        updateSize();
-        return this;
-    }
-
-    public int getH() {
-        return h;
-    }
-
-    public FlatWidgetBase setH(int h) {
-        this.h = h;
-        updateSize();
-        return this;
-    }
-
-    public int getW() {
-        return w;
-    }
-
-    public FlatWidgetBase setW(int w) {
-        this.w = w;
-        updateSize();
-        return this;
-    }
-
-    public FlatWidgetBase setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        return this;
-    }
-
-    public FlatWidgetBase setVisible(boolean visible) {
-        this.visible = visible;
+    public FlatWidgetBase active(boolean active) {
+        this.enabled = active;
+        this.visible = active;
         return this;
     }
 

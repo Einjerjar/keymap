@@ -2,29 +2,22 @@ package com.github.einjerjar.mc.keymap.screen.entrylist;
 
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-import java.util.List;
-
+@Accessors(fluent = true, chain = true)
 public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategoryEntry> {
-    CommonAction onSelectedAction;
+    @Setter CommonAction onSelectedAction;
 
     public FlatCategoryList(int x, int y, int w, int h, int entryHeight) {
         super(x, y, w, h, entryHeight);
-    }
-
-    public void setOnSelectedAction(CommonAction onSelectedAction) {
-        this.onSelectedAction = onSelectedAction;
-    }
-
-    @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
     }
 
     @Override
@@ -36,19 +29,13 @@ public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategor
         return false;
     }
 
-    @Override
-    public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        // WidgetUtils.drawBoxOutline(this, matrices, x, y, w, h, ColorGroup.GREEN.border.normal);
-
-        super.renderWidget(matrices, mouseX, mouseY, delta);
-    }
-
+    @Accessors(fluent = true, chain = true)
     public static class FlatCategoryEntry extends FlatEntryList.FlatEntry<FlatCategoryEntry> {
-        public String category;
-        protected Text categoryTranslation;
-        String categoryTranslationString;
-        String trimmedCategoryString = null;
-        TextRenderer tr;
+        protected final String categoryTranslationString;
+        protected final TextRenderer tr;
+        @Getter protected String category;
+        @Getter protected Text categoryTranslation;
+        protected String trimmedCategoryString = null;
 
         public FlatCategoryEntry(String category) {
             this.tr = MinecraftClient.getInstance().textRenderer;

@@ -6,6 +6,9 @@ import com.github.einjerjar.mc.keymap.widgets.FlatContainer;
 import com.github.einjerjar.mc.keymap.widgets.FlatText;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlexContainer;
 import fi.dy.masa.malilib.util.KeyCodes;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -14,22 +17,23 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
+@Accessors(fluent = true, chain = true)
 public class HotkeyCapture extends FlatContainer {
-    FlatText labelContainer;
-    FlatText labelHotkey;
+    protected FlatText labelContainer;
+    protected FlatText labelHotkey;
 
-    FlexContainer parentContainer;
-    FlexContainer buttonContainer;
+    protected FlexContainer parentContainer;
+    protected FlexContainer buttonContainer;
 
-    FlatButton buttonOk;
-    FlatButton buttonClear;
-    FlatButton buttonCancel;
+    protected FlatButton buttonOk;
+    protected FlatButton buttonClear;
+    protected FlatButton buttonCancel;
 
-    CommonAction onOkAction;
-    CommonAction onCancelAction;
-    CommonAction onCloseAction;
-    List<InputUtil.Key> pressed = new ArrayList<>();
-    List<InputUtil.Key> allowedModifiers = new ArrayList<>() {{
+    @Setter protected CommonAction onOkAction;
+    @Setter protected CommonAction onCancelAction;
+    @Setter protected CommonAction onCloseAction;
+    @Getter protected List<InputUtil.Key> pressed = new ArrayList<>();
+    protected List<InputUtil.Key> allowedModifiers = new ArrayList<>() {{
         add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_SHIFT));
         add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_RIGHT_SHIFT));
         add(InputUtil.Type.KEYSYM.createFromCode(InputUtil.GLFW_KEY_LEFT_CONTROL));
@@ -51,9 +55,9 @@ public class HotkeyCapture extends FlatContainer {
         buttonClear = new FlatButton(0, 0, 0, 0, new LiteralText("Clear"));
         buttonCancel = new FlatButton(0, 0, 0, 0, new LiteralText("Cancel"));
 
-        buttonOk.setAction(button -> ok());
-        buttonClear.setAction(button -> clearKeys());
-        buttonCancel.setAction(button -> close());
+        buttonOk.action(button -> ok());
+        buttonClear.action(button -> clearKeys());
+        buttonCancel.action(button -> close());
 
         buttonContainer = new FlexContainer(0, 0, 300, 20);
         parentContainer = new FlexContainer(w / 2 - 150 + x, h / 2 - 40 + y, 300, 80);
@@ -62,7 +66,7 @@ public class HotkeyCapture extends FlatContainer {
             .addChild(labelContainer)
             .addChild(labelHotkey, 2)
             .addChild(buttonContainer)
-            .setDirection(FlexContainer.FlexDirection.COLUMN)
+            .direction(FlexContainer.FlexDirection.COLUMN)
             .arrange();
 
         buttonContainer
@@ -74,16 +78,14 @@ public class HotkeyCapture extends FlatContainer {
         addSelectable(parentContainer);
     }
 
-    public void clear() {
+    public HotkeyCapture clear() {
         pressed.clear();
+        return this;
     }
 
-    public void add(InputUtil.Key k) {
+    public HotkeyCapture add(InputUtil.Key k) {
         pressed.add(k);
-    }
-
-    public List<InputUtil.Key> getPressed() {
-        return pressed;
+        return this;
     }
 
     @Override
@@ -105,19 +107,6 @@ public class HotkeyCapture extends FlatContainer {
         return keyPressed(btn, 0, 0);
     }
 
-    public void setOnOkAction(CommonAction onOkAction) {
-        this.onOkAction = onOkAction;
-    }
-
-    public HotkeyCapture setOnCancelAction(CommonAction onCancelAction) {
-        this.onCancelAction = onCancelAction;
-        return this;
-    }
-
-    public void setOnCloseAction(CommonAction onCloseAction) {
-        this.onCloseAction = onCloseAction;
-    }
-
     public void ok() {
         if (onOkAction != null) {
             onOkAction.run(this);
@@ -131,8 +120,7 @@ public class HotkeyCapture extends FlatContainer {
     }
 
     public void close() {
-        setEnabled(false);
-        setVisible(false);
+        active(false);
         if (onCloseAction != null) {
             onCloseAction.run(this);
         }
@@ -161,13 +149,15 @@ public class HotkeyCapture extends FlatContainer {
         return true;
     }
 
-    public void updateState() {
+    public HotkeyCapture updateState() {
         StringBuilder sb = new StringBuilder();
         for (InputUtil.Key kk : pressed) {
             sb.append(kk.getLocalizedText().getString()).append(" + ");
         }
         if (sb.length() > 3) sb.delete(sb.length() - 3, sb.length());
         labelHotkey.setText(new LiteralText(sb.toString()));
+
+        return this;
     }
 
     @Override

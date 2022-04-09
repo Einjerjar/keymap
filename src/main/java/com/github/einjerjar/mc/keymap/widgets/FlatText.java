@@ -5,18 +5,18 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 public class FlatText extends FlatWidget<FlatText> {
-    Text text;
+    protected Text text;
 
     public FlatText(int x, int y, int w, int h, Text text) {
         super(FlatText.class, x, y, w, h);
         this.text = text;
-        this.setDrawShadow(true);
+        this.drawBg(false)
+            .drawBorder(false)
+            .drawShadow(true);
     }
 
-    public FlatText(Class<FlatText> self, int x, int y, int w, int h, Text text) {
-        super(self, x, y, w, h);
-        this.text = text;
-        this.setDrawShadow(true);
+    public Text getText() {
+        return text;
     }
 
     public FlatText setText(Text text) {
