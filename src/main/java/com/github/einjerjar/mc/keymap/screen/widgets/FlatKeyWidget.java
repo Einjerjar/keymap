@@ -1,7 +1,7 @@
 package com.github.einjerjar.mc.keymap.screen.widgets;
 
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
-import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
+import com.github.einjerjar.mc.keymap.keys.KeyboardKey;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
@@ -14,7 +14,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,13 +25,12 @@ public class FlatKeyWidget extends FlatButton {
     protected static final ColorGroup COL_SELECTED = ColorGroup.YELLOW;
 
     protected final Map<Integer, List<KeybindHolder>> mappedKeybindHolders;
-    protected final List<Text> tooltips = new ArrayList<>();
     protected final Text displayText;
 
-    @Getter protected KeyboardLayout.KeyboardKey key;
+    @Getter protected KeyboardKey key;
     @Getter @Setter boolean selected = false;
 
-    public FlatKeyWidget(int x, int y, KeyboardLayout.KeyboardKey key, Map<Integer, List<KeybindHolder>> mappedKeys) {
+    public FlatKeyWidget(int x, int y, KeyboardKey key, Map<Integer, List<KeybindHolder>> mappedKeys) {
         super(x, y, 16 + key.extraWidth(), 16 + key.extraHeight(), new LiteralText(""));
         this.key = key;
         this.enabled = key.enabled();
@@ -71,16 +69,6 @@ public class FlatKeyWidget extends FlatButton {
                 tooltips.add(1, new LiteralText(tr.trimToWidth("-".repeat(maxChars), maxWidth)).getWithStyle(Utils.styleSeparator).get(0));
             }
         }
-    }
-
-    @Override
-    public List<Text> getToolTips() {
-        return tooltips;
-    }
-
-    @Override
-    public Text getFirstToolTip() {
-        return Utils.or(tooltips.get(0), null);
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.github.einjerjar.mc.keymap;
 
 import com.github.einjerjar.mc.keymap.screen.KeyMappingScreen;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -25,17 +27,17 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
+@Accessors(fluent = true, chain = true)
 public class KeymapMain implements ModInitializer {
-    public static final String MOD_ID = "keymap";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static KeymapConfig cfg;
-    public static KeyLayoutConfig keys;
-    public static boolean malilibSupport = false;
+    @Getter protected static final String MOD_ID = "keymap";
+    @Getter protected static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    @Getter protected static KeymapConfig cfg;
+    @Getter protected static KeyLayoutConfig keys;
+    @Getter protected static boolean malilibAvailable = false;
 
-    public static KeyBinding KBOpenKBScreen;
-
-    static ConfigHolder<KeymapConfig> holderCfg;
-    static ConfigHolder<KeyLayoutConfig> holderKeys;
+    protected static KeyBinding KBOpenKBScreen;
+    protected static ConfigHolder<KeymapConfig> holderCfg;
+    protected static ConfigHolder<KeyLayoutConfig> holderKeys;
 
     @Override
     public void onInitialize() {
@@ -54,7 +56,7 @@ public class KeymapMain implements ModInitializer {
                 ModContainer malilibMod = malilibContainer.get();
                 CLog.info(String.format("Found malilib version %s, keymap support will be enabled",
                     malilibMod.getMetadata().getVersion().getFriendlyString()));
-                malilibSupport = true;
+                malilibAvailable = true;
             }
         }
 

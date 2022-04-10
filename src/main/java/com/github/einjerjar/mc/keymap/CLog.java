@@ -5,22 +5,22 @@ package com.github.einjerjar.mc.keymap;
 public class CLog {
     public static void info(String s) {
         // KeymapMain.LOGGER.info(String.format("[%s] %s", KeymapMain.MOD_ID, s));
-        KeymapMain.LOGGER.info(s);
+        KeymapMain.LOGGER().info(s);
     }
 
     public static void error(String s) {
         // KeymapMain.LOGGER.error(String.format("[%s] %s", KeymapMain.MOD_ID, s));
-        KeymapMain.LOGGER.error(s);
+        KeymapMain.LOGGER().error(s);
     }
 
     public static void debug(String s) {
         // KeymapMain.LOGGER.debug(String.format("[%s] %s", KeymapMain.MOD_ID, s));
-        KeymapMain.LOGGER.debug(s);
+        KeymapMain.LOGGER().debug(s);
     }
 
     public static void warn(String s) {
         // KeymapMain.LOGGER.warn(String.format("[%s] %s", KeymapMain.MOD_ID, s));
-        KeymapMain.LOGGER.warn(s);
+        KeymapMain.LOGGER().warn(s);
     }
 
     public static void trace(String s) {

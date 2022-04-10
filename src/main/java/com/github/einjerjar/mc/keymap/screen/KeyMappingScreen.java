@@ -1,14 +1,14 @@
 package com.github.einjerjar.mc.keymap.screen;
 
-import com.github.einjerjar.mc.keymap.KeyLayoutConfig;
 import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
-import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
+import com.github.einjerjar.mc.keymap.keys.KeyboardKey;
 import com.github.einjerjar.mc.keymap.keys.category.MalilibCategory;
 import com.github.einjerjar.mc.keymap.keys.category.VanillaCategory;
 import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
+import com.github.einjerjar.mc.keymap.keys.BasicKeyData;
 import com.github.einjerjar.mc.keymap.screen.containers.HotkeyCapture;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatCategoryList;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
@@ -85,7 +85,7 @@ public class KeyMappingScreen extends FlatScreen {
     @Override
     protected void init() {
         tr = textRenderer;
-        malilib = KeymapMain.malilibSupport && KeymapMain.cfg.malilibSupport;
+        malilib = KeymapMain.malilibAvailable() && KeymapMain.cfg().malilibSupport;
         expectedScreenWidth = Math.min(500, width);
 
         mappedCategories.clear();
@@ -97,10 +97,10 @@ public class KeyMappingScreen extends FlatScreen {
         right = left + expectedScreenWidth - outPadX * 2;
         bottom = height - outPadY;
 
-        int[] kbKeys   = addKeys(KeymapMain.keys.keys, left + padX, top + padY);
-        int[] kbExtra  = addKeys(KeymapMain.keys.extra, left + padX, top + padY * 2 + kbKeys[1] - gapY);
-        int[] kbMouse  = addKeys(KeymapMain.keys.mouse, left + padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
-        int[] kbNumpad = addKeys(KeymapMain.keys.numpad, left + padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
+        int[] kbKeys   = addKeys(KeymapMain.keys().keys, left + padX, top + padY);
+        int[] kbExtra  = addKeys(KeymapMain.keys().extra, left + padX, top + padY * 2 + kbKeys[1] - gapY);
+        int[] kbMouse  = addKeys(KeymapMain.keys().mouse, left + padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
+        int[] kbNumpad = addKeys(KeymapMain.keys().numpad, left + padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
 
         int leftSpaceX = expectedScreenWidth - outPadX * 2 - kbKeys[0] - padX * 3;
 
@@ -308,7 +308,7 @@ public class KeyMappingScreen extends FlatScreen {
         }
     }
 
-    private void keyWidgetAction(KeyboardLayout.KeyboardKey key, FlatKeyWidget k) {
+    private void keyWidgetAction(KeyboardKey key, FlatKeyWidget k) {
         FlatKeyList.FlatKeyListEntry fke = listKeybinds.getSelectedEntry();
         if (fke != null) {
             KeybindHolder holder = fke.holder();
@@ -338,17 +338,17 @@ public class KeyMappingScreen extends FlatScreen {
         setFocused(inputSearch);
     }
 
-    private int[] addKeys(List<List<KeyLayoutConfig.BasicKeyData>> keys, int x, int y) {
+    private int[] addKeys(List<List<BasicKeyData>> keys, int x, int y) {
         int sizeX    = 0;
         int sizeY    = 0;
         int currentX = x;
         int currentY = y;
 
-        for (List<KeyLayoutConfig.BasicKeyData> row : keys) {
+        for (List<BasicKeyData> row : keys) {
             int minItemHeight = height;
-            for (KeyLayoutConfig.BasicKeyData keyData : row) {
-                KeyboardLayout.KeyboardKey key  = new KeyboardLayout.KeyboardKey(keyData);
-                FlatKeyWidget              k    = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
+            for (BasicKeyData keyData : row) {
+                KeyboardKey key = new KeyboardKey(keyData);
+                FlatKeyWidget           k   = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
                 int                        code = key.keyCode();
 
                 k.action(button -> {
@@ -415,7 +415,7 @@ public class KeyMappingScreen extends FlatScreen {
 
         renderTooltips(matrices, mouseX, mouseY);
 
-        if (getFocused() != null && KeymapMain.cfg.debug) {
+        if (getFocused() != null && KeymapMain.cfg().debug) {
             drawCenteredText(matrices, tr, getFocused().getClass().getName(), width / 2, 5, 0xff_00ff00);
         }
     }
