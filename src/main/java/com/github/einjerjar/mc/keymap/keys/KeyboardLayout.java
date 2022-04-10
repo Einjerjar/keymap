@@ -4,11 +4,6 @@ import com.github.einjerjar.mc.keymap.KeyLayoutConfig;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class KeyboardLayout {
     @Accessors(fluent = true, chain = true)

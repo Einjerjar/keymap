@@ -1,7 +1,6 @@
 package com.github.einjerjar.mc.keymap.keys;
 
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

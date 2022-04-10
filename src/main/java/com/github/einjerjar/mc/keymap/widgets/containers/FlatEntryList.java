@@ -3,7 +3,6 @@ package com.github.einjerjar.mc.keymap.widgets.containers;
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
-import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.FlatWidgetBase;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;

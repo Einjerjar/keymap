@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.widgets;
 
-import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -9,7 +8,7 @@ import net.minecraft.text.Text;
 
 @SuppressWarnings("UnusedReturnValue")
 @Accessors(fluent = true, chain = true)
-public class FlatButton extends FlatSelectableWidget<FlatButton> implements Tooltipped {
+public class FlatButton extends FlatSelectableWidget<FlatButton> {
     @Setter protected CommonAction action;
     @Setter protected Text text;
 

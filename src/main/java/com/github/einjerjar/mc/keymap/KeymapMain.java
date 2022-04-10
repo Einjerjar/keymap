@@ -74,7 +74,6 @@ public class KeymapMain implements ModInitializer {
                 .executes(context -> {
                     if (holderKeys.load()) {
                         keys = holderKeys.getConfig();
-                        CLog.info("Nyet");
                     }
                     assert MinecraftClient.getInstance().player != null;
                     MinecraftClient.getInstance().player.sendMessage(
@@ -88,7 +87,6 @@ public class KeymapMain implements ModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (KBOpenKBScreen.wasPressed()) {
-                // client.setScreen(new KeymappingScreen());
                 client.setScreen(new KeyMappingScreen());
             }
         });

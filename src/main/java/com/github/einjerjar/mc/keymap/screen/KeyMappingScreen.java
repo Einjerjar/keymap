@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.screen;
 
-import com.github.einjerjar.mc.keymap.CLog;
 import com.github.einjerjar.mc.keymap.KeyLayoutConfig;
 import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
@@ -27,7 +26,6 @@ import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.ControlsListWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -202,12 +200,6 @@ public class KeyMappingScreen extends FlatScreen {
             InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
             for (KeybindCategory cat : handler.getKeybindCategories()) {
                 MalilibCategory c = new MalilibCategory(cat);
-                CLog.info(String.format(
-                    "%s :: %s :: %s",
-                    cat.getModName(),
-                    cat.getCategory(),
-                    cat.getHotkeys().size()
-                ));
                 if (mappedCategories.containsKey(cat.getModName()) && mappedCategories.get(cat.getModName()) instanceof MalilibCategory mc) {
                     mc.appendCategory(cat);
                     continue;

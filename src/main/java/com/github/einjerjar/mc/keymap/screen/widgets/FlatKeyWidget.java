@@ -2,7 +2,6 @@ package com.github.einjerjar.mc.keymap.screen.widgets;
 
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.keys.KeyboardLayout;
-import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
-public class FlatKeyWidget extends FlatButton implements Tooltipped {
+public class FlatKeyWidget extends FlatButton {
     protected static final ColorGroup COL_NORMAL = ColorGroup.NORMAL;
     protected static final ColorGroup COL_SET = ColorGroup.GREEN;
     protected static final ColorGroup COL_CONFLICT = ColorGroup.RED;
