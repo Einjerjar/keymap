@@ -1,0 +1,114 @@
+---
+meta:
+  name: English
+  code: en_us
+keys:
+  basic:
+    - row:
+        - { name: ESC }
+        - { name: '1' }
+        - { name: '2' }
+        - { name: '3' }
+        - { name: '4' }
+        - { name: '5' }
+        - { name: '6' }
+        - { name: '7' }
+        - { name: '8' }
+        - { name: '9' }
+        - { name: '0' }
+        - { name: '-' }
+        - { name: '=' }
+        - { name: BSP }
+    - row:
+        - { name: TAB }
+        - { name: Q }
+        - { name: W }
+        - { name: E }
+        - { name: R }
+        - { name: T }
+        - { name: Y }
+        - { name: U }
+        - { name: I }
+        - { name: O }
+        - { name: P }
+        - { name: '[' }
+        - { name: ']' }
+        - { name: '\' }
+    - row:
+        - { name: CAP }
+        - { name: A }
+        - { name: S }
+        - { name: D }
+        - { name: F }
+        - { name: G }
+        - { name: H }
+        - { name: J }
+        - { name: K }
+        - { name: L }
+        - { name: ';' }
+        - { name: '''' }
+        - { name: ENTER }
+    - row:
+        - { name: LSH }
+        - { name: Z }
+        - { name: X }
+        - { name: C }
+        - { name: V }
+        - { name: B }
+        - { name: N }
+        - { name: M }
+        - { name: ',' }
+        - { name: '.' }
+        - { name: '/' }
+        - { name: LSH }
+    - row:
+        - { name: LCT }
+        - { name: LWN }
+        - { name: LAL }
+        - { name: SPC }
+        - { name: RAL }
+        - { name: RWN }
+        - { name: MNU }
+        - { name: RCT }
+  extra:
+    - row:
+        - { name: INS }
+        - { name: HME }
+        - { name: PGU }
+    - row:
+        - { name: DEL }
+        - { name: END }
+        - { name: PGD }
+    - row:
+        - { name: '<' }
+        - { name: '^' }
+        - { name: v }
+        - { name: '>' }
+  mouse:
+    - row:
+        - { name: ML }
+        - { name: MM }
+        - { name: MR }
+  numpad:
+    - row:
+        - { name: NM }
+        - { name: '/' }
+        - { name: '*' }
+        - { name: '-' }
+    - row:
+        - { name: '7' }
+        - { name: '8' }
+        - { name: '9' }
+        - { name: '+' }
+    - row:
+        - { name: '4' }
+        - { name: '5' }
+        - { name: '6' }
+    - row:
+        - { name: '1' }
+        - { name: '2' }
+        - { name: '3' }
+        - { name: EN }
+    - row:
+        - { name: '0' }
+        - { name: '.' }

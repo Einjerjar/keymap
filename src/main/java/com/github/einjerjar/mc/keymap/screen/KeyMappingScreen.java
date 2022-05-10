@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.screen;
 
 import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.keys.BasicKeyData;
 import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.keys.KeyboardKey;
@@ -8,7 +9,6 @@ import com.github.einjerjar.mc.keymap.keys.category.MalilibCategory;
 import com.github.einjerjar.mc.keymap.keys.category.VanillaCategory;
 import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
-import com.github.einjerjar.mc.keymap.keys.BasicKeyData;
 import com.github.einjerjar.mc.keymap.screen.containers.HotkeyCapture;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatCategoryList;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
@@ -164,8 +164,8 @@ public class KeyMappingScreen extends FlatScreen {
         // Key pressed on keybind list
         listKeybinds.onKeyChanged((fk, k) -> {
             if (fk.getSelectedEntry() == null) return;
-            FlatKeyList.FlatKeyListEntry fke = fk.getSelectedEntry();
-            KeybindHolder holder = fke.holder();
+            FlatKeyList.FlatKeyListEntry fke    = fk.getSelectedEntry();
+            KeybindHolder                holder = fke.holder();
             if (k == InputUtil.GLFW_KEY_ESCAPE) {
                 holder.assignHotKey(new Integer[0], false);
                 holder.updateState();
@@ -347,9 +347,9 @@ public class KeyMappingScreen extends FlatScreen {
         for (List<BasicKeyData> row : keys) {
             int minItemHeight = height;
             for (BasicKeyData keyData : row) {
-                KeyboardKey key = new KeyboardKey(keyData);
-                FlatKeyWidget           k   = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
-                int                        code = key.keyCode();
+                KeyboardKey   key  = new KeyboardKey(keyData);
+                FlatKeyWidget k    = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
+                int           code = key.keyCode();
 
                 k.action(button -> {
                     keyWidgetAction(key, k);
@@ -383,9 +383,9 @@ public class KeyMappingScreen extends FlatScreen {
             listCategories.h() + padY * 2,
             ColorGroup.NORMAL.border.normal);
 
-        FlatKeyList.FlatKeyListEntry fe = listKeybinds.getSelectedEntry();
-        boolean feOk = false;
-        int feKey = -1;
+        FlatKeyList.FlatKeyListEntry fe    = listKeybinds.getSelectedEntry();
+        boolean                      feOk  = false;
+        int                          feKey = -1;
         if (fe != null) {
             feOk = true;
             feKey = Utils.safeGet(fe.holder().code(), 0, -1);

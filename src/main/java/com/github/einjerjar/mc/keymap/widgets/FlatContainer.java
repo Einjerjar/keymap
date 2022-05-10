@@ -165,9 +165,9 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
             if (focusedElement.changeFocus(lookForwards)) {
                 return true;
             }
-            int add = lookForwards ? 1 : -1;
-            int focusIndex  = childStack.indexOf(focusedElement);
-            int nextIndex = focusIndex + add;
+            int add        = lookForwards ? 1 : -1;
+            int focusIndex = childStack.indexOf(focusedElement);
+            int nextIndex  = focusIndex + add;
             if (nextIndex >= childStack.size()) nextIndex -= childStack.size();
             if (nextIndex < 0) nextIndex += childStack.size();
             focusedElement = childStack.get(nextIndex);
@@ -181,5 +181,6 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {}
+    public void appendNarrations(NarrationMessageBuilder builder) {
+    }
 }

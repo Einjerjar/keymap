@@ -5,12 +5,11 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class KeyLayoutEnglish extends KeyboardLayoutBase {
-    public KeyLayoutEnglish() {
-        super("English");
-        keys = new ArrayList<>() {{
+public class KeyLayoutEN_US extends KeyboardLayoutBase {
+    public KeyLayoutEN_US() {
+        super("English", "en");
+        basic = new ArrayList<>() {{
             add(new ArrayList<>() {{
                 add(new BasicKeyData("ESC", InputUtil.GLFW_KEY_ESCAPE, 14));
                 add(new BasicKeyData("1", InputUtil.GLFW_KEY_F1, 2));

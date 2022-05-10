@@ -13,7 +13,7 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public abstract class FlatSelectableWidget<T extends FlatSelectableWidget<?>> extends FlatWidget<T> implements Selectable, Tooltipped {
-    @Setter protected List<Text> tooltips = null;
+    @Setter protected List<Text> tooltips = new ArrayList<>();
 
     public FlatSelectableWidget(Class<T> self, int x, int y, int w, int h) {
         super(self, x, y, w, h);

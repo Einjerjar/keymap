@@ -84,6 +84,12 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         return selectedEntry;
     }
 
+    public void setSelectedEntry(@Nullable T selectedEntry) {
+        if (this.selectedEntry != null) this.selectedEntry.selected = false;
+        this.selectedEntry = selectedEntry;
+        if (selectedEntry != null) selectedEntry.selected = true;
+    }
+
     public T getEntry(int index) {
         return this.entries.get(index);
     }
@@ -102,12 +108,6 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
     public void setScrollOffsetR(double scrollOffset) {
         setScrollOffset(this.scrollOffset + scrollOffset);
-    }
-
-    public void setSelectedEntry(@Nullable T selectedEntry) {
-        if (this.selectedEntry != null) this.selectedEntry.selected = false;
-        this.selectedEntry = selectedEntry;
-        if (selectedEntry != null) selectedEntry.selected = true;
     }
 
     public FlatEntryList<T> addEntry(T entry) {
@@ -232,14 +232,15 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
         if (lastClickX > scrollBarX) {
             onScroll = true;
-        };
+        }
+        ;
 
         if (mouseY - y != lastDragY) {
             if (onScroll) {
                 // mojank magic, still doesn't make much sense for me tho
                 double d = Math.max(1d, getContentHeight() - h);
-                int j = Math.min(h, Math.max(32, (int)((float)(h * h) / (float)(this.getContentHeight() + 10))));
-                double e = Math.max(1d, d / (double)(h-j));
+                int    j = Math.min(h, Math.max(32, (int) ((float) (h * h) / (float) (this.getContentHeight() + 10))));
+                double e = Math.max(1d, d / (double) (h - j));
 
                 setScrollOffsetR(deltaY * e * 0.85);
             } else {

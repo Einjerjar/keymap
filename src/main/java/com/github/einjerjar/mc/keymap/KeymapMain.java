@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap;
 
+import com.github.einjerjar.mc.keymap.keys.layout.KeyLayoutLoader;
 import com.github.einjerjar.mc.keymap.screen.KeyMappingScreen;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import lombok.Getter;
@@ -42,6 +43,8 @@ public class KeymapMain implements ModInitializer {
     @Override
     public void onInitialize() {
         CLog.info("Keymap Init");
+
+        new KeyLayoutLoader().loadLayouts();
 
         AutoConfig.register(KeymapConfig.class, GsonConfigSerializer::new);
         AutoConfig.register(KeyLayoutConfig.class, GsonConfigSerializer::new);

@@ -42,7 +42,9 @@ public class FlatInput extends FlatSelectableWidget<FlatInput> {
         this.text = text;
         this.lText = new LiteralText(this.text);
 
-        if (onTextChanged != null) { onTextChanged.run(this); }
+        if (onTextChanged != null) {
+            onTextChanged.run(this);
+        }
         if (reset) cursorPosX(text.length());
         else cursorPosX(cursorPosX);
         return this;
@@ -168,5 +170,6 @@ public class FlatInput extends FlatSelectableWidget<FlatInput> {
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {}
+    public void appendNarrations(NarrationMessageBuilder builder) {
+    }
 }
