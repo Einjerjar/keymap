@@ -1,15 +1,11 @@
 package com.github.einjerjar.mc.keymap.widgets.containers;
 
-import com.github.einjerjar.mc.keymap.screen.Tooltipped;
-import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.widgets.FlatContainer;
 import com.github.einjerjar.mc.keymap.widgets.FlatWidgetBase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.Selectable;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +84,8 @@ public class FlexContainer extends FlatContainer {
             }
             f.child.updateSize();
 
-            if (f.child instanceof Selectable)
-                if (!childSelectable.contains(f.child)) childSelectable.add((Selectable) f.child);
+            if (f.child instanceof Selectable sel)
+                if (!childSelectable.contains(sel)) childSelectable.add(sel);
                 else if (!childDrawable.contains(f.child)) childDrawable.add(f.child);
             if (!childStack.contains(f.child)) childStack.add(f.child);
         }

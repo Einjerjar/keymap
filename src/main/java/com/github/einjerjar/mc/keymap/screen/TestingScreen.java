@@ -1,65 +1,127 @@
 package com.github.einjerjar.mc.keymap.screen;
 
-import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
-import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
+import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.keys.BasicKeyData;
+import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
+import com.github.einjerjar.mc.keymap.keys.KeyboardKey;
+import com.github.einjerjar.mc.keymap.screen.widgets.FlatKeyWidget;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
-import com.github.einjerjar.mc.keymap.widgets.FlatInput;
 import com.github.einjerjar.mc.keymap.widgets.FlatScreen;
+import com.github.einjerjar.mc.keymap.widgets.FlatWidgetBase;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
+
+import java.awt.im.InputContext;
+import java.util.*;
 
 public class TestingScreen extends FlatScreen {
-    FlatKeyList keyList;
-    FlatInput input;
-
+    protected final Map<Integer, List<KeybindHolder>> mappedKeybindHolders = new HashMap<>();
+    protected final Map<Integer, List<FlatKeyWidget>> mappedKeyWidgets = new HashMap<>();
+    protected int expectedScreenWidth;
+    protected int outPadX = 4;
+    protected int outPadY = 4;
+    protected int padX = 10;
+    protected int padY = 10;
+    protected int gapX = 2;
+    protected int gapY = 2;
+    protected int top;
+    protected int left;
+    protected int right;
+    protected int bottom;
+    Text keyPress;
     public TestingScreen() {
         super(new LiteralText("Test"));
     }
-
     public TestingScreen(Screen parent) {
         super(new LiteralText("Test"), parent);
     }
 
     @Override
     protected void init() {
-        keyList = new FlatKeyList(10, 40, width - 20, height - 50, textRenderer.fontHeight);
+        top = outPadY;
+        left = Math.max(0, width - expectedScreenWidth) / 2 + outPadX;
+        right = left + expectedScreenWidth - outPadX * 2;
+        bottom = height - outPadY;
 
-        //noinspection ConstantConditions
-        for (KeyBinding kb : client.options.keysAll) {
-            keyList.addEntry(new FlatKeyList.FlatKeyListEntry(new VanillaKeybind(kb)));
+        int[] kbKeys   = addKeys(KeymapMain.keys().keys, padX, top + padY);
+        int[] kbExtra  = addKeys(KeymapMain.keys().extra, padX, top + padY * 2 + kbKeys[1] - gapY);
+        int[] kbMouse  = addKeys(KeymapMain.keys().mouse, padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
+        int[] kbNumpad = addKeys(KeymapMain.keys().numpad, padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
+    }
+
+    private int[] addKeys(List<List<BasicKeyData>> keys, int x, int y) {
+        int sizeX    = 0;
+        int sizeY    = 0;
+        int currentX = x;
+        int currentY = y;
+
+        for (List<BasicKeyData> row : keys) {
+            int minItemHeight = height;
+            for (BasicKeyData keyData : row) {
+                KeyboardKey   key  = new KeyboardKey(keyData);
+                FlatKeyWidget k    = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
+                int           code = key.keyCode();
+
+                k.action(button -> {
+                });
+
+                if (!mappedKeyWidgets.containsKey(code)) {
+                    mappedKeyWidgets.put(code, new ArrayList<>());
+                }
+                mappedKeyWidgets.get(key.keyCode()).add(k);
+                addSelectableChild(k);
+                currentX += gapX + k.w();
+                minItemHeight = Math.min(k.h(), minItemHeight);
+            }
+            sizeX = Math.max(currentX - x, sizeX);
+            currentX = x;
+            currentY += gapY + minItemHeight;
+            sizeY = currentY - y;
         }
 
-        input = new FlatInput(10, 10, width - 20, 20, "");
-        addSelectableChild(keyList);
-        addSelectableChild(input);
+        return new int[]{sizeX, sizeY};
     }
 
     @Override
     public void renderScreen(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        keyList.render(matrices, mouseX, mouseY, delta);
+        if (keyPress != null) {
+            WidgetUtils.drawCenteredText(matrices, textRenderer, keyPress, 0, 0, width, height + 10, true, true, false, 0x00ff00);
+        }
+
+        for (Element e : children()) {
+            if (e instanceof FlatWidgetBase ee) {
+                if (ee.visible()) {
+                    ee.render(matrices, mouseX, mouseY, delta);
+                }
+            }
+        }
 
         renderTooltips(matrices, mouseX, mouseY);
-        if (hovered != null)
-            WidgetUtils.drawCenteredText(matrices, textRenderer, new LiteralText(hovered.getClass().getName()), 0, 0, 0, 0, true, false, false, 0xff_00ff00);
-        if (getFocused() != null)
-            WidgetUtils.drawCenteredText(matrices, textRenderer, new LiteralText(getFocused().getClass().getName()), 0, 10, 0, 0, true, false, false, 0xff_ff0000);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (getFocused() != null && getFocused().keyPressed(keyCode, scanCode, modifiers)) return true;
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return super.mouseReleased(mouseX, mouseY, button);
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            KeymapMain.reloadLayouts();
+            this.onClose();
+            return true;
+        }
+        keyPress = new LiteralText(String.format(
+            "KeyCode: %s , ScanCode: %s , Modifiers: %s, Translation: %s , Translation2: %s",
+            keyCode,
+            scanCode,
+            modifiers,
+            InputUtil.fromKeyCode(keyCode, scanCode),
+            InputUtil.Type.KEYSYM.createFromCode(keyCode)
+        ));
+        Locale locale = InputContext.getInstance().getLocale();
+        if (locale == null) locale = Locale.getDefault();
+        KeymapMain.LOGGER().info(locale.toString());
+        return true;
     }
 }

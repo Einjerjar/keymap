@@ -1,7 +1,11 @@
 package com.github.einjerjar.mc.keymap;
 
+import com.github.einjerjar.mc.keymap.keys.layout.KeyLayoutLoader;
+import com.github.einjerjar.mc.keymap.keys.layout.KeyboardLayoutBase;
 import com.github.einjerjar.mc.keymap.screen.KeyMappingScreen;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -25,21 +29,23 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
+@Accessors(fluent = true, chain = true)
 public class KeymapMain implements ModInitializer {
-    public static final String MOD_ID = "keymap";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static KeymapConfig cfg;
-    public static KeyLayoutConfig keys;
-    public static boolean malilibSupport = false;
+    @Getter protected static final String MOD_ID = "keymap";
+    @Getter protected static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    @Getter protected static KeymapConfig cfg;
+    @Getter protected static KeyLayoutConfig keys;
+    @Getter protected static boolean malilibAvailable = false;
 
-    public static KeyBinding KBOpenKBScreen;
-
-    static ConfigHolder<KeymapConfig> holderCfg;
-    static ConfigHolder<KeyLayoutConfig> holderKeys;
+    protected static KeyBinding KBOpenKBScreen;
+    protected static ConfigHolder<KeymapConfig> holderCfg;
+    protected static ConfigHolder<KeyLayoutConfig> holderKeys;
 
     @Override
     public void onInitialize() {
         CLog.info("Keymap Init");
+
+        new KeyLayoutLoader().loadLayouts();
 
         AutoConfig.register(KeymapConfig.class, GsonConfigSerializer::new);
         AutoConfig.register(KeyLayoutConfig.class, GsonConfigSerializer::new);
@@ -54,7 +60,7 @@ public class KeymapMain implements ModInitializer {
                 ModContainer malilibMod = malilibContainer.get();
                 CLog.info(String.format("Found malilib version %s, keymap support will be enabled",
                     malilibMod.getMetadata().getVersion().getFriendlyString()));
-                malilibSupport = true;
+                malilibAvailable = true;
             }
         }
 
@@ -74,7 +80,6 @@ public class KeymapMain implements ModInitializer {
                 .executes(context -> {
                     if (holderKeys.load()) {
                         keys = holderKeys.getConfig();
-                        CLog.info("Nyet");
                     }
                     assert MinecraftClient.getInstance().player != null;
                     MinecraftClient.getInstance().player.sendMessage(
@@ -88,9 +93,22 @@ public class KeymapMain implements ModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (KBOpenKBScreen.wasPressed()) {
-                // client.setScreen(new KeymappingScreen());
                 client.setScreen(new KeyMappingScreen());
             }
         });
+    }
+
+    public static void reloadLayouts(String code) {
+        KeyboardLayoutBase kb = KeyboardLayoutBase.layoutWithCode(code);
+        KeymapMain.LOGGER().info("Loaded [{} :: {}]", kb.name(), kb.code());
+        KeymapMain.keys().keys = kb.basic();
+        KeymapMain.keys().extra = kb.extra();
+        KeymapMain.keys().mouse = kb.mouse();
+        KeymapMain.keys().numpad = kb.numpad();
+
+        KeymapMain.holderKeys.save();
+    }
+    public static void reloadLayouts() {
+        reloadLayouts("en_us");
     }
 }

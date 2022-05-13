@@ -93,10 +93,10 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
         public void updateState() {
             super.updateState();
             tooltips.clear();
-            if (KeymapMain.cfg.keybindNameOnHover)
+            if (KeymapMain.cfg().keybindNameOnHover)
                 tooltips.add(holder.translation().getWithStyle(Utils.styleKey).get(0));
             int maxL = holder.translation().getString().length();
-            if (KeymapMain.cfg.keybindKeyOnHover && holder.code().size() > 0 && holder.code().get(0) != -1) {
+            if (KeymapMain.cfg().keybindKeyOnHover && holder.code().size() > 0 && holder.code().get(0) != -1) {
                 maxL = Math.max(maxL, holder.keyTranslation().getString().length());
                 try {
                     if (holder instanceof MalilibKeybind ml) {
