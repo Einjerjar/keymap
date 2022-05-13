@@ -121,13 +121,13 @@ So the layout per language thingy is now kinda working, I made a tiny tool to he
 - da_dk :: Dansk (Danmark)
 - no_no :: Norsk bokmal (Norge)
 
-If you want a language added but can't help, send over a language request via Github issues over [here](https://github.com/einjerjar/keymap/issues), with the title "[Language Request] <Language>", with an image attachment of the expected keyboard layout, images from Google, or you own keyboard is fine.
+If you want a language added but can't help, send over a language request via Github issues over [here](https://github.com/einjerjar/keymap/issues), with the title `[Layout Request] <Language>`, with an image attachment of the expected keyboard layout, images from Google, or you own keyboard is fine.
 
 If you are able to work with the tool mentioned above, export the file via the export button (making sure that the language code is correct), following this, you can:
 - submit a pull request on the keymap repo (_place the yaml file under `/src/main/resources/assets/keymap/layouts`_).
 
 or
-- submit an issue [here](https://github.com/einjerjar/keymap/issues), with the title "[Language Support] <Language>", with the yaml file from the export attached.
+- submit an issue [here](https://github.com/einjerjar/keymap/issues), with the title `[Layout Support] <Language>`, with the yaml file from the export attached.
 
 Thanks!
 
