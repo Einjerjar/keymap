@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -48,12 +49,12 @@ public class HotkeyCapture extends FlatContainer {
         color = ColorGroup.fromBaseColor(0xff_333333);
         color.bg.normal = (color.bg.normal & 0x00_ffffff) | 0xee_000000;
 
-        labelContainer = new FlatText(w / 2 + x, h / 2 + y - tr.fontHeight * 2, 0, 0, new LiteralText("Set Hotkey"));
+        labelContainer = new FlatText(w / 2 + x, h / 2 + y - tr.fontHeight * 2, 0, 0, new TranslatableText("key.keymap.set_hotkey"));
         labelHotkey = new FlatText(w / 2 + x, h / 2 + y, 0, 0, new LiteralText("A + B + C"));
 
-        buttonOk = new FlatButton(0, 0, 0, 0, new LiteralText("OK"));
-        buttonClear = new FlatButton(0, 0, 0, 0, new LiteralText("Clear"));
-        buttonCancel = new FlatButton(0, 0, 0, 0, new LiteralText("Cancel"));
+        buttonOk = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.ok"));
+        buttonClear = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.clear"));
+        buttonCancel = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.cancel"));
 
         buttonOk.action(button -> ok());
         buttonClear.action(button -> clearKeys());

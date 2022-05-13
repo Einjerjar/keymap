@@ -100,11 +100,17 @@ public class TestingScreen extends FlatScreen {
                 }
             }
         }
+
+        renderTooltips(matrices, mouseX, mouseY);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) this.onClose();
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            KeymapMain.reloadLayouts();
+            this.onClose();
+            return true;
+        }
         keyPress = new LiteralText(String.format(
             "KeyCode: %s , ScanCode: %s , Modifiers: %s, Translation: %s , Translation2: %s",
             keyCode,

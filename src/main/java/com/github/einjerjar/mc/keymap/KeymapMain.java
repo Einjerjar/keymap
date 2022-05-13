@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap;
 
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayoutLoader;
+import com.github.einjerjar.mc.keymap.keys.layout.KeyboardLayoutBase;
 import com.github.einjerjar.mc.keymap.screen.KeyMappingScreen;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import lombok.Getter;
@@ -95,5 +96,19 @@ public class KeymapMain implements ModInitializer {
                 client.setScreen(new KeyMappingScreen());
             }
         });
+    }
+
+    public static void reloadLayouts(String code) {
+        KeyboardLayoutBase kb = KeyboardLayoutBase.layoutWithCode(code);
+        KeymapMain.LOGGER().info("Loaded [{} :: {}]", kb.name(), kb.code());
+        KeymapMain.keys().keys = kb.basic();
+        KeymapMain.keys().extra = kb.extra();
+        KeymapMain.keys().mouse = kb.mouse();
+        KeymapMain.keys().numpad = kb.numpad();
+
+        KeymapMain.holderKeys.save();
+    }
+    public static void reloadLayouts() {
+        reloadLayouts("en_us");
     }
 }

@@ -9,6 +9,7 @@ import com.github.einjerjar.mc.keymap.keys.category.MalilibCategory;
 import com.github.einjerjar.mc.keymap.keys.category.VanillaCategory;
 import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import com.github.einjerjar.mc.keymap.keys.key.VanillaKeybind;
+import com.github.einjerjar.mc.keymap.keys.layout.KeyboardLayoutBase;
 import com.github.einjerjar.mc.keymap.screen.containers.HotkeyCapture;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatCategoryList;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
@@ -27,6 +28,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -84,6 +86,7 @@ public class KeyMappingScreen extends FlatScreen {
 
     @Override
     protected void init() {
+        KeymapMain.reloadLayouts(client.getLanguageManager().getLanguage().getCode());
         tr = textRenderer;
         malilib = KeymapMain.malilibAvailable() && KeymapMain.cfg().malilibSupport;
         expectedScreenWidth = Math.min(500, width);
@@ -118,8 +121,8 @@ public class KeyMappingScreen extends FlatScreen {
         hotkeyCapture = new HotkeyCapture(0, 0, width, height);
         hotkeyCapture.active(false);
 
-        buttonResetSelect = new FlatButton(0, 0, 0, 0, new LiteralText("Reset"));
-        buttonResetAll = new FlatButton(0, 0, 0, 0, new LiteralText("Reset All"));
+        buttonResetSelect = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.reset"));
+        buttonResetAll = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.reset_all"));
 
         buttonResetSelect.tooltip(new TranslatableText("key.keymap.tip.reset_selected"));
         buttonResetAll.tooltip(new TranslatableText("key.keymap.tip.reset_all"));
@@ -149,6 +152,7 @@ public class KeyMappingScreen extends FlatScreen {
             refreshKeys();
         });
         buttonResetAll.action(button -> {
+            inputSearch.setText("");
             listKeybinds.resetAll();
             refreshKeys();
         });
@@ -316,6 +320,7 @@ public class KeyMappingScreen extends FlatScreen {
                 vk.assignHotKey(new Integer[]{k.key().keyCode()}, key.type() == InputUtil.Type.MOUSE);
                 updateMappedKeybinds();
                 updateKeyWidgets();
+                fke.updateDisplayText();
                 listKeybinds.setSelectedEntry(null);
             } else if (malilib && holder instanceof MalilibKeybind mk) {
                 if (key.type() == InputUtil.Type.MOUSE) {
@@ -351,9 +356,7 @@ public class KeyMappingScreen extends FlatScreen {
                 FlatKeyWidget k    = new FlatKeyWidget(currentX, currentY, key, mappedKeybindHolders);
                 int           code = key.keyCode();
 
-                k.action(button -> {
-                    keyWidgetAction(key, k);
-                });
+                k.action(button -> keyWidgetAction(key, k));
 
                 if (!mappedKeyWidgets.containsKey(code)) {
                     mappedKeyWidgets.put(code, new ArrayList<>());

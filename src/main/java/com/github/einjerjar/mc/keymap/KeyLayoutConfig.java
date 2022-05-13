@@ -9,8 +9,8 @@ import java.util.List;
 
 @Config(name = KeymapMain.MOD_ID + "_keys")
 public class KeyLayoutConfig implements ConfigData {
-    public List<List<BasicKeyData>> keys = KeyboardLayoutBase.layoutWithCode("en_us").basic();
-    public List<List<BasicKeyData>> extra = KeyboardLayoutBase.layoutWithCode("en_us").extra();
-    public List<List<BasicKeyData>> mouse = KeyboardLayoutBase.layoutWithCode("en_us").mouse();
-    public List<List<BasicKeyData>> numpad = KeyboardLayoutBase.layoutWithCode("en_us").numpad();
+    public List<List<BasicKeyData>> keys = KeyboardLayoutBase.default_layout().basic();
+    public List<List<BasicKeyData>> extra = KeyboardLayoutBase.default_layout().extra();
+    public List<List<BasicKeyData>> mouse = KeyboardLayoutBase.default_layout().mouse();
+    public List<List<BasicKeyData>> numpad = KeyboardLayoutBase.default_layout().numpad();
 }

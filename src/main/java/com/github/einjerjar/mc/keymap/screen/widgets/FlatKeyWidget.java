@@ -53,7 +53,11 @@ public class FlatKeyWidget extends FlatButton {
         }
 
         tooltips.clear();
-        tooltips.add(key.key().getLocalizedText().getWithStyle(Utils.styleKey).get(0));
+        try {
+            tooltips.add(key.key().getLocalizedText().getWithStyle(Utils.styleKey).get(0));
+        } catch (Exception e) {
+            tooltips.add(new LiteralText(key.text()).getWithStyle(Utils.styleKey).get(0));
+        }
         if (mappedKeybindHolders.containsKey(key.keyCode())) {
             List<KeybindHolder> kbs = mappedKeybindHolders.get(key.keyCode());
 

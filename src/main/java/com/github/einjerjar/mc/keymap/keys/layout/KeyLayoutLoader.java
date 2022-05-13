@@ -21,13 +21,11 @@ public class KeyLayoutLoader {
         List<List<BasicKeyData>> keyList = new ArrayList<>();
         keys.forEach(row -> {
             ArrayList<BasicKeyData> rowData = new ArrayList<>();
-            row.row.forEach(key -> {
-                rowData.add(new BasicKeyData(
-                    key.name,
-                    key.code,
-                    key.width,
-                    key.height));
-            });
+            row.row.forEach(key -> rowData.add(new BasicKeyData(
+                key.name,
+                key.code,
+                key.width,
+                key.height)));
             keyList.add(rowData);
         });
 
@@ -35,6 +33,7 @@ public class KeyLayoutLoader {
     }
 
     public void loadLayouts() {
+        KeyboardLayoutBase.layouts().clear();
         try {
             ClassLoader loader    = this.getClass().getClassLoader();
             URI         layoutUri = loader.getResource(layoutRoot).toURI();
@@ -42,18 +41,25 @@ public class KeyLayoutLoader {
             Path        path      = Paths.get(layoutUri);
             Files.list(path).forEach(path1 -> {
                 try {
-                    KeymapMain.LOGGER().info("loading keymap layout: {}", path1.getFileName());
                     InputStream     is  = loader.getResourceAsStream(layoutRoot + path1.getFileName());
                     KeyLayoutConfig cfg = yaml.load(is);
 
-                    new KeyboardLayoutBase(cfg.meta.name, cfg.meta.code) {{
+                    KeyboardLayoutBase klb = new KeyboardLayoutBase(cfg.meta.name, cfg.meta.code) {{
                         basic = populateKeyList(cfg.keys.basic);
                         extra = populateKeyList(cfg.keys.extra);
                         mouse = populateKeyList(cfg.keys.mouse);
                         numpad = populateKeyList(cfg.keys.numpad);
                     }};
+
+                    KeymapMain.LOGGER().info("loaded keymap layout: {}", path1.getFileName());
+
+                    if (cfg.meta.code.equalsIgnoreCase(KeyboardLayoutBase.default_code())) {
+                        KeyboardLayoutBase.default_layout(klb);
+                    }
+
                 } catch (Exception e) {
-                    KeymapMain.LOGGER().error(e.getMessage());
+                    KeymapMain.LOGGER().warn("!! failed to load {} !!", path1.getFileName());
+                    KeymapMain.LOGGER().warn(e.getMessage());
                     e.printStackTrace();
                 }
             });
