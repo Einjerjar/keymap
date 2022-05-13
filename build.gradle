@@ -61,7 +61,7 @@ dependencies {
     modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
 
     // https://mvnrepository.com/artifact/org.yaml/snakeyaml
-    implementation 'org.yaml:snakeyaml:1.30'
+    implementation include('org.yaml:snakeyaml:1.30')
 }
 
 processResources {
