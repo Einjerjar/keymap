@@ -6,11 +6,10 @@
 
 ### New
 
-- Malilib support is pretty stable now!
-- Support for custom keyboard layout (_currently a manual process, see ###How_)
-- Fixed most malilib related bugs
-- Click on virtual key to quickly filter bound keys
-- Removed duplicate 'I' key (_finally, lol_)
+- Different layout for different locales are now a thing! (_but due to how I still need to design the layouts per language, it will still take some time to cover every language)
+- I made a tiny tool to help with the keyboard layout creation over [here](https://github.com/einjerjar/keymap-helper) so anyone can help with project.
+- If you want to help add a new language or request one, check out `### Layouts` below.
+- Check out the supported languages over at `### Layouts` below.
 
 ### What
 
@@ -101,13 +100,36 @@
 ### Help I can't xx
 
 - **Can't rebind mouse keys?**
-  - Currently, rebinding mouse key requires the user to click on the `ML`, `MM`, and `MR` buttons to assign the `Left button`, `Middle Button`, and `Right Button` respectively.
+  - Currently, rebinding mouse keys requires the user to click on the `ML`, `MM`, and `MR` buttons to assign the `Left button`, `Middle Button`, and `Right Button` respectively.
 
 ---
 
 ### BUG!
 
 - [Github Issues](https://github.com/Einjerjar/keymap/issues)
+
+---
+
+### Layouts
+So the layout per language thingy is now kinda working, I made a tiny tool to help with the keyboard layout creation over [here](https://github.com/einjerjar/keymap-helper) so anyone can help with project.
+
+> `NOTE:` At the moment of writing, if the mod is unable to detect the presence of a layout file for the language, it defaults to `en_us`.
+
+**Current language/locale support**:
+- en_us :: English(US)
+- de_de :: Deutsch (Deutschland)
+- da_dk :: Dansk (Danmark)
+- no_no :: Norsk bokmal (Norge)
+
+If you want a language added but can't help, send over a language request via Github issues over [here](https://github.com/einjerjar/keymap/issues), with the title "[Language Request] <Language>", with an image attachment of the expected keyboard layout, images from Google, or you own keyboard is fine.
+
+If you are able to work with the tool mentioned above, export the file via the export button (making sure that the language code is correct), following this, you can:
+- submit a pull request on the keymap repo (_place the yaml file under `/src/main/resources/assets/keymap/layouts`_).
+
+or
+- submit an issue [here](https://github.com/einjerjar/keymap/issues), with the title "[Language Support] <Language>", with the yaml file from the export attached.
+
+Thanks!
 
 ---
 
@@ -118,7 +140,7 @@
 - [x] Show the key bound to the action on hover
 - [x] Show the mod bound to a category on hover ~~(_if that's even possible_)~~ (_currently only works for malilib mods, will look into support for other mods soon_)
 - [x] Support overriding the default keybind screen
-- [ ] Support different keyboard layouts (_kinda halfway there_)
+- [ ] Support different keyboard layouts (_working but still needs work_)
 - [ ] Differentiate conflicting keybinds from keybinds with malilib chains for easier navigation
 - [x] Clicking on virtual key wil filter the keybind list
 
@@ -129,7 +151,3 @@
 <a href='https://ko-fi.com/X8X831J1L' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ---
-
-#### Deprecation notice
-
-Complete UI widget rewrite, everything under v1 is practically obsolete, kept just for personal reference, will prolly be removed on succeeding updates
