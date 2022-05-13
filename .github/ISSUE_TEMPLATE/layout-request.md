@@ -2,7 +2,7 @@
 name: Layout Request
 about: Request for a layout to be added
 title: "[Layout Request] <Language>"
-labels: ''
+labels: layout request
 assignees: Einjerjar
 
 ---

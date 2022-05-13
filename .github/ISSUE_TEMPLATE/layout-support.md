@@ -2,7 +2,7 @@
 name: Layout Support
 about: Submit a layout you worked on to help with the project
 title: "[Layout Support] <Language>"
-labels: ''
+labels: layout support
 assignees: Einjerjar
 
 ---
