@@ -2,8 +2,10 @@ package com.github.einjerjar.mc.keymap;
 
 import lombok.ToString;
 import net.fabricmc.loader.api.FabricLoader;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,7 +14,8 @@ import java.io.FileWriter;
 @ToString
 public class KeymapConfig {
     static KeymapConfig instance;
-    static Yaml yaml = new Yaml(new Constructor(KeymapConfig.class));
+    static DumperOptions dumperOptions;
+    static Yaml yaml;
     static File cfgFile = new File(FabricLoader.getInstance().getConfigDir().resolve("keymapConfig.yaml").toUri());
 
     // layout
@@ -36,6 +39,7 @@ public class KeymapConfig {
     }
 
     public static void save() {
+        prepYaml();
         try {
             FileWriter writer = new FileWriter(cfgFile);
             yaml.dump(instance(), writer);
@@ -46,7 +50,16 @@ public class KeymapConfig {
         KeymapMain.LOGGER().info(instance().toString());
     }
 
+    public static void prepYaml() {
+        if (yaml != null) return;
+        dumperOptions = new DumperOptions();
+        dumperOptions.setIndent(2);
+        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        yaml = new Yaml(new Constructor(KeymapConfig.class), new Representer(dumperOptions), dumperOptions);
+    }
+
     public static void load() {
+        prepYaml();
         try {
             FileReader reader = new FileReader(cfgFile);
             instance = yaml.load(reader);
