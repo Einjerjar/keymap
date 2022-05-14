@@ -12,15 +12,16 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class KeyboardLayoutBase {
+    @Getter protected final static String DEFAULT_CODE = "en_us";
     @Getter protected static HashMap<String, KeyboardLayoutBase> layouts = new HashMap<>();
+    @Getter @Setter protected static KeyboardLayoutBase defaultLayout;
+    @Getter @Setter protected static KeyboardLayoutBase currentLayout;
     @Getter protected List<List<BasicKeyData>> basic = new ArrayList<>();
     @Getter protected List<List<BasicKeyData>> extra = new ArrayList<>();
     @Getter protected List<List<BasicKeyData>> mouse = new ArrayList<>();
     @Getter protected List<List<BasicKeyData>> numpad = new ArrayList<>();
     @Getter protected String name;
     @Getter protected String code;
-    @Getter protected final static String default_code = "en_us";
-    @Getter @Setter protected static KeyboardLayoutBase default_layout;
 
     public KeyboardLayoutBase(String name, String code) {
         this.name = name;

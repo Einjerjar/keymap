@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class KeyLayoutLoader {
     static String layoutRoot = "assets/keymap/layouts/";
@@ -36,7 +37,7 @@ public class KeyLayoutLoader {
         KeyboardLayoutBase.layouts().clear();
         try {
             ClassLoader loader    = this.getClass().getClassLoader();
-            URI         layoutUri = loader.getResource(layoutRoot).toURI();
+            URI         layoutUri = Objects.requireNonNull(loader.getResource(layoutRoot)).toURI();
             Yaml        yaml      = new Yaml(new Constructor(KeyLayoutConfig.class));
             Path        path      = Paths.get(layoutUri);
             Files.list(path).forEach(path1 -> {
@@ -53,8 +54,8 @@ public class KeyLayoutLoader {
 
                     KeymapMain.LOGGER().info("loaded keymap layout: {}", path1.getFileName());
 
-                    if (cfg.meta.code.equalsIgnoreCase(KeyboardLayoutBase.default_code())) {
-                        KeyboardLayoutBase.default_layout(klb);
+                    if (cfg.meta.code.equalsIgnoreCase(KeyboardLayoutBase.DEFAULT_CODE())) {
+                        KeyboardLayoutBase.defaultLayout(klb);
                     }
 
                 } catch (Exception e) {

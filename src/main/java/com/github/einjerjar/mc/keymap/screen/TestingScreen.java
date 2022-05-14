@@ -34,9 +34,11 @@ public class TestingScreen extends FlatScreen {
     protected int right;
     protected int bottom;
     Text keyPress;
+
     public TestingScreen() {
         super(new LiteralText("Test"));
     }
+
     public TestingScreen(Screen parent) {
         super(new LiteralText("Test"), parent);
     }
@@ -48,10 +50,10 @@ public class TestingScreen extends FlatScreen {
         right = left + expectedScreenWidth - outPadX * 2;
         bottom = height - outPadY;
 
-        int[] kbKeys   = addKeys(KeymapMain.keys().keys, padX, top + padY);
-        int[] kbExtra  = addKeys(KeymapMain.keys().extra, padX, top + padY * 2 + kbKeys[1] - gapY);
-        int[] kbMouse  = addKeys(KeymapMain.keys().mouse, padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
-        int[] kbNumpad = addKeys(KeymapMain.keys().numpad, padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
+        int[] kbKeys   = addKeys(KeymapMain.keys().basic(), padX, top + padY);
+        int[] kbExtra  = addKeys(KeymapMain.keys().extra(), padX, top + padY * 2 + kbKeys[1] - gapY);
+        int[] kbMouse  = addKeys(KeymapMain.keys().mouse(), padX, top + padY * 3 + kbKeys[1] + kbExtra[1] - gapY * 2);
+        int[] kbNumpad = addKeys(KeymapMain.keys().numpad(), padX * 2 + kbExtra[0] - gapX, top + padY * 2 + kbKeys[1] - gapY);
     }
 
     private int[] addKeys(List<List<BasicKeyData>> keys, int x, int y) {

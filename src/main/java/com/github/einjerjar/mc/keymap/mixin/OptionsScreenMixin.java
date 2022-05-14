@@ -2,7 +2,6 @@ package com.github.einjerjar.mc.keymap.mixin;
 
 import com.github.einjerjar.mc.keymap.KeymapMain;
 import com.github.einjerjar.mc.keymap.screen.KeyMappingScreen;
-import com.github.einjerjar.mc.keymap.screen.TestingScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
