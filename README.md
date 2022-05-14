@@ -5,7 +5,10 @@
 <img src="https://i.imgur.com/Ol1Tcf8.png" width="150">
 
 ### New
+- Support for overriding the current layout, which should also allows the use of non-standard layouts (colemak, dvorak, etc)
+- Added support for `fr_fr` Frances(French) all thanks to @arthurbambou
 
+#### Last update
 - Different layout for different locales are now a thing! (_but due to how I still need to design the layouts per language, it will still take some time to cover every language)
 - I made a tiny tool to help with the keyboard layout creation over [here](https://github.com/einjerjar/keymap-helper) so anyone can help with project.
 - If you want to help add a new language or request one, check out `### Layouts` below.
@@ -120,6 +123,7 @@ So the layout per language thingy is now kinda working, I made a tiny tool to he
 - de_de :: Deutsch (Deutschland)
 - da_dk :: Dansk (Danmark)
 - no_no :: Norsk bokmal (Norge)
+- fr_fr :: Frances (France) (thanks @arthurbambou, also includes `afnor` and `bepo` variants)
 
 If you want a language added but can't help, send over a language request via Github issues over [here](https://github.com/einjerjar/keymap/issues), with the title `[Layout Request] <Language>`, with an image attachment of the expected keyboard layout, images from Google, or you own keyboard is fine.
 
