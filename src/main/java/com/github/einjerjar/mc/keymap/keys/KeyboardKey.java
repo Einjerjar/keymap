@@ -11,7 +11,7 @@ public class KeyboardKey {
     @Getter protected int extraHeight = 0;
     @Getter protected boolean enabled = true;
     @Getter protected int keyCode = 0;
-    @Getter protected InputUtil.Key     key;
+    @Getter protected InputUtil.Key key;
     @Getter protected InputUtil.Type type;
 
     public KeyboardKey(BasicKeyData data) {

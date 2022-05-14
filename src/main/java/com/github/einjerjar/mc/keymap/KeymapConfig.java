@@ -1,30 +1,59 @@
 package com.github.einjerjar.mc.keymap;
 
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import lombok.ToString;
+import net.fabricmc.loader.api.FabricLoader;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
-@Config(name = KeymapMain.MOD_ID)
-public class KeymapConfig implements ConfigData {
-    @ConfigEntry.Gui.PrefixText()
-    @ConfigEntry.Gui.Tooltip(count = 2)
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+
+@ToString
+public class KeymapConfig {
+    static KeymapConfig instance;
+    static Yaml yaml = new Yaml(new Constructor(KeymapConfig.class));
+    static File cfgFile = new File(FabricLoader.getInstance().getConfigDir().resolve("keymapConfig.yaml").toUri());
+
+    // layout
+    public boolean autoSelectLayout = true;
+    public String customLayout = "en_us";
+
+    // general
     public boolean replaceKeybindScreen = true;
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean malilibSupport = true;
+    public boolean debug = false;
 
-    @ConfigEntry.Gui.PrefixText()
-    @ConfigEntry.Gui.Tooltip(count = 2)
+    // tooltip
     public boolean keybindNameOnHover = true;
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean keybindKeyOnHover = true;
-
-    @ConfigEntry.Gui.PrefixText()
-    @ConfigEntry.Gui.Tooltip()
     public boolean keyButtonModName = true;
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean keyButtonMalilibKeybinds = true;
 
-    @ConfigEntry.Gui.PrefixText()
-    @ConfigEntry.Gui.Tooltip()
-    public boolean debug = false;
+    public static KeymapConfig instance() {
+        if (instance == null) instance = new KeymapConfig();
+        return instance;
+    }
+
+    public static void save() {
+        try {
+            FileWriter writer = new FileWriter(cfgFile);
+            yaml.dump(instance(), writer);
+        } catch (Exception e) {
+            KeymapMain.LOGGER().error("!! Cant save config !!");
+            e.printStackTrace();
+        }
+        KeymapMain.LOGGER().info(instance().toString());
+    }
+
+    public static void load() {
+        try {
+            FileReader reader = new FileReader(cfgFile);
+            instance = yaml.load(reader);
+        } catch (Exception e) {
+            KeymapMain.LOGGER().warn("!! Cant read config, using default settings !!");
+            e.printStackTrace();
+            save();
+        }
+    }
 }

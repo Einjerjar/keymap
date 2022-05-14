@@ -76,7 +76,6 @@ public class VanillaKeybind extends KeybindHolder {
 
     @Override
     public void updateState() {
-        // CLog.info("UPDATESTATE" + key.getBoundKeyLocalizedText().getString());
         this.keyCode = Collections.singletonList(key.boundKey.getCode());
         this.boundKeyTranslation = key.getBoundKeyLocalizedText();
         this.translation = new TranslatableText(key.getTranslationKey());
