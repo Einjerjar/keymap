@@ -47,6 +47,7 @@ dependencies {
     modImplementation name: "malilib-fabric-${project.version_malilib}"
 
     // Malilib Testing
+    // add these file inside ./lib, edit the versions with ./gradle.properties
     modRuntimeOnly name: "litematica-fabric-${project.version_litematica}"
     modRuntimeOnly name: "tweakeroo-fabric-${project.version_tweakeroo}"
     modRuntimeOnly name: "minihud-fabric-${project.version_minihud}"
