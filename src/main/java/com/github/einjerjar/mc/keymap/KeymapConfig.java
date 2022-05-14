@@ -16,7 +16,7 @@ public class KeymapConfig {
     static KeymapConfig instance;
     static DumperOptions dumperOptions;
     static Yaml yaml;
-    static File cfgFile = new File(FabricLoader.getInstance().getConfigDir().resolve("keymapConfig.yaml").toUri());
+    static File cfgFile = new File(FabricLoader.getInstance().getConfigDir().resolve("keymap.yaml").toUri());
 
     // layout
     public boolean autoSelectLayout = true;
