@@ -1,0 +1,273 @@
+meta:
+  name: French (France) (Old)
+  code: fr_fr_old
+keys:
+  basic:
+    - row:
+        - code: 256
+          name: ESC
+          width: 14
+          height: 0
+        - name: F1
+          code: 290
+          width: 2
+        - name: F2
+          code: 291
+          width: 2
+        - name: F3
+          code: 292
+          width: 2
+        - name: F4
+          code: 293
+          width: 2
+        - name: F5
+          code: 294
+          width: 2
+        - name: F6
+          code: 295
+          width: 2
+        - name: F7
+          code: 296
+          width: 2
+        - name: F8
+          code: 297
+          width: 2
+        - name: F9
+          code: 298
+          width: 2
+        - name: F10
+          code: 299
+          width: 2
+        - name: F11
+          code: 300
+          width: 2
+        - name: F12
+          code: 301
+          width: 2
+    - row:
+        - name: ²
+          code: 96
+        - name: "&"
+          code: 49
+        - name: É
+          code: 50
+        - name: '"'
+          code: 51
+        - name: "'"
+          code: 52
+        - name: (
+          code: 53
+        - name: "-"
+          code: 54
+        - name: È
+          code: 55
+        - name: _
+          code: 56
+        - name: Ç
+          code: 57
+        - name: À
+          code: 48
+        - name: )
+          code: 45
+        - name: =
+          code: 61
+        - name: BKS
+          code: 259
+          width: 20
+    - row:
+        - name: TAB
+          code: 258
+          width: 10
+        - name: A
+          code: 81
+        - name: Z
+          code: 87
+        - name: E
+          code: 69
+        - name: R
+          code: 82
+        - name: T
+          code: 84
+        - name: Y
+          code: 89
+        - name: U
+          code: 85
+        - name: I
+          code: 73
+        - name: O
+          code: 79
+        - name: P
+          code: 80
+        - name: ^
+          code: 91
+        - name: $
+          code: 93
+        - name: ENT
+          code: 257
+          width: 10
+    - row:
+        - name: CAPS
+          code: 280
+          width: 20
+        - name: Q
+          code: 65
+        - name: S
+          code: 83
+        - name: D
+          code: 68
+        - name: F
+          code: 70
+        - name: G
+          code: 71
+        - name: H
+          code: 72
+        - name: J
+          code: 74
+        - name: K
+          code: 75
+        - name: L
+          code: 76
+        - name: M
+          code: 59
+        - name: Ù
+          code: 39
+        - name: "*"
+          code: 92
+          width: 18
+    - row:
+        - name: LSH
+          code: 340
+          width: 28
+        - name: W
+          code: 90
+        - name: X
+          code: 88
+        - name: C
+          code: 67
+        - name: V
+          code: 86
+        - name: B
+          code: 66
+        - name: N
+          code: 78
+        - name: ","
+          code: 77
+        - name: ;
+          code: 44
+        - name: ":"
+          code: 46
+        - name: "!"
+          code: 47
+        - name: RSH
+          code: 344
+          width: 28
+    - row:
+        - name: LCL
+          code: 341
+          width: 10
+        - name: LWN
+          code: 343
+          width: 10
+        - name: LAL
+          code: 342
+          width: 10
+        - name: SPC
+          code: 32
+          width: 58
+          height: 0
+        - name: RAL
+          code: 346
+          width: 10
+        - name: RWN
+          code: 347
+          width: 10
+        - name: MNU
+          code: 348
+          width: 10
+        - name: RCL
+          code: 345
+          width: 10
+  extra:
+    - row:
+        - name: INS
+          code: 260
+          width: 6
+        - name: HME
+          code: 268
+          width: 6
+        - name: PGU
+          code: 266
+          width: 6
+    - row:
+        - name: DEL
+          code: 261
+          width: 6
+        - name: END
+          code: 269
+          width: 6
+        - name: PGU
+          code: 267
+          width: 6
+    - row:
+        - name: <
+          code: 263
+        - name: ^
+          code: 265
+        - name: V
+          code: 264
+        - name: ">"
+          code: 262
+  mouse:
+    - row:
+        - name: ML
+          code: 0
+          width: 6
+        - name: MM
+          code: 1
+          width: 6
+        - name: MR
+          code: 2
+          width: 6
+  numpad:
+    - row:
+        - name: NM
+          code: 282
+        - name: /
+          code: 331
+        - name: "*"
+          code: 332
+        - name: "-"
+          code: 333
+    - row:
+        - name: "7"
+          code: 327
+        - name: "8"
+          code: 328
+        - name: "9"
+          code: 329
+        - name: +
+          code: 334
+          height: 18
+    - row:
+        - name: "4"
+          code: 324
+        - name: "5"
+          code: 325
+        - name: "6"
+          code: 326
+    - row:
+        - name: "1"
+          code: 321
+        - name: "2"
+          code: 322
+        - name: "3"
+          code: 323
+        - name: EN
+          code: 335
+          height: 18
+    - row:
+        - name: "0"
+          code: 320
+        - name: .
+          code: 330
+          width: 18
