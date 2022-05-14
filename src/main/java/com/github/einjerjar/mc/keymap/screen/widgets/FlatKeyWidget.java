@@ -9,6 +9,7 @@ import com.github.einjerjar.mc.keymap.widgets.FlatButton;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -16,6 +17,7 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Accessors(fluent = true, chain = true)
 public class FlatKeyWidget extends FlatButton {
@@ -35,7 +37,7 @@ public class FlatKeyWidget extends FlatButton {
         this.key = key;
         this.enabled = key.enabled();
         this.mappedKeybindHolders = mappedKeys;
-        this.displayText = new LiteralText(key.text());
+        this.displayText = this.setDisplayText();
         updateState();
     }
 
@@ -83,5 +85,60 @@ public class FlatKeyWidget extends FlatButton {
 
         WidgetUtils.drawBoxFilled(this, matrices, x, y, w, h, cBor, cBg);
         drawCenteredText(matrices, displayText, x, y, true, cText);
+    }
+
+    private Text setDisplayText() {
+        Text keyText = new LiteralText(this.key.text());
+        switch (this.key.key().getTranslationKey()) {
+            case "key.mouse.left":
+            case "key.mouse.right":
+            case "key.mouse.middle":
+            case "key.mouse.4":
+            case "key.mouse.5":
+            case "key.mouse.6":
+            case "key.mouse.7":
+            case "key.mouse.8":
+            case "key.keyboard.unknown":
+            case "key.keyboard.num.lock":
+            case "key.keyboard.keypad.enter":
+            case "key.keyboard.down":
+            case "key.keyboard.left":
+            case "key.keyboard.right":
+            case "key.keyboard.up":
+            case "key.keyboard.space":
+            case "key.keyboard.tab":
+            case "key.keyboard.left.alt":
+            case "key.keyboard.left.control":
+            case "key.keyboard.left.shift":
+            case "key.keyboard.left.win":
+            case "key.keyboard.right.alt":
+            case "key.keyboard.right.control":
+            case "key.keyboard.right.shift":
+            case "key.keyboard.right.win":
+            case "key.keyboard.enter":
+            case "key.keyboard.escape":
+            case "key.keyboard.backspace":
+            case "key.keyboard.delete":
+            case "key.keyboard.end":
+            case "key.keyboard.home":
+            case "key.keyboard.insert":
+            case "key.keyboard.page.down":
+            case "key.keyboard.page.up":
+            case "key.keyboard.caps.lock":
+            case "key.keyboard.pause":
+            case "key.keyboard.scroll.lock":
+            case "key.keyboard.menu":
+            case "key.keyboard.print.screen":
+            case "key.keyboard.world.1":
+            case "key.keyboard.world.2":
+                break;
+            default:
+                if (!Objects.equals(this.key.text(), "ML") && !Objects.equals(this.key.text(), "MM") && !Objects.equals(this.key.text(), "MR")) {
+                    keyText = new LiteralText(this.key.key().getLocalizedText().getString().toUpperCase());
+                }
+                break;
+        }
+
+        return keyText;
     }
 }
