@@ -1,6 +1,7 @@
 meta:
   name: French (France) (Bépo)
   code: fr_fr_bepo
+  author: arthurbambou
 keys:
   basic:
     - row:

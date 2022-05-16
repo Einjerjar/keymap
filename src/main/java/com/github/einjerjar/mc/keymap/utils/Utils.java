@@ -17,7 +17,7 @@ public class Utils {
     public static final Style styleSeparator = new Style(TextColor.fromRgb(0xff_555555), false, false, false, false, false, null, null, "", null);
     public static final Style styleError = new Style(TextColor.fromRgb(0xff_ff5555), true, false, false, false, false, null, null, "", null);
     public static final Style stylePassive = new Style(TextColor.fromRgb(0xff_aaaaaa), false, false, false, false, false, null, null, "", null);
-    public static final Style styleSimpleBold = new Style(TextColor.fromRgb(0xff_ffffff), false, false, false, false, false, null, null, "", null);
+    public static final Style styleSimpleBold = new Style(TextColor.fromRgb(0xff_ffffff), true, false, false, false, false, null, null, "", null);
 
     public static <E> E safeGet(List<E> l, int i) {
         if (l.size() > 0) return l.get(i);

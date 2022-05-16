@@ -31,6 +31,7 @@
 
   "key.keymap.screen.first.select_layout": "Layout Selection",
   "key.keymap.screen.first.confirm": "Confirm",
+  "key.keymap.screen.first.credit": "Credits",
 
   "key.keymap.screen.map.settings": "Settings",
   "key.keymap.screen.map.layout": "Layout",

@@ -45,7 +45,7 @@ public class KeyLayoutLoader {
                     InputStream     is  = loader.getResourceAsStream(layoutRoot + path1.getFileName());
                     KeyLayoutConfig cfg = yaml.load(is);
 
-                    KeyboardLayoutBase klb = new KeyboardLayoutBase(cfg.meta.name, cfg.meta.code) {{
+                    KeyboardLayoutBase klb = new KeyboardLayoutBase(cfg.meta.name, cfg.meta.code, cfg.meta.author) {{
                         basic = populateKeyList(cfg.keys.basic);
                         extra = populateKeyList(cfg.keys.extra);
                         mouse = populateKeyList(cfg.keys.mouse);
@@ -74,6 +74,7 @@ public class KeyLayoutLoader {
     public static class KeyLayoutMeta {
         public String name;
         public String code;
+        public String author = null;
 
         public KeyLayoutMeta() {
         }

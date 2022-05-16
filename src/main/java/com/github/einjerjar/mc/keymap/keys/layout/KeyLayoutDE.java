@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class KeyLayoutDE extends KeyboardLayoutBase {
     public KeyLayoutDE() {
-        super("Deutsch", "de");
+        super("Deutsch", "de", null);
         basic = new ArrayList<>() {{
             add(new ArrayList<>() {{
                 add(new BasicKeyData("ESC", InputUtil.GLFW_KEY_ESCAPE, 14));

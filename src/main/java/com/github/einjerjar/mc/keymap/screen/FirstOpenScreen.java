@@ -37,12 +37,14 @@ public class FirstOpenScreen extends FlatScreen {
     protected ArrayList<FlatKeyWidget> fkList = new ArrayList<>();
     protected FlatStringList<String> flatStringList;
     protected FlatText labelSelectLayout;
+    protected FlatText labelCreditHeader;
+    protected FlatText labelCredit;
     protected FlatButton btnConfirm;
     protected boolean malilib;
 
-    SimpleV2 gap = new SimpleV2(2);
-    SimpleV2 pad = new SimpleV2(10);
-    SimpleRect r;
+    protected SimpleV2 gap = new SimpleV2(2);
+    protected SimpleV2 pad = new SimpleV2(10);
+    protected SimpleRect r;
 
     public FirstOpenScreen(Screen parent) {
         super(new LiteralText("First Open Screen"), parent);
@@ -68,9 +70,27 @@ public class FirstOpenScreen extends FlatScreen {
 
         labelSelectLayout = new FlatText(
             kbKeys.right + gap.x * 2,
-            r.y, spaceLeft,
+            r.y,
+            spaceLeft,
             textRenderer.fontHeight,
             new TranslatableText("key.keymap.screen.first.select_layout").getWithStyle(Utils.styleKey).get(0));
+
+        labelCreditHeader = new FlatText(
+            kbNumpad.right + gap.x * 2,
+            kbNumpad.y + 15,
+            kbKeys.w - kbNumpad.w - kbMouse.w - gap.x * 4,
+            textRenderer.fontHeight,
+            new TranslatableText("key.keymap.screen.first.credit").getWithStyle(Utils.styleSimpleBold).get(0));
+
+        labelCredit = new FlatText(
+            kbNumpad.right + gap.x * 2,
+            kbNumpad.y + textRenderer.fontHeight + gap.y * 2 + 15,
+            kbKeys.w - kbNumpad.w - kbMouse.w - gap.x * 4,
+            textRenderer.fontHeight,
+            new LiteralText("E").getWithStyle(Utils.styleKey).get(0));
+        if (KeymapMain.keys().author() != null) {
+            labelCredit.setText(new LiteralText(KeymapMain.keys().author()).getWithStyle(Utils.styleKey).get(0));
+        }
 
         flatStringList = new FlatStringList<>(kbKeys.right + gap.x * 2, r.y + textRenderer.fontHeight + gap.y * 2, spaceLeft, r.h - textRenderer.fontHeight - gap.y * 4 - 16, textRenderer.fontHeight);
         flatStringList.drawBorder(true);
@@ -172,6 +192,10 @@ public class FirstOpenScreen extends FlatScreen {
         SimpleRect kbMouse  = addKeys(KeymapMain.keys().mouse(), r.x, kbExtra.bottom + gap.y * 2 + 16);
         SimpleRect kbNumpad = addKeys(KeymapMain.keys().numpad(), kbMouse.right + gap.x * 2, kbExtra.y);
 
+        if (KeymapMain.keys().author() != null) {
+            labelCredit.setText(new LiteralText(KeymapMain.keys().author()).getWithStyle(Utils.styleKey).get(0));
+        }
+
         updateKeyWidgets();
     }
 
@@ -209,6 +233,12 @@ public class FirstOpenScreen extends FlatScreen {
             c.render(matrices, mouseX, mouseY, delta);
         }
         labelSelectLayout.render(matrices, mouseX, mouseY, delta);
+
+        FlatStringList.FlatStringEntry<String> e = flatStringList.getSelectedEntry();
+        if (e != null && KeyboardLayoutBase.layoutWithCode(e.entryIndex()).author() != null) {
+            labelCreditHeader.render(matrices, mouseX, mouseY, delta);
+            labelCredit.render(matrices, mouseX, mouseY, delta);
+        }
 
         WidgetUtils.drawBoxOutline(this, matrices, r.x - pad.x / 2, r.y - pad.y / 2, r.w + pad.x, r.h + pad.y, 0xFFFFFFFF);
 
