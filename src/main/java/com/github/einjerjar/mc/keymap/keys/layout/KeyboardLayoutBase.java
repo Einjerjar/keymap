@@ -22,10 +22,12 @@ public class KeyboardLayoutBase {
     @Getter protected List<List<BasicKeyData>> numpad = new ArrayList<>();
     @Getter protected String name;
     @Getter protected String code;
+    @Getter protected String author;
 
-    public KeyboardLayoutBase(String name, String code) {
+    public KeyboardLayoutBase(String name, String code, String author) {
         this.name = name;
         this.code = code;
+        this.author = author;
         layouts.put(code, this);
     }
 

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class KeyLayoutEN_US extends KeyboardLayoutBase {
     public KeyLayoutEN_US() {
-        super("English", "en");
+        super("English", "en", null);
         basic = new ArrayList<>() {{
             add(new ArrayList<>() {{
                 add(new BasicKeyData("ESC", InputUtil.GLFW_KEY_ESCAPE, 14));

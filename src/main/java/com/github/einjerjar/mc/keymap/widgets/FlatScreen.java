@@ -2,9 +2,7 @@ package com.github.einjerjar.mc.keymap.widgets;
 
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.screen.containers.HotkeyCapture;
-import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
@@ -12,7 +10,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(fluent = true, chain = true)

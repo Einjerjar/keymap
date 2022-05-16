@@ -1,6 +1,7 @@
 meta:
   name: French (France) (Old)
   code: fr_fr
+  author: arthurbambou
 keys:
   basic:
     - row:

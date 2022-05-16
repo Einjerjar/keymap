@@ -35,7 +35,7 @@ public class FlatKeyWidget extends FlatButton {
         this.key = key;
         this.enabled = key.enabled();
         this.mappedKeybindHolders = mappedKeys;
-        this.displayText = new LiteralText(key.text());
+        this.displayText = new LiteralText(key.text().toUpperCase());
         updateState();
     }
 

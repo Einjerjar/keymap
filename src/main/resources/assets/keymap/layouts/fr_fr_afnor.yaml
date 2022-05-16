@@ -1,6 +1,7 @@
 meta:
   name: French (France) (Afnor)
   code: fr_fr_afnor
+  author: arthurbambou
 keys:
   basic:
     - row:
