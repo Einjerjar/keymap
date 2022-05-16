@@ -21,6 +21,7 @@ public abstract class FlatScreen extends Screen {
     protected Element hovered;
     // prevent ghost mouse release from the previous screen
     protected boolean regClick = false;
+    protected boolean darkBg = true;
 
     protected FlatScreen(Text title) {
         super(title);
@@ -54,6 +55,8 @@ public abstract class FlatScreen extends Screen {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         renderBackground(matrices);
+        if (darkBg) fill(matrices, 0, 0, width, height, 0x55000000);
+
         hovered = null;
 
         for (FlatWidgetBase c : children().stream().filter(e -> e instanceof FlatWidgetBase).map(e -> (FlatWidgetBase) e).toList()) {
