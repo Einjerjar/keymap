@@ -14,7 +14,8 @@ import com.github.einjerjar.mc.keymap.screen.containers.HotkeyCapture;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatCategoryList;
 import com.github.einjerjar.mc.keymap.screen.entrylist.FlatKeyList;
 import com.github.einjerjar.mc.keymap.screen.widgets.FlatKeyWidget;
-import com.github.einjerjar.mc.keymap.utils.ColorGroup;
+import com.github.einjerjar.mc.keymap.utils.SimpleRect;
+import com.github.einjerjar.mc.keymap.utils.SimpleV2;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.FlatButton;
@@ -24,7 +25,6 @@ import com.github.einjerjar.mc.keymap.widgets.FlatWidgetBase;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlexContainer;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
-import lombok.ToString;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -46,7 +46,7 @@ public class KeyMappingScreen extends FlatScreen {
     protected SimpleV2 outPad = new SimpleV2(4);
     protected SimpleV2 pad = new SimpleV2(10);
     protected SimpleV2 gap = new SimpleV2(2);
-    protected KeyPoint r;
+    protected SimpleRect r;
 
     protected boolean malilib;
 
@@ -57,6 +57,9 @@ public class KeyMappingScreen extends FlatScreen {
     protected FlexContainer containerSideButtons;
     protected FlatButton buttonResetSelect;
     protected FlatButton buttonResetAll;
+
+    protected FlatButton buttonSettings;
+    protected FlatButton buttonLayout;
 
     protected HotkeyCapture hotkeyCapture;
 
@@ -70,10 +73,17 @@ public class KeyMappingScreen extends FlatScreen {
         super(new LiteralText(""));
     }
 
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (!firstClick) return false;
-        boolean ret = super.mouseReleased(mouseX, mouseY, button);
+    // @Override
+    // public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    //     boolean ret = super.mouseReleased(mouseX, mouseY, button);
+    //     if (hotkeyCapture.active()) setFocused(hotkeyCapture, false);
+    //     return ret;
+    // }
+
+    @Override public boolean wMouseReleased(double mouseX, double mouseY, int button) {
+        Element focus = getFocused();
+        if (focus == null) listKeybinds.setSelectedEntry(null);
+        boolean ret = super.wMouseReleased(mouseX, mouseY, button);
         if (hotkeyCapture.active()) setFocused(hotkeyCapture, false);
         return ret;
     }
@@ -90,36 +100,47 @@ public class KeyMappingScreen extends FlatScreen {
 
         tr = textRenderer;
         malilib = KeymapMain.malilibAvailable() && KeymapMain.cfg().malilibSupport;
-        expectedScreenWidth = Math.min(500, width) - outPad.x * 2 - pad.x * 2;
+        expectedScreenWidth = Math.min(500, width) - pad.x * 2;
 
         mappedCategories.clear();
         mappedKeyWidgets.clear();
         mappedKeybindHolders.clear();
 
-        r = new KeyPoint(
+        r = new SimpleRect(
             Math.max(0, width - expectedScreenWidth) / 2,
-            outPad.y + pad.y,
+            pad.y,
             expectedScreenWidth,
-            height - outPad.y * 2 - pad.y * 2);
+            height - pad.y * 2);
 
         SimpleV2 midSpace = new SimpleV2(r.w, r.h);
 
-        KeyPoint kbKeys   = addKeys(KeymapMain.keys().basic(), r.x, r.y);
-        KeyPoint kbExtra  = addKeys(KeymapMain.keys().extra(), r.x, kbKeys.bottom + gap.y * 2);
-        KeyPoint kbMouse  = addKeys(KeymapMain.keys().mouse(), r.x, kbExtra.bottom + gap.y * 2 + 16);
-        KeyPoint kbNumpad = addKeys(KeymapMain.keys().numpad(), kbMouse.right + gap.x * 2, kbExtra.y);
+        SimpleRect kbKeys   = addKeys(KeymapMain.keys().basic(), r.x, r.y + 16 + gap.y * 2);
+        SimpleRect kbExtra  = addKeys(KeymapMain.keys().extra(), r.x, kbKeys.bottom + gap.y * 2);
+        SimpleRect kbMouse  = addKeys(KeymapMain.keys().mouse(), r.x, kbExtra.bottom + gap.y * 2 + 16);
+        SimpleRect kbNumpad = addKeys(KeymapMain.keys().numpad(), kbMouse.right + gap.x * 2, kbExtra.y);
+
+        buttonSettings = new FlatButton(r.x, r.y, kbKeys.w / 2 - gap.x, 16, new TranslatableText("key.keymap.screen.map.settings"));
+        buttonLayout = new FlatButton(r.x + kbKeys.w / 2 + gap.x, r.y, kbKeys.w / 2 - gap.x, 16, new TranslatableText("key.keymap.screen.map.layout"));
+
+        addSelectableChild(buttonSettings);
+        addSelectableChild(buttonLayout);
+
+        buttonLayout.action(w -> client.setScreen(new FirstOpenScreen(this)));
+        buttonSettings.action(w -> client.setScreen(ConfigScreen.get(this)));
 
         int leftSpaceX = midSpace.x - kbKeys.w - gap.x * 4;
 
         inputSearch = new FlatInput(0, 0, leftSpaceX, 16, "");
         listKeybinds = new FlatKeyList(0, 0, leftSpaceX, 50, 10);
+        // listKeybinds.drawBorder(true);
         listCategories = new FlatCategoryList(
-            kbNumpad.right + gap.x * 2 + pad.x,
-            kbNumpad.y + pad.y,
-            kbKeys.w - kbNumpad.w - kbMouse.w - gap.x * 9,
-            kbNumpad.h - pad.y * 2,
+            kbNumpad.right + gap.x * 2,
+            kbNumpad.y,
+            kbKeys.w - kbNumpad.w - kbMouse.w - gap.x * 4,
+            kbNumpad.h,
             tr.fontHeight
         );
+        listCategories.drawBorder(true);
 
         hotkeyCapture = new HotkeyCapture(0, 0, width, height);
         hotkeyCapture.active(false);
@@ -133,17 +154,19 @@ public class KeyMappingScreen extends FlatScreen {
         containerSideButtons = new FlexContainer(0, 0, 0, 16);
         containerSideButtons
             .addChild(buttonResetSelect)
-            .addChild(buttonResetAll);
+            .addChild(buttonResetAll)
+            .gap(gap.x);
 
-        KeymapMain.LOGGER().info("{} {} {} {}", kbKeys.right + gap.x * 2, r.y, leftSpaceX, midSpace);
-        containerSidebar = new FlexContainer(kbKeys.right + gap.x * 4, r.y, leftSpaceX, midSpace.y + pad.y);
+        // KeymapMain.LOGGER().info("{} {} {} {}", kbKeys.right + gap.x * 2, r.y, leftSpaceX, midSpace);
+        containerSidebar = new FlexContainer(kbKeys.right + gap.x * 4, r.y, leftSpaceX, midSpace.y);
         containerSidebar
             .direction(FlexContainer.FlexDirection.COLUMN)
             .addChild(inputSearch, -1)
             .addChild(listKeybinds)
             .addChild(containerSideButtons, -1)
-            .gap(10)
+            .gap(gap.y)
             .arrange();
+        // containerSidebar.drawBorder(true);
 
         containerSideButtons.arrange();
 
@@ -153,6 +176,7 @@ public class KeyMappingScreen extends FlatScreen {
         assignHandlers();
 
         addSelectableChild(containerSidebar);
+        addSelectableChild(listKeybinds);
         addSelectableChild(listCategories);
         addSelectableChild(hotkeyCapture);
 
@@ -160,6 +184,9 @@ public class KeyMappingScreen extends FlatScreen {
         updateKeyWidgets();
 
         filterListKeys();
+
+        // mouseClicked(0, 0, 0);
+        // mouseReleased(0, 0, 0);
     }
 
     public void assignHandlers() {
@@ -193,14 +220,16 @@ public class KeyMappingScreen extends FlatScreen {
 
                 refreshKeys();
                 fke.updateDisplayText();
-
-            } else if (holder instanceof VanillaKeybind) {
+                return;
+            }
+            if (holder instanceof VanillaKeybind) {
                 holder.assignHotKey(new Integer[]{k}, false);
 
                 refreshKeys();
                 fke.updateDisplayText();
-
-            } else if (malilib && holder instanceof MalilibKeybind) {
+                return;
+            }
+            if (malilib && holder instanceof MalilibKeybind) {
                 handleHotkeyCapture(fke, k);
             }
         });
@@ -299,6 +328,7 @@ public class KeyMappingScreen extends FlatScreen {
     private void filterListKeys() {
         String filter = inputSearch.text().trim().toLowerCase();
         listKeybinds.clearEntries();
+        listKeybinds.setScrollOffset(0);
 
         FlatCategoryList.FlatCategoryEntry catE    = listCategories.getSelectedEntry();
         boolean                            isBlank = catE == null || catE.category().equalsIgnoreCase("__ALL__");
@@ -351,7 +381,7 @@ public class KeyMappingScreen extends FlatScreen {
         setFocused(inputSearch);
     }
 
-    private KeyPoint addKeys(List<List<BasicKeyData>> keys, int x, int y) {
+    private SimpleRect addKeys(List<List<BasicKeyData>> keys, int x, int y) {
         int sizeX    = 0;
         int sizeY    = 0;
         int currentX = x;
@@ -380,19 +410,19 @@ public class KeyMappingScreen extends FlatScreen {
             sizeY = currentY - y;
         }
 
-        return new KeyPoint(x, y, sizeX - gap.x, sizeY - gap.y);
+        return new SimpleRect(x, y, sizeX - gap.x, sizeY - gap.y);
     }
 
     @Override
     public void renderScreen(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        WidgetUtils.drawBoxOutline(this, matrices, r.left - pad.x, r.top - pad.y, r.w + pad.x * 2, r.h + pad.y * 2, 0xff_ffffff);
+        WidgetUtils.drawBoxOutline(this, matrices, r.x - pad.x / 2, r.y - pad.y / 2, r.w + pad.x, r.h + pad.y, 0xFFFFFFFF);
 
-        WidgetUtils.drawBoxOutline(this, matrices,
-            listCategories.x() - pad.x,
-            listCategories.y() - pad.y,
-            listCategories.w() + pad.x,
-            listCategories.h() + pad.y * 2,
-            ColorGroup.NORMAL.border.normal);
+        // WidgetUtils.drawBoxOutline(this, matrices,
+        //     listCategories.x() - pad.x,
+        //     listCategories.y() - pad.y,
+        //     listCategories.w() + pad.x,
+        //     listCategories.h() + pad.y * 2,
+        //     ColorGroup.NORMAL.border.normal);
 
         FlatKeyList.FlatKeyListEntry fe    = listKeybinds.getSelectedEntry();
         boolean                      feOk  = false;
@@ -428,46 +458,6 @@ public class KeyMappingScreen extends FlatScreen {
 
         if (getFocused() != null && KeymapMain.cfg().debug) {
             drawCenteredText(matrices, tr, getFocused().getClass().getName(), width / 2, 5, 0xff_00ff00);
-        }
-    }
-
-    @ToString
-    static class SimpleV2 {
-        public int x;
-        public int y;
-
-        public SimpleV2(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public SimpleV2(int xy) {
-            this.x = xy;
-            this.y = xy;
-        }
-    }
-
-    @ToString
-    static class KeyPoint {
-        public int top;
-        public int left;
-        public int right;
-        public int bottom;
-        public int x;
-        public int y;
-        public int w;
-        public int h;
-
-        public KeyPoint(int x, int y, int w, int h) {
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            this.h = h;
-
-            this.top = y;
-            this.left = x;
-            this.right = x + w;
-            this.bottom = y + h;
         }
     }
 }

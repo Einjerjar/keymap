@@ -5,8 +5,9 @@
 <img src="https://i.imgur.com/Ol1Tcf8.png" width="150">
 
 ### New
-- Support for overriding the current layout, which should also allows the use of non-standard layouts (colemak, dvorak, etc)
-- Added support for `fr_fr` Frances(French) all thanks to @arthurbambou
+- Support for overriding the current layout, which should also allows the use of non-standard layouts (colemak, dvorak, etc).
+- Added support for `fr_fr` Frances(French) all thanks to @arthurbambou.
+- Will post to Curseforge after around 10 more layouts are added, will be posting incremental builds on github [releases](https://github.com/Einjerjar/keymap/releases) for now.
 
 #### Last update
 - Different layout for different locales are now a thing! (_but due to how I still need to design the layouts per language, it will still take some time to cover every language)

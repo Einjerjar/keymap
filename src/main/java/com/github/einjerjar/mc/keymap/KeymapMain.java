@@ -49,6 +49,8 @@ public class KeymapMain implements ModInitializer {
         KeymapConfig.load();
         cfg = KeymapConfig.instance();
 
+        reloadLayouts();
+
         if (cfg.malilibSupport) {
             Optional<ModContainer> malilibContainer = FabricLoader.getInstance().getModContainer("malilib");
             if (malilibContainer.isPresent()) {
