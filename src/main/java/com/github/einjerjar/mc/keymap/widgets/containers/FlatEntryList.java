@@ -2,9 +2,14 @@ package com.github.einjerjar.mc.keymap.widgets.containers;
 
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.utils.ColorGroup;
+import com.github.einjerjar.mc.keymap.utils.SimpleV2;
 import com.github.einjerjar.mc.keymap.utils.Utils;
+import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.FlatWidgetBase;
 import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -19,15 +24,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("ALL")
+@Accessors(fluent = true, chain = true)
 public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extends FlatWidgetBase implements Selectable, Tooltipped {
     protected boolean dragging;
     protected int entryHeight;
     protected int scrollBarW = 6;
     protected int scrollBarX;
 
+    @Getter protected List<T> entries = new ArrayList<>();
     protected MinecraftClient client;
-    protected List<T> entries = new ArrayList<>();
     protected T hoveredEntry;
     protected T selectedEntry;
 
@@ -36,6 +41,11 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     protected double lastClickY;
     protected double lastClickX;
     protected double lastScrollPosY;
+    protected boolean canDeselectEntry = true;
+
+    protected SimpleV2 pad = new SimpleV2(4);
+
+    @Setter protected CommonAction onSelectedAction;
 
     public FlatEntryList(int x, int y, int w, int h, int entryHeight) {
         super(x, y, w, h);
@@ -90,6 +100,15 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         if (selectedEntry != null) selectedEntry.selected = true;
     }
 
+    public void setSelectedIndex(Integer i) {
+        if (i < 0) return;
+        if (i > entries.size() - 1) return;
+        T e = entries.get(i);
+        if (this.selectedEntry != null) this.selectedEntry.selected = false;
+        e.selected = true;
+        this.selectedEntry = e;
+    }
+
     public T getEntry(int index) {
         return this.entries.get(index);
     }
@@ -103,7 +122,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     }
 
     public void setScrollOffset(double scrollOffset) {
-        this.scrollOffset = Math.min(Math.max(getContentHeight() - h, 0), Math.max(0, scrollOffset));
+        this.scrollOffset = Math.min(Math.max(getContentHeight() - h + pad.y * 2, 0), Math.max(0, scrollOffset));
     }
 
     public void setScrollOffsetR(double scrollOffset) {
@@ -137,7 +156,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         hoveredEntry = null;
 
         if (hovered && mouseX < scrollBarX) {
-            int index = (int) ((mouseY - y + scrollOffset) / (float) entryHeight);
+            int index = (int) ((mouseY - y + scrollOffset - pad.y) / (float) entryHeight);
             if (index >= 0 && index < entries.size()) hoveredEntry = entries.get(index);
         }
         renderWidget(matrices, mouseX, mouseY, delta);
@@ -146,6 +165,9 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     public void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         renderScrollbar();
         renderList(matrices);
+        if (drawBorder) {
+            WidgetUtils.drawBoxOutline(this, matrices, left(), top(), right() - left(), bottom() - top(), 0xFFFFFFFF);
+        }
 
         // drawCenteredText(matrices, tr, new LiteralText(String.format(
         //     "x:%s y:%s w:%s h:%s",
@@ -158,8 +180,9 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         Tessellator   ts = Tessellator.getInstance();
         BufferBuilder bb = ts.getBuffer();
         int           ch = getContentHeight();
+        int           eh = h - pad.y * 2;
         if (ch == 0) return;
-        int scroll = h / ch;
+        int scroll = (eh) / ch;
         if (scroll >= 1) {
             scrollOffset = 0;
             return;
@@ -174,12 +197,12 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         int colScrollBg = 0x88_000000;
         int colScrollFg = 0xaa_ffffff;
 
-        int scrollHeight = (int) (h / (float) getContentHeight() * h);
-        int scrollTop    = (int) (scrollOffset / (float) getContentHeight() * h);
+        int scrollHeight = (int) (eh / (float) getContentHeight() * eh);
+        int scrollTop    = (int) (scrollOffset / (float) getContentHeight() * eh);
 
         // left right top bottom
-        Utils.drawQuad(ts, bb, scrollBarX, x + w, y, y + h, colScrollBg, false);
-        Utils.drawQuad(ts, bb, scrollBarX, x + w, y + scrollTop, y + scrollTop + scrollHeight, colScrollFg, false);
+        Utils.drawQuad(ts, bb, scrollBarX, x + w, y + pad.y, y + eh + pad.y, colScrollBg, false);
+        Utils.drawQuad(ts, bb, scrollBarX, x + w, y + scrollTop + pad.y, y + scrollTop + scrollHeight + pad.y, colScrollFg, false);
 
         ts.draw();
     }
@@ -187,12 +210,12 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
     public void renderList(MatrixStack matrices) {
         for (int i = 0; i < entries.size(); i++) {
             T   entry = entries.get(i);
-            int _x    = x;
-            int _y    = y + i * entryHeight - (int) scrollOffset;
-            int _w    = w - scrollBarW;
+            int _x    = x + pad.x;
+            int _y    = y + i * entryHeight - (int) scrollOffset + pad.y;
+            int _w    = w - scrollBarW - pad.x * 2;
             int _h    = entryHeight;
 
-            if (_y + _h < top() + 8 || _y > bottom() - 8) continue;
+            if (_y + _h < top() + entryHeight - 1 || _y > bottom() - entryHeight - 1) continue;
 
             entry.render(matrices, _x, _y, _w, _h, entry == hoveredEntry, 0);
         }
@@ -204,7 +227,8 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
         scrollOffset += amount * -12;
         if (scrollOffset < 0) scrollOffset = 0;
-        if (scrollOffset > getContentHeight() - h) scrollOffset = Math.max(getContentHeight() - h, 0);
+        if (scrollOffset > getContentHeight() - h + pad.y * 2)
+            scrollOffset = Math.max(getContentHeight() - h + pad.y * 2, 0);
 
         return true;
     }
@@ -233,7 +257,6 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         if (lastClickX > scrollBarX) {
             onScroll = true;
         }
-        ;
 
         if (mouseY - y != lastDragY) {
             if (onScroll) {
@@ -257,10 +280,13 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
         dragging = false;
         if (Math.abs(lastClickY - (mouseY - y)) < 3) {
             if (selectedEntry != null) selectedEntry.selected = false;
-            selectedEntry = hoveredEntry;
+            if (!(canDeselectEntry && hoveredEntry == null)) {
+                selectedEntry = hoveredEntry;
+            }
             if (selectedEntry != null) {
                 selectedEntry.selected = true;
                 playClickSound();
+                if (onSelectedAction != null) onSelectedAction.run(this);
             }
             return true;
         }

@@ -2,6 +2,9 @@ package com.github.einjerjar.mc.keymap.widgets;
 
 import com.github.einjerjar.mc.keymap.screen.Tooltipped;
 import com.github.einjerjar.mc.keymap.screen.containers.HotkeyCapture;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
@@ -9,12 +12,15 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Accessors(fluent = true, chain = true)
 public abstract class FlatScreen extends Screen {
     protected Screen parent;
     protected Element hovered;
-    protected boolean firstClick = false;
+    // prevent ghost mouse release from the previous screen
+    protected boolean regClick = false;
 
     protected FlatScreen(Text title) {
         super(title);
@@ -73,18 +79,37 @@ public abstract class FlatScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!firstClick) {
-            firstClick = true;
-            return false;
-        }
+        regClick = true;
         if (hovered != null) {
             if (hovered.mouseClicked(mouseX, mouseY, button)) {
                 setFocused(hovered);
                 setDragging(true);
-                return true;
+                return wMouseClicked(mouseX, mouseY, button);
             }
         }
         setFocused(null);
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (!regClick) return false;
+        regClick = false;
+        setDragging(false);
+        return wMouseReleased(mouseX, mouseY, button);
+    }
+
+    public boolean wMouseClicked(double mouseX, double mouseY, int button) {
+        return true;
+    }
+
+    public boolean wMouseReleased(double mouseX, double mouseY, int button) {
+        Element focus = getFocused();
+        if (focus == null) return false;
+        if (focus == hovered) {
+            return hovered.mouseReleased(mouseX, mouseY, button);
+        }
+        focus.mouseReleased(mouseX, mouseY, button);
         return false;
     }
 
@@ -116,19 +141,9 @@ public abstract class FlatScreen extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        Element focus = getFocused();
-        setDragging(false);
-        if (focus != null && focus != hovered) {
-            focus.mouseReleased(mouseX, mouseY, button);
-        }
-        if (hovered != null) return hovered.mouseReleased(mouseX, mouseY, button);
-        return false;
-    }
-
-    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (getFocused() != null) {
+            // KeymapMain.LOGGER().info(getFocused().getClass().getName());
             if (getFocused().keyPressed(keyCode, scanCode, modifiers)) {
                 return true;
             }

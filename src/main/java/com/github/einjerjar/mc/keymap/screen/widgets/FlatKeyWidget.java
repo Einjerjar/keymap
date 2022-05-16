@@ -41,6 +41,10 @@ public class FlatKeyWidget extends FlatButton {
 
     public void updateState() {
         int keyCode = key.keyCode();
+        if (mappedKeybindHolders == null) {
+            color = COL_NORMAL;
+            return;
+        }
         if (!mappedKeybindHolders.containsKey(keyCode)) color = COL_NORMAL;
         else if (selected) color = COL_SELECTED;
         else {

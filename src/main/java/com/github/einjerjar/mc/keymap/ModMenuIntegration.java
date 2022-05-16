@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap;
 
+import com.github.einjerjar.mc.keymap.screen.ConfigScreen;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.fabricmc.api.EnvType;

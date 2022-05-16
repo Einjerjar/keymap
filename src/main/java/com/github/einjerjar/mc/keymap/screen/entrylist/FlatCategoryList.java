@@ -3,7 +3,6 @@ package com.github.einjerjar.mc.keymap.screen.entrylist;
 import com.github.einjerjar.mc.keymap.utils.WidgetUtils;
 import com.github.einjerjar.mc.keymap.widgets.containers.FlatEntryList;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -14,19 +13,8 @@ import net.minecraft.text.TranslatableText;
 
 @Accessors(fluent = true, chain = true)
 public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategoryEntry> {
-    @Setter CommonAction onSelectedAction;
-
     public FlatCategoryList(int x, int y, int w, int h, int entryHeight) {
         super(x, y, w, h, entryHeight);
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (super.mouseReleased(mouseX, mouseY, button)) {
-            if (onSelectedAction != null) onSelectedAction.run(this);
-            return true;
-        }
-        return false;
     }
 
     @Accessors(fluent = true, chain = true)

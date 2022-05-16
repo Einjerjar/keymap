@@ -47,12 +47,17 @@ public class FlexContainer extends FlatContainer {
             }
             maxBasis += f.basis;
         }
+        // fixedSize = Math.max(0, fixedSize - gap);
+        // KeymapMain.LOGGER().info("FIXED SIZE {}", fixedSize);
 
-        int scaleRoot     = (isRow ? w : h) - fixedSize;
+        int scaleRoot     = ((isRow ? w : h) + gap) - fixedSize;
         int consumedSpace = 0;
 
         for (int i = 0; i < children.size(); i++) {
             FlexChild f = children.get(i);
+
+            // int iGap = i == children.size()-1 ? 0 : gap;
+            // int nGap = i != children.size()-1 ? 0 : gap;
 
             if (f.basis <= 0) {
                 if (isRow)

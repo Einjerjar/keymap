@@ -18,8 +18,11 @@ public class KeymapConfig {
     static Yaml yaml;
     static File cfgFile = new File(FabricLoader.getInstance().getConfigDir().resolve("keymap.yaml").toUri());
 
+    // hidden
+    public boolean firstOpenDone = false;
+
     // layout
-    public boolean autoSelectLayout = true;
+    public boolean autoSelectLayout = false;
     public String customLayout = "en_us";
 
     // general
@@ -47,7 +50,7 @@ public class KeymapConfig {
             KeymapMain.LOGGER().error("!! Cant save config !!");
             e.printStackTrace();
         }
-        KeymapMain.LOGGER().info(instance().toString());
+        // KeymapMain.LOGGER().info(instance().toString());
     }
 
     public static void prepYaml() {

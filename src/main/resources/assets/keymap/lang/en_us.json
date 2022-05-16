@@ -29,6 +29,11 @@
   "key.keymap.cfg.tooltips.key_button_mod_name": "Mod name on VK",
   "key.keymap.cfg.tooltips.key_button_malilib_binds": "Show Malilib keybinds on VK",
 
+  "key.keymap.screen.first.select_layout": "Layout Selection",
+  "key.keymap.screen.first.confirm": "Confirm",
+
+  "key.keymap.screen.map.settings": "Settings",
+  "key.keymap.screen.map.layout": "Layout",
 
   "key.keymap.cfg.cat__.replaceKeybindScreen.@PrefixText": "§n§lGeneral",
   "key.keymap.cfg.cat__.keybindNameOnHover.@PrefixText": "§n§lKeybind List",

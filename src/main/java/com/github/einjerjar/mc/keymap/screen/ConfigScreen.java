@@ -1,5 +1,6 @@
-package com.github.einjerjar.mc.keymap;
+package com.github.einjerjar.mc.keymap.screen;
 
+import com.github.einjerjar.mc.keymap.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyboardLayoutBase;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;

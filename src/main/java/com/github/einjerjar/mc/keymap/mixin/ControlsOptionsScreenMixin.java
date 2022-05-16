@@ -1,6 +1,8 @@
 package com.github.einjerjar.mc.keymap.mixin;
 
+import com.github.einjerjar.mc.keymap.KeymapConfig;
 import com.github.einjerjar.mc.keymap.KeymapMain;
+import com.github.einjerjar.mc.keymap.screen.FirstOpenScreen;
 import com.github.einjerjar.mc.keymap.screen.KeyMappingScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,7 +22,11 @@ public class ControlsOptionsScreenMixin {
     private void openKeybindScreen(ButtonWidget button, CallbackInfo ci) {
         if (KeymapMain.cfg().replaceKeybindScreen) {
             // MinecraftClient.getInstance().setScreen(new TestingScreen((Screen) (Object) this));
-            MinecraftClient.getInstance().setScreen(new KeyMappingScreen((Screen) (Object) this));
+            if (KeymapConfig.instance().firstOpenDone) {
+                MinecraftClient.getInstance().setScreen(new KeyMappingScreen((Screen) (Object) this));
+            } else {
+                MinecraftClient.getInstance().setScreen(new FirstOpenScreen((Screen) (Object) this));
+            }
             ci.cancel();
         }
     }
