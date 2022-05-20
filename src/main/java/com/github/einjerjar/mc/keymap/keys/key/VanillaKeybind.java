@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.keys.key;
 
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
@@ -61,6 +62,7 @@ public class VanillaKeybind extends KeybindHolder {
             newKey = InputUtil.UNKNOWN_KEY;
         }
         key.setBoundKey(newKey);
+        KeyBinding.updateKeysByCode();
 
         updateState();
     }
