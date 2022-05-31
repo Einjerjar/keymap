@@ -1,0 +1,117 @@
+
+plugins {
+	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'maven-publish'
+}
+
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
+
+archivesBaseName = project.archives_base_name
+version = "${project.mod_version}-${project.mod_version_type}.${project.mod_subversion}+${project.minecraft_version}-${project.mod_version_loader.toLowerCase()}"
+group = project.maven_group
+
+repositories {
+    maven { url "https://maven.shedaniel.me" }
+    maven { url "https://maven.terraformersmc.com" }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+	maven { url "https://maven.parchmentmc.org" }
+    flatDir {
+        dirs "./lib"
+    }
+    mavenCentral()
+}
+
+dependencies {
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+	//to change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	// mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings loom.layered {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-1.18.2:2022.05.22@zip")
+	}
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    // Config
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.version_cloth_api}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    modImplementation "com.terraformersmc:modmenu:${project.version_mod_menu}"
+
+    // Performance
+    modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
+    // modRuntimeOnly "maven.modrinth:phosphor:${project.version_phosphor}"
+    modRuntimeOnly "maven.modrinth:starlight:${project.version_starlight}"
+    modRuntimeOnly "maven.modrinth:ferrite-core:${project.version_ferrite_core}"
+    modRuntimeOnly "maven.modrinth:lazydfu:${project.version_lazydfu}"
+    modRuntimeOnly "maven.modrinth:ksyxis:${project.version_ksyxis}"
+    modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
+    modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
+
+	// https://mvnrepository.com/artifact/org.yaml/snakeyaml
+	implementation include('org.yaml:snakeyaml:1.30')
+
+	implementation 'org.reflections:reflections:0.10.2'
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
+	from sourceSets.main.allSource
+}
+
+jar {
+	from "LICENSE"
+}
+
+// configure the maven publication
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			// add all the jars that should be included when publishing to maven
+			artifact(jar) {
+				builtBy remapJar
+			}
+			artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar"){
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
+
+	// select the repositories you want to publish to
+	repositories {
+		// uncomment to publish to the local maven
+		// mavenLocal()
+	}
+}

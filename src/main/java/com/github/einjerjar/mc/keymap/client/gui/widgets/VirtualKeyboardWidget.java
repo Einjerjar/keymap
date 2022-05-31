@@ -1,0 +1,76 @@
+package com.github.einjerjar.mc.keymap.client.gui.widgets;
+
+import com.github.einjerjar.mc.keymap.keys.layout.KeyData;
+import com.github.einjerjar.mc.keymap.keys.layout.KeyRow;
+import com.github.einjerjar.mc.widgets.EWidget;
+import com.github.einjerjar.mc.widgets.utils.Rect;
+import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Accessors(fluent = true, chain = true)
+public class VirtualKeyboardWidget extends EWidget {
+    @Getter @Setter protected int gap = 2;
+    @Setter protected SimpleAction<VirtualKeyboardWidget> onKeyClicked;
+    @Getter protected List<KeyWidget> childKeys = new ArrayList<>();
+    @Getter protected KeyWidget lastActionFrom;
+    protected List<KeyRow> keys;
+
+    public VirtualKeyboardWidget(List<KeyRow> keys, int x, int y, int w, int h) {
+        super(x, y, w, h);
+        this.keys = keys;
+        init();
+    }
+
+    public VirtualKeyboardWidget(List<KeyRow> keys, Rect rect) {
+        super(rect);
+        this.keys = keys;
+        init();
+    }
+
+    @Override public boolean isMouseOver(double mouseX, double mouseY) {
+        return false;
+    }
+
+    @Override protected void init() {
+        int w = 16;
+        int h = 16;
+        int currentX = left();
+        int currentY = top();
+
+        int maxX = 0;
+
+        for (KeyRow kk : keys) {
+            for (KeyData k : kk.row()) {
+                int ww = w + k.width();
+                int hh = h + k.height();
+                KeyWidget kw = new KeyWidget(k, currentX, currentY, ww, hh);
+                kw.onClick(source -> {
+                    lastActionFrom = source;
+                    if (onKeyClicked != null) onKeyClicked.run(this);
+                    lastActionFrom = null;
+                });
+
+                childKeys.add(kw);
+                currentX += gap + ww;
+            }
+            maxX = Math.max(currentX - gap, maxX);
+            currentX = left();
+            currentY += gap + h;
+        }
+
+        currentY -= gap;
+        rect.w(maxX - left());
+        rect.h(currentY - top());
+    }
+
+    @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        for (KeyWidget kw : childKeys) {
+            kw.render(poseStack, mouseX, mouseY, partialTick);
+        }
+    }
+}
