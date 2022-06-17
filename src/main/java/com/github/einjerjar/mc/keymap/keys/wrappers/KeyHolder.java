@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.keys.wrappers;
 
+import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -7,7 +8,15 @@ import java.util.List;
 public interface KeyHolder {
     List<Integer> getCode();
 
+    Integer getKeyHash();
+
+    boolean isComplex();
+
+    KeyComboData getComplexCode();
+
     String getTranslatableName();
+
+    String getCategory();
 
     Component getTranslatedName();
 

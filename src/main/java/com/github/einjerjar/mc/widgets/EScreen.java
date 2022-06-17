@@ -12,6 +12,7 @@ import net.minecraft.network.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 @Accessors(fluent = true, chain = true)
 public abstract class EScreen extends Screen {
@@ -49,6 +50,10 @@ public abstract class EScreen extends Screen {
             return true;
         }
         return false;
+    }
+
+    @Override public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     protected boolean onCharTyped(char chr, int modifiers) {
@@ -166,6 +171,8 @@ public abstract class EScreen extends Screen {
             debugHover.render(poseStack, mouseX, mouseY, partialTick);
             debugFocus.render(poseStack, mouseX, mouseY, partialTick);
         }
+
+        if (hoveredWidget != null && hoveredWidget.getTooltips() != null) renderTooltip(poseStack, hoveredWidget.getTooltips(), Optional.empty(), mouseX, mouseY);
     }
 
     protected abstract void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick);

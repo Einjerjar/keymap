@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.widgets;
 
+import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.widgets.utils.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     @Getter protected List<T> items = new ArrayList<>();
     @Getter protected T itemHovered;
     @Getter protected T itemSelected;
+    @Getter protected T lastItemSelected;
     protected Minecraft client;
 
     protected double scrollOffset = 0;
@@ -117,6 +120,9 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
 
     // region Render
     @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        if (KeymapConfig.instance().debug()) {
+            drawOutline(poseStack, 0xff_ff0000);
+        }
         renderList(poseStack, mouseX, mouseY, partialTick);
     }
 
@@ -127,14 +133,28 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
 
         for (int i = 0; i < size(); i++) {
             T e = items.get(i);
-            Rect r = new Rect(left() + padding.x(), top() + i * itemHeight + padding.y() - ((int) scrollOffset), rect.w() - padding.x() * 2, itemHeight);
+            Rect r = new Rect(left() + padding.x(),
+                    top() + i * itemHeight + padding.y() - ((int) scrollOffset),
+                    rect.w() - padding.x() * 2,
+                    itemHeight);
+
+            if (r.top() > rect.bottom() - padding.y() || r.bottom() < rect.top() + padding.y()) continue;
             e.render(poseStack, r, partialTick);
         }
     }
 
+    @Nullable
+    @Override public List<Component> getTooltips() {
+        if (itemHovered != null) return itemHovered.getTooltips();
+        return null;
+    }
+
+    protected void sort() {};
+
     // endregion
 
     @Override public boolean onMouseReleased(boolean inside, double mouseX, double mouseY, int button) {
+        lastItemSelected = null;
         if (didDrag) {
             didDrag = false;
             return false;
@@ -142,6 +162,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         itemHovered = getHoveredItem(mouseX, mouseY);
         if (itemHovered == null && itemSelected != null && canDeselectItem) {
             itemSelected.selected(false);
+            lastItemSelected = itemSelected;
             itemSelected = null;
             return false;
         }
@@ -213,6 +234,8 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         public void render(@NotNull PoseStack poseStack, Rect r, float partialTick) {
             renderWidget(poseStack, r, partialTick);
         }
+
+        public void updateTooltips() {}
 
         public abstract void renderWidget(@NotNull PoseStack poseStack, Rect r, float partialTick);
     }

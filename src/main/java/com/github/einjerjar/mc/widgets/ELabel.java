@@ -44,7 +44,7 @@ public class ELabel extends EWidget {
 
     @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         int x = centerX ? midX() : left();
-        int y = centerY ? midY() : top();
+        int y = centerY ? midY() - font.lineHeight / 2 : top();
         drawCenteredString(poseStack, font, text, x, y, colorVariant().text());
     }
 }

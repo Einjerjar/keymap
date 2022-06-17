@@ -5,6 +5,8 @@ import net.minecraft.client.KeyMapping;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import java.util.Map;
+
 @Mixin(KeyMapping.class)
 public interface KeyMappingAccessor {
     @Accessor("key") InputConstants.Key getKey();
@@ -12,4 +14,8 @@ public interface KeyMappingAccessor {
     @Accessor("clickCount") int getClickCount();
 
     @Accessor("clickCount") void setClickCount(int value);
+
+    @Accessor("MAP") public static Map<InputConstants.Key, KeyMapping> getMap() {
+        throw new AssertionError();
+    }
 }

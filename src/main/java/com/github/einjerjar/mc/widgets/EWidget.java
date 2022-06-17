@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.widgets;
 
+import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.widgets.utils.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -58,8 +59,13 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
             , float partialTick) {
         if (!visible) return;
         hovered = isMouseOver(mouseX, mouseY);
+        if (KeymapConfig.instance().debug()) {
+            drawOutline(poseStack, 0x44_ff0000);
+        }
         renderWidget(poseStack, mouseX, mouseY, partialTick);
     }
+
+    public void updateTooltips() {}
 
     public boolean onMouseClicked(boolean inside, double mouseX, double mouseY, int button) {
         return false;

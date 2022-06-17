@@ -15,8 +15,13 @@ public class KeymapRegistry {
     private KeymapRegistry() {}
 
     @Getter protected static List<KeymapSource> sources = new ArrayList<>();
+    @Getter protected static boolean collected = false;
 
     public static void collect() {
+        if (collected) {
+            Keymap.logger().warn("KeymapRegistry collect() method has already been called once, and is being called again!");
+        }
+        sources.clear();
         Reflections reflections = new Reflections("com.github.einjerjar.mc");
         List<Class<? extends KeymapSource>> subClasses = reflections.getSubTypesOf(KeymapSource.class).stream().toList();
         for (Class<? extends KeymapSource> subClass : subClasses) {
@@ -29,6 +34,7 @@ public class KeymapRegistry {
                 e.printStackTrace();
             }
         }
+        collected = true;
     }
 
     public static void register(KeymapSource source) {

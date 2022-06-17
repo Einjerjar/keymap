@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -30,6 +31,20 @@ public class KeyLayout {
 
     public static void registerLayout(KeyLayout layout) {
         layouts.put(layout.meta.code, layout);
+        updateMouseKeys(layout.keys.mouse());
+        updateMouseKeys(layout.keys.basic());
+        updateMouseKeys(layout.keys.numpad());
+        updateMouseKeys(layout.keys.extra());
+    }
+
+    protected static void updateMouseKeys(List<KeyRow> rows) {
+        for (KeyRow row : rows) {
+            for (KeyData key : row.row) {
+                if (key.code() < 10) {
+                    key.setMouse(true);
+                }
+            }
+        }
     }
 
     public static void loadKeys() {

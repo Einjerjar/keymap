@@ -225,10 +225,10 @@ keys:
           code: 0
           width: 6
         - name: MM
-          code: 1
+          code: 2
           width: 6
         - name: MR
-          code: 2
+          code: 1
           width: 6
   numpad:
     - row:

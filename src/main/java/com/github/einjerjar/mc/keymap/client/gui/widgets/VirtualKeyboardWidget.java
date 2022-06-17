@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.client.gui.widgets;
 
+import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyData;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyRow;
 import com.github.einjerjar.mc.widgets.EWidget;
@@ -16,6 +17,7 @@ import java.util.List;
 public class VirtualKeyboardWidget extends EWidget {
     @Getter @Setter protected int gap = 2;
     @Setter protected SimpleAction<VirtualKeyboardWidget> onKeyClicked;
+    @Setter protected SpecialVKKeyClicked onSpecialKeyClicked;
     @Getter protected List<KeyWidget> childKeys = new ArrayList<>();
     @Getter protected KeyWidget lastActionFrom;
     protected List<KeyRow> keys;
@@ -36,6 +38,25 @@ public class VirtualKeyboardWidget extends EWidget {
         return false;
     }
 
+    protected void _onKeyClicked(KeyWidget source) {
+        lastActionFrom = source;
+        if (onKeyClicked != null) onKeyClicked.run(this);
+        lastActionFrom = null;
+    }
+
+    protected void _onSpecialKeyClicked(KeyWidget source, int button) {
+        // redundant check for my sanity
+        if (!source.isSpecial()) {
+            Keymap.logger().warn("False Special");
+            _onKeyClicked(source);
+            return;
+        }
+        lastActionFrom = source;
+        // Other mouse keys
+        if (onSpecialKeyClicked != null) onSpecialKeyClicked.run(this, source, button);
+        lastActionFrom = null;
+    }
+
     @Override protected void init() {
         int w = 16;
         int h = 16;
@@ -49,11 +70,8 @@ public class VirtualKeyboardWidget extends EWidget {
                 int ww = w + k.width();
                 int hh = h + k.height();
                 KeyWidget kw = new KeyWidget(k, currentX, currentY, ww, hh);
-                kw.onClick(source -> {
-                    lastActionFrom = source;
-                    if (onKeyClicked != null) onKeyClicked.run(this);
-                    lastActionFrom = null;
-                });
+                kw.onClick(this::_onKeyClicked);
+                kw.onSpecialClick(this::_onSpecialKeyClicked);
 
                 childKeys.add(kw);
                 currentX += gap + ww;
@@ -72,5 +90,9 @@ public class VirtualKeyboardWidget extends EWidget {
         for (KeyWidget kw : childKeys) {
             kw.render(poseStack, mouseX, mouseY, partialTick);
         }
+    }
+
+    public interface SpecialVKKeyClicked {
+        void run(VirtualKeyboardWidget source, KeyWidget keySource, int button);
     }
 }
