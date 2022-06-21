@@ -1,34 +1,33 @@
 package com.github.einjerjar.mc.keymap.keys.layout;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.github.einjerjar.mc.keymap.Keymap;
-import lombok.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import lombok.extern.jackson.Jacksonized;
 
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
-@Builder
 @ToString
-@Jacksonized
+@AllArgsConstructor
 @Accessors(fluent = true)
 public class KeyLayout {
-    private static final String LAYOUT_ROOT = "assets/keymap/layouts/";
-    @Getter protected static KeyLayout layoutDefault;
-    @Getter protected static KeyLayout layoutCurrent;
-    @Getter protected static HashMap<String, KeyLayout> layouts = new HashMap<>();
-    @Getter @Setter protected KeyMeta meta;
-    @Getter @Setter protected Keys keys;
+    private static final      String                     LAYOUT_ROOT = "assets/keymap/layouts/";
+    @Getter protected static  KeyLayout                  layoutDefault;
+    @Getter protected static  KeyLayout                  layoutCurrent;
+    @Getter protected static  HashMap<String, KeyLayout> layouts     = new HashMap<>();
+    @Getter @Setter protected KeyMeta                    meta;
+    @Getter @Setter protected Keys                       keys;
 
     public static void registerLayout(KeyLayout layout) {
         layouts.put(layout.meta.code, layout);
@@ -51,32 +50,49 @@ public class KeyLayout {
     public static void loadKeys() {
         layouts.clear();
 
-        // Path shenanigans, cuz sonarlint is a fuken biatch
-        Stream<Path> paths = null;
+        GsonBuilder  builder = new GsonBuilder().setPrettyPrinting();
+        Gson         gson    = builder.create();
+        ClassLoader  loader  = KeyLayout.class.getClassLoader();
+        Stream<Path> files   = null;
+        FileSystem   fs      = null;
+
         try {
-            ClassLoader loader = KeyLayout.class.getClassLoader();
-            URI layoutUri = Objects.requireNonNull(loader.getResource(LAYOUT_ROOT)).toURI();
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
-            Path path = Paths.get(layoutUri);
+            URI  layoutUri = Objects.requireNonNull(loader.getResource(LAYOUT_ROOT).toURI());
+            Path path;
+            if (layoutUri.getScheme().equals("jar")) {
+                fs   = FileSystems.newFileSystem(layoutUri, Collections.emptyMap());
+                path = fs.getPath(LAYOUT_ROOT);
+            } else {
+                path = Path.of(layoutUri);
+            }
 
-            paths = Files.list(path);
+            files = Files.walk(path, 1);
 
-            paths.forEach(p -> {
-                try (InputStream is = loader.getResourceAsStream(LAYOUT_ROOT + p.getFileName())) {
-                    KeyLayout layout = mapper.readValue(is, KeyLayout.class);
-                    registerLayout(layout);
+            for (Iterator<Path> it = files.iterator(); it.hasNext(); ) {
+                Path p = it.next();
+                if (!p.getFileName().toString().endsWith(".json")) continue;
+
+                // simple notice, since sonarlint/intellij is complaining about readability
+                // ----------------- another try-catch block starts here -----------------
+                try (InputStreamReader reader =
+                             new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream(LAYOUT_ROOT + p.getFileName())))) {
+                    registerLayout(gson.fromJson(reader, KeyLayout.class));
                 } catch (Exception e) {
-                    Keymap.logger().error(e.getMessage());
+                    Keymap.logger().warn("Can't load {} ; {}", p.getFileName(), e.getMessage());
                     e.printStackTrace();
                 }
-            });
-
-            paths.close();
+                // ----------------- another try-catch block ends here -----------------
+            }
         } catch (Exception e) {
             Keymap.logger().error(e.getMessage());
             e.printStackTrace();
         } finally {
-            if (paths != null) paths.close();
+            if (files != null) files.close();
+            try {
+                if (fs != null) fs.close();
+            } catch (Exception e) {
+                Keymap.logger().error("Can't close fs");
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package com.github.einjerjar.mc.keymap.mixin;
 
 import com.github.einjerjar.mc.keymap.Keymap;
-import com.github.einjerjar.mc.keymap.client.gui.screen.KeymapScreen;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
@@ -13,8 +12,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
 
 @Mixin(KeyMapping.class)
 public class KeyMappingMixin {
@@ -33,17 +30,19 @@ public class KeyMappingMixin {
 
     @Inject(at = @At("HEAD"), method = "click", cancellable = true)
     private static void onKeyPressed(InputConstants.Key key, CallbackInfo ci) {
-        long winHandle = Minecraft.getInstance().getWindow().getWindow();
-        boolean shift = isPressed(winHandle, InputConstants.KEY_LSHIFT, InputConstants.KEY_RSHIFT);
-        boolean alt = isPressed(winHandle, InputConstants.KEY_LALT, InputConstants.KEY_RALT);
-        boolean ctrl = isPressed(winHandle, InputConstants.KEY_LCONTROL, InputConstants.KEY_RCONTROL);
-        KeyComboData kd = new KeyComboData(key.getValue(), KeyType.KEYBOARD, alt, shift, ctrl);
+        long         winHandle = Minecraft.getInstance().getWindow().getWindow();
+        boolean      shift     = isPressed(winHandle, InputConstants.KEY_LSHIFT, InputConstants.KEY_RSHIFT);
+        boolean      alt       = isPressed(winHandle, InputConstants.KEY_LALT, InputConstants.KEY_RALT);
+        boolean      ctrl      = isPressed(winHandle, InputConstants.KEY_LCONTROL, InputConstants.KEY_RCONTROL);
+        KeyComboData kd        = new KeyComboData(key.getValue(), KeyType.KEYBOARD, alt, shift, ctrl);
         Keymap.logger().error(KeybindRegistry.bindMap().containsKey(kd));
         Keymap.logger().warn("onKeyPressed: {}, Complex: {}, Data: {}", key.getValue(), !kd.onlyKey(), kd);
 
         if (KeybindRegistry.bindMap().containsKey(kd)) {
             KeyMappingAccessor kb = (KeyMappingAccessor) KeybindRegistry.bindMap().get(kd);
-            Keymap.logger().error("Processing event {}, {}", KeybindRegistry.bindMap().get(kd).getName(), KeyMappingAccessor.getMap().containsValue(KeybindRegistry.bindMap().get(kd)));
+            Keymap.logger().error("Processing event {}, {}",
+                    KeybindRegistry.bindMap().get(kd).getName(),
+                    KeyMappingAccessor.getMap().containsValue(KeybindRegistry.bindMap().get(kd)));
             Keymap.logger().warn(kb.getClickCount());
             kb.setClickCount(kb.getClickCount() + 1);
             Keymap.logger().warn(kb.getClickCount());

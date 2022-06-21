@@ -20,7 +20,7 @@ public class CategoryListWidget extends EList<CategoryListWidget.CategoryListEnt
         }
 
         @Override public void renderWidget(@NotNull PoseStack poseStack, Rect r, float partialTick) {
-        //    temp
+            //    temp
         }
     }
 }

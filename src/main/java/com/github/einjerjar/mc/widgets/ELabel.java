@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.widgets;
 
-import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -11,8 +10,8 @@ import net.minecraft.network.chat.Component;
 @Accessors(fluent = true, chain = true)
 public class ELabel extends EWidget {
     @Getter @Setter Component text;
-    @Getter @Setter boolean centerX;
-    @Getter @Setter boolean centerY;
+    @Getter @Setter boolean   centerX;
+    @Getter @Setter boolean   centerY;
 
     public ELabel(int x, int y, int w, int h) {
         super(x, y, w, h);

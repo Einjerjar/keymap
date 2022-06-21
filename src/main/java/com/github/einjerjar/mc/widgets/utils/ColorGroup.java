@@ -15,16 +15,16 @@ public final class ColorGroup {
     @Getter private final ColorSet disabled;
 
     public ColorGroup(ColorSet normal, ColorSet hover, ColorSet active, ColorSet disabled) {
-        this.normal = normal;
-        this.hover = hover;
-        this.active = active;
+        this.normal   = normal;
+        this.hover    = hover;
+        this.active   = active;
         this.disabled = disabled;
     }
 
     public ColorGroup(int color) {
-        this.normal = new ColorSet(color, ColorType.NORMAL);
-        this.hover = new ColorSet(color, ColorType.HOVER);
-        this.active = new ColorSet(color, ColorType.ACTIVE);
+        this.normal   = new ColorSet(color, ColorType.NORMAL);
+        this.hover    = new ColorSet(color, ColorType.HOVER);
+        this.active   = new ColorSet(color, ColorType.ACTIVE);
         this.disabled = new ColorSet(color, ColorType.DISABLED);
     }
 

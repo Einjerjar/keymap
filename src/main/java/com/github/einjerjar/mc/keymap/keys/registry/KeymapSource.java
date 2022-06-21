@@ -1,6 +1,6 @@
 package com.github.einjerjar.mc.keymap.keys.registry;
 
-import com.github.einjerjar.mc.keymap.keys.wrappers.KeyHolder;
+import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
 
 import java.util.List;
 

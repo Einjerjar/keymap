@@ -7,16 +7,17 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+@Getter
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
 @Accessors(fluent = true, chain = true)
 public class KeyComboData {
-    @Getter protected int keyCode;
-    @Getter protected KeyType keyType;
-    @Getter protected boolean alt;
-    @Getter protected boolean shift;
-    @Getter protected boolean ctrl;
+    protected int     keyCode;
+    protected KeyType keyType;
+    protected boolean alt;
+    protected boolean shift;
+    protected boolean ctrl;
 
     public boolean onlyKey() {
         return !(alt || shift || ctrl) && !KeybindRegistry.MODIFIER_KEYS().contains(keyCode);

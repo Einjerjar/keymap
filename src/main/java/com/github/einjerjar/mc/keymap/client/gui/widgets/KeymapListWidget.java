@@ -1,10 +1,13 @@
 package com.github.einjerjar.mc.keymap.client.gui.widgets;
 
+import com.github.einjerjar.mc.keymap.Keymap;
+import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
-import com.github.einjerjar.mc.keymap.keys.wrappers.KeyHolder;
-import com.github.einjerjar.mc.keymap.keys.wrappers.VanillaKeymap;
+import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
+import com.github.einjerjar.mc.keymap.keys.wrappers.holders.VanillaKeymap;
+import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EList;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -36,9 +39,34 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         KeyMapping.resetMapping();
         Integer newCode = vk.getCode().get(0);
         KeybindingRegistry.updateKey(ogCode, newCode, vk);
-        itemSelected.selected(false);
-        itemSelected = null;
-        lastItemSelected = null;
+        setItemSelected(null);
+        setLastItemSelected(null);
+    }
+
+    // FIXME: Redundant code
+    @Override protected void setItemSelected(KeymapListEntry t) {
+        Keymap.logger().warn("KEK");
+        if (itemSelected != null) {
+            itemSelected.selected(false);
+            KeybindingRegistry.notifySubscriber(itemSelected.map.getCode().get(0), false);
+        }
+        itemSelected = t;
+        if (t != null) {
+            itemSelected.selected(true);
+            KeybindingRegistry.notifySubscriber(itemSelected.map.getCode().get(0), true);
+        }
+    }
+
+    @Override protected void setLastItemSelected(KeymapListEntry t) {
+        if (lastItemSelected != null) {
+            lastItemSelected.selected(false);
+            KeybindingRegistry.notifySubscriber(lastItemSelected.map.getCode().get(0), false);
+        }
+        lastItemSelected = t;
+        if (t != null) {
+            lastItemSelected.selected(true);
+            KeybindingRegistry.notifySubscriber(lastItemSelected.map.getCode().get(0), true);
+        }
     }
 
     public void resetAllKeys() {
@@ -48,9 +76,8 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         KeyMapping.resetMapping();
         KeybindingRegistry.loadWithoutClearingSubscribers();
         KeybindingRegistry.notifyAllSubscriber();
-        if (itemSelected != null) itemSelected.selected(false);
-        itemSelected = null;
-        lastItemSelected = null;
+        setItemSelected(null);
+        setLastItemSelected(null);
     }
 
     public boolean setKeyForItem(KeymapListEntry item, KeyComboData kd) {
@@ -66,13 +93,13 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
     public boolean setKeyForSelectedItem(KeyComboData kd) {
         boolean ret = setKeyForItem(itemSelected, kd);
-        itemSelected = null;
+        setItemSelected(null);
         return ret;
     }
 
     public boolean setKeyForLastSelectedItem(KeyComboData kd) {
         boolean ret = setKeyForItem(lastItemSelected, kd);
-        lastItemSelected = null;
+        setLastItemSelected(null);
         return ret;
     }
 
@@ -87,9 +114,17 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
         public KeymapListEntry(KeyHolder map, KeymapListWidget container) {
             super(container);
-            this.map = map;
+            this.map       = map;
             this.keyString = map.getTranslatedName();
             updateTooltips();
+        }
+
+        protected void updateDebugTooltips() {
+            if (KeymapConfig.instance().debug()) {
+                tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
+                tooltips.add(new TextComponent(String.format("Search: %s",
+                        map.getSearchString())).withStyle(Styles.yellow()));
+            }
         }
 
         @Override public void updateTooltips() {
@@ -98,12 +133,13 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
             tooltips.add(new TextComponent(String.format("[%s]",
                     Language.getInstance().getOrDefault(this.map().getCategory()))).withStyle(Styles.muted2()));
             tooltips.add(map.getTranslatedKey());
+            updateDebugTooltips();
         }
 
         @Override public String toString() {
             return "KeymapListEntryWidget{" +
-                    "keyString=" + keyString.getString() +
-                    '}';
+                   "keyString=" + keyString.getString() +
+                   '}';
         }
 
         public void resetKey() {

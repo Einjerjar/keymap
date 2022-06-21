@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 
 @Accessors(fluent = true, chain = true)
 public class Keymap implements ModInitializer {
-    @Getter static final String MOD_ID = "keymap";
+    @Getter static final String MOD_ID   = "keymap";
     @Getter static final String MOD_NAME = "keymap";
-    @Getter static Logger logger = LogManager.getLogger();
+    @Getter static       Logger logger   = LogManager.getLogger();
 
     @Override
     public void onInitialize() {
@@ -21,7 +21,9 @@ public class Keymap implements ModInitializer {
         logger.info(KeymapConfig.instance().toString());
 
         KeyLayout.loadKeys();
-        KeyLayout.layouts().forEach((s, keyLayout) -> logger.info("Layout for {} @ {}", keyLayout.meta().code(), keyLayout.meta().name()));
+        KeyLayout.layouts().forEach((s, keyLayout) -> logger.info("Layout for {} @ {}",
+                keyLayout.meta().code(),
+                keyLayout.meta().name()));
 
         KeymapRegistry.collect();
     }

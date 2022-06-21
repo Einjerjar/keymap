@@ -15,21 +15,15 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class VirtualKeyboardWidget extends EWidget {
-    @Getter @Setter protected int gap = 2;
-    @Setter protected SimpleAction<VirtualKeyboardWidget> onKeyClicked;
-    @Setter protected SpecialVKKeyClicked onSpecialKeyClicked;
-    @Getter protected List<KeyWidget> childKeys = new ArrayList<>();
-    @Getter protected KeyWidget lastActionFrom;
-    protected List<KeyRow> keys;
+    @Getter @Setter protected int                                 gap       = 2;
+    @Setter protected         SimpleAction<VirtualKeyboardWidget> onKeyClicked;
+    @Setter protected         SpecialVKKeyClicked                 onSpecialKeyClicked;
+    @Getter protected         List<KeyWidget>                     childKeys = new ArrayList<>();
+    @Getter protected         KeyWidget                           lastActionFrom;
+    protected                 List<KeyRow>                        keys;
 
     public VirtualKeyboardWidget(List<KeyRow> keys, int x, int y, int w, int h) {
         super(x, y, w, h);
-        this.keys = keys;
-        init();
-    }
-
-    public VirtualKeyboardWidget(List<KeyRow> keys, Rect rect) {
-        super(rect);
         this.keys = keys;
         init();
     }
@@ -58,8 +52,8 @@ public class VirtualKeyboardWidget extends EWidget {
     }
 
     @Override protected void init() {
-        int w = 16;
-        int h = 16;
+        int w        = 16;
+        int h        = 16;
         int currentX = left();
         int currentY = top();
 
@@ -67,8 +61,8 @@ public class VirtualKeyboardWidget extends EWidget {
 
         for (KeyRow kk : keys) {
             for (KeyData k : kk.row()) {
-                int ww = w + k.width();
-                int hh = h + k.height();
+                int       ww = w + k.width();
+                int       hh = h + k.height();
                 KeyWidget kw = new KeyWidget(k, currentX, currentY, ww, hh);
                 kw.onClick(this::_onKeyClicked);
                 kw.onSpecialClick(this::_onSpecialKeyClicked);
@@ -76,7 +70,7 @@ public class VirtualKeyboardWidget extends EWidget {
                 childKeys.add(kw);
                 currentX += gap + ww;
             }
-            maxX = Math.max(currentX - gap, maxX);
+            maxX     = Math.max(currentX - gap, maxX);
             currentX = left();
             currentY += gap + h;
         }

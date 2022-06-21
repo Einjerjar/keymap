@@ -2,6 +2,7 @@ package com.github.einjerjar.mc.widgets;
 
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
+import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -17,11 +18,12 @@ import java.util.Optional;
 @Accessors(fluent = true, chain = true)
 public abstract class EScreen extends Screen {
     protected boolean autoRenderChild = true;
-    protected boolean clickState = false;
-    protected EWidget hoveredWidget = null;
-    protected ELabel debugFocus;
-    protected ELabel debugHover;
-    @Getter Screen parent;
+    protected boolean clickState      = false;
+    protected EWidget hoveredWidget   = null;
+    protected ELabel  debugFocus;
+    protected ELabel  debugHover;
+    protected boolean renderBg        = true;
+    @Getter   Screen  parent;
 
     protected EScreen(Screen parent, Component text) {
         super(text);
@@ -50,10 +52,6 @@ public abstract class EScreen extends Screen {
             return true;
         }
         return false;
-    }
-
-    @Override public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     protected boolean onCharTyped(char chr, int modifiers) {
@@ -152,7 +150,7 @@ public abstract class EScreen extends Screen {
     }
 
     @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(poseStack);
+        if (renderBg) renderBackground(poseStack);
         hoveredWidget = null;
         if (autoRenderChild) {
             for (EWidget d : widgets()) {
@@ -172,8 +170,51 @@ public abstract class EScreen extends Screen {
             debugFocus.render(poseStack, mouseX, mouseY, partialTick);
         }
 
-        if (hoveredWidget != null && hoveredWidget.getTooltips() != null) renderTooltip(poseStack, hoveredWidget.getTooltips(), Optional.empty(), mouseX, mouseY);
+        if (hoveredWidget != null && hoveredWidget.getTooltips() != null) renderTooltip(poseStack,
+                hoveredWidget.getTooltips(),
+                Optional.empty(),
+                mouseX,
+                mouseY);
     }
 
     protected abstract void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
+
+    public int left() {
+        return 0;
+    }
+
+    public int top() {
+        return 0;
+    }
+
+    public int right() {
+        return width;
+    }
+
+    public int bottom() {
+        return height;
+    }
+
+    public void drawOutline(PoseStack poseStack, int left, int top, int right, int bottom, int color) {
+        hLine(poseStack, left, right, top, color);
+        hLine(poseStack, left, right, bottom, color);
+        vLine(poseStack, left, top, bottom, color);
+        vLine(poseStack, right, top, bottom, color);
+    }
+
+    public void drawOutline(PoseStack poseStack, int color) {
+        drawOutline(poseStack, left(), top(), right(), bottom(), color);
+    }
+
+    public void drawOutline(PoseStack poseStack, Rect r, int color) {
+        drawOutline(poseStack, r.left(), r.top(), r.right(), r.bottom(), color);
+    }
+
+    public void drawBg(PoseStack poseStack, int left, int top, int right, int bottom, int color) {
+        fill(poseStack, left, top, right, bottom, color);
+    }
+
+    public void drawBg(PoseStack poseStack, int color) {
+        drawBg(poseStack, left(), top(), right(), bottom(), color);
+    }
 }

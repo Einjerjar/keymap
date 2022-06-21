@@ -13,15 +13,15 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class KeybindRegistry {
-    @Getter protected static final List<Integer> MODIFIER_KEYS = Arrays.asList(InputConstants.KEY_LALT,
+    @Getter protected static final List<Integer>                     MODIFIER_KEYS = Arrays.asList(InputConstants.KEY_LALT,
             InputConstants.KEY_RALT,
             InputConstants.KEY_LSHIFT,
             InputConstants.KEY_RSHIFT,
             InputConstants.KEY_LCONTROL,
             InputConstants.KEY_RCONTROL);
-    protected static KeybindRegistry instance;
-    @Getter protected static HashMap<KeyComboData, KeyMapping> bindMap = new HashMap<>();
-    protected HashMap<KeyMapping, KeyComboData> bindings = new HashMap<>();
+    protected static               KeybindRegistry                   instance;
+    @Getter protected static       HashMap<KeyComboData, KeyMapping> bindMap       = new HashMap<>();
+    protected                      HashMap<KeyMapping, KeyComboData> bindings      = new HashMap<>();
 
     public static KeybindRegistry instance() {
         if (instance == null) instance = new KeybindRegistry();

@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap.keys.wrappers;
+package com.github.einjerjar.mc.keymap.keys.wrappers.holders;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import net.minecraft.network.chat.Component;
@@ -23,6 +23,8 @@ public interface KeyHolder {
     String getTranslatableKey();
 
     Component getTranslatedKey();
+
+    String getSearchString();
 
     boolean setKey(List<Integer> keys, boolean mouse);
 

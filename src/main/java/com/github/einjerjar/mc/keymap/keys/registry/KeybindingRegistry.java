@@ -1,6 +1,6 @@
 package com.github.einjerjar.mc.keymap.keys.registry;
 
-import com.github.einjerjar.mc.keymap.keys.wrappers.KeyHolder;
+import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Accessors(fluent = true, chain = true)
 public class KeybindingRegistry {
-    @Getter protected static Map<Integer, List<KeyHolder>> keys = new HashMap<>();
+    @Getter protected static Map<Integer, List<KeyHolder>>                    keys        = new HashMap<>();
     @Getter protected static Map<Integer, List<KeybindingRegistrySubscriber>> subscribers = new HashMap<>();
 
     public static void load() {
@@ -31,9 +31,21 @@ public class KeybindingRegistry {
     }
 
     public static void notifyAllSubscriber() {
+        notifyAllSubscriber(false);
+    }
+
+    public static void notifyAllSubscriber(boolean selected) {
         for (List<KeybindingRegistrySubscriber> s : subscribers.values()) {
             for (KeybindingRegistrySubscriber ss : s) {
-                ss.keybindingRegistryUpdated();
+                ss.keybindingRegistryUpdated(selected);
+            }
+        }
+    }
+
+    public static void notifySubscriber(int keyCode, boolean selected) {
+        if (subscribers().containsKey(keyCode)) {
+            for (KeybindingRegistrySubscriber ss : subscribers().get(keyCode)) {
+                ss.keybindingRegistryUpdated(selected);
             }
         }
     }
@@ -64,17 +76,17 @@ public class KeybindingRegistry {
         addKey(newCode, k);
         if (subscribers().containsKey(lastCode)) {
             for (KeybindingRegistrySubscriber s : subscribers().get(lastCode)) {
-                s.keybindingRegistryUpdated();
+                s.keybindingRegistryUpdated(false);
             }
         }
         if (subscribers().containsKey(newCode)) {
             for (KeybindingRegistrySubscriber s : subscribers().get(newCode)) {
-                s.keybindingRegistryUpdated();
+                s.keybindingRegistryUpdated(false);
             }
         }
     }
 
     public interface KeybindingRegistrySubscriber {
-        void keybindingRegistryUpdated();
+        void keybindingRegistryUpdated(boolean selected);
     }
 }

@@ -1,11 +1,13 @@
-package com.github.einjerjar.mc.keymap.keys.wrappers;
+package com.github.einjerjar.mc.keymap.keys.wrappers.holders;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import com.github.einjerjar.mc.keymap.mixin.KeyMappingAccessor;
+import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 
@@ -15,16 +17,19 @@ import java.util.Objects;
 
 @Accessors(fluent = true, chain = true)
 public class VanillaKeymap implements KeyHolder {
-    @Getter protected KeyMapping map;
-    protected List<Integer> codes = new ArrayList<>();
-    protected Component translatedName;
-    protected Component translatedKey;
-    protected boolean complex;
+    @Getter protected KeyMapping    map;
+    protected         List<Integer> codes = new ArrayList<>();
+    protected         Component     translatedName;
+    protected         Component     translatedKey;
+    protected         boolean       complex;
+    protected         String        searchString;
+
     public VanillaKeymap(KeyMapping map) {
         this.map = map;
         this.codes.add(((KeyMappingAccessor) map).getKey().getValue());
         this.translatedName = new TranslatableComponent(map.getName());
-        this.translatedKey = ((KeyMappingAccessor) map).getKey().getDisplayName();
+        this.translatedKey  = ((KeyMappingAccessor) map).getKey().getDisplayName();
+        updateSearchString();
     }
 
     @Override public boolean equals(Object o) {
@@ -74,25 +79,43 @@ public class VanillaKeymap implements KeyHolder {
         return translatedKey;
     }
 
+    @Override public String getSearchString() {
+        return searchString;
+    }
+
     @Override public boolean setKey(List<Integer> keys, boolean mouse) {
         if (keys == null || keys.isEmpty()) return false;
         InputConstants.Type type = mouse ? InputConstants.Type.MOUSE : InputConstants.Type.KEYSYM;
-        InputConstants.Key key = type.getOrCreate(keys.get(0));
-        setKey(key);
+        InputConstants.Key  key  = type.getOrCreate(keys.get(0));
+        updateProps(key);
         KeyMapping.resetMapping();
         return true;
     }
 
-    protected void setKey(InputConstants.Key key) {
+    protected void updateSearchString() {
+        String cat = Language.getInstance().getOrDefault(getCategory());
+        searchString = String.format(
+                "%s [%s] #%s (%s) @%s",
+                translatedName.getString(),
+                translatedKey.getString(),
+                Utils.slugify(translatedKey.getString()),
+                cat,
+                Utils.slugify(cat)
+        ).toLowerCase();
+    }
+
+    protected void updateProps(InputConstants.Key key) {
         map.setKey(key);
         codes.clear();
         codes.add(key.getValue());
         translatedKey = key.getDisplayName();
+        updateSearchString();
+
     }
 
     @Override
     public boolean resetKey() {
-        setKey(map.getDefaultKey());
+        updateProps(map.getDefaultKey());
         return true;
     }
 }

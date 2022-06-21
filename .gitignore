@@ -19,3 +19,6 @@ bin/
 
 #fabric
 run/
+
+#test
+**/keymap/e/**

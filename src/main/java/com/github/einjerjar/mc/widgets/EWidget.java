@@ -24,16 +24,16 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public abstract class EWidget extends GuiComponent implements Widget, GuiEventListener, NarratableEntry, Tooltipped {
-    protected Font font = Minecraft.getInstance().font;
+    protected                 Font       font  = Minecraft.getInstance().font;
     @Getter @Setter protected ColorGroup color = ColorGroups.WHITE;
-    @Getter @Setter protected Rect rect;
+    @Getter @Setter protected Rect       rect;
 
-    @Getter @Setter protected boolean visible = true;
-    @Getter @Setter protected boolean enabled = true;
-    @Getter @Setter protected boolean focused = false;
-    @Getter protected boolean active = false;
-    @Getter protected boolean hovered = false;
-    @Getter protected boolean allowRightClick = false;
+    @Getter @Setter protected boolean visible         = true;
+    @Getter @Setter protected boolean enabled         = true;
+    @Getter @Setter protected boolean focused         = false;
+    @Getter protected         boolean active          = false;
+    @Getter protected         boolean hovered         = false;
+    @Getter protected         boolean allowRightClick = false;
 
     @Getter @Setter protected List<Component> tooltips;
 
@@ -74,7 +74,8 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
         renderWidget(poseStack, mouseX, mouseY, partialTick);
     }
 
-    public void updateTooltips() {}
+    public void updateTooltips() {
+    }
 
     public boolean onMouseClicked(boolean inside, double mouseX, double mouseY, int button) {
         return false;

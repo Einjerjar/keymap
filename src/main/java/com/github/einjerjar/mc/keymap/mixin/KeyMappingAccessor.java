@@ -9,13 +9,13 @@ import java.util.Map;
 
 @Mixin(KeyMapping.class)
 public interface KeyMappingAccessor {
+    @Accessor("MAP") static Map<InputConstants.Key, KeyMapping> getMap() {
+        throw new AssertionError();
+    }
+
     @Accessor("key") InputConstants.Key getKey();
 
     @Accessor("clickCount") int getClickCount();
 
     @Accessor("clickCount") void setClickCount(int value);
-
-    @Accessor("MAP") public static Map<InputConstants.Key, KeyMapping> getMap() {
-        throw new AssertionError();
-    }
 }
