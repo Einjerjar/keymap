@@ -1,15 +1,13 @@
 package com.github.einjerjar.mc.keymap.client.gui.widgets;
 
-import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyData;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
 import com.github.einjerjar.mc.keymap.keys.wrappers.KeyHolder;
+import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EWidget;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
 import com.github.einjerjar.mc.widgets.utils.ColorSet;
-import com.github.einjerjar.mc.widgets.utils.Rect;
-import com.github.einjerjar.mc.widgets.utils.Utils;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -23,20 +21,15 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingRegistrySubscriber {
-    @Getter private KeyData key;
-    @Getter private InputConstants.Key mcKey;
-    @Setter private SimpleAction<KeyWidget> onClick;
-    @Setter private SpecialKeyWidgetAction onSpecialClick;
+    @Getter protected KeyData key;
+    @Getter protected InputConstants.Key mcKey;
+    @Setter protected SimpleAction<KeyWidget> onClick;
+    @Setter protected SpecialKeyWidgetAction onSpecialClick;
     @Getter @Setter protected boolean selected = false;
-    private TextComponent text;
+    protected TextComponent text;
 
     public KeyWidget(KeyData key, int x, int y, int w, int h) {
         super(x, y, w, h);
-        _init(key);
-    }
-
-    public KeyWidget(KeyData key, Rect rect) {
-        super(rect);
         _init(key);
     }
 
@@ -77,8 +70,8 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
 
         this.color(ColorGroups.WHITE);
         if (size > 0) {
-            if (size >= 1) this.color(ColorGroups.GREEN);
-            tooltips.add(new TextComponent("--------------------").withStyle(Styles.muted()));
+            this.color(ColorGroups.GREEN);
+            tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
             tooltips.addAll(boundKeys);
         }
         if (selected) this.color(ColorGroups.YELLOW);
@@ -95,7 +88,7 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
 
     public void updateDebugTooltips() {
         if (KeymapConfig.instance().debug()) {
-            tooltips.add(new TextComponent("--------------------").withStyle(Styles.muted()));
+            tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
             tooltips.add(new TextComponent(String.format("Code: %d", key.code())).withStyle(Styles.yellow()));
             tooltips.add(new TextComponent(String.format("Mouse?: %b", key.mouse())).withStyle(Styles.yellow()));
             tooltips.add(new TextComponent(String.format("Name: %s", key.name())).withStyle(Styles.yellow()));
@@ -112,7 +105,7 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
             if (size > 1) this.color(ColorGroups.RED);
 
             if (size > 0) {
-                tooltips.add(new TextComponent("--------------------").withStyle(Styles.muted()));
+                tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
                 for(KeyHolder k : holders) {
                     tooltips.add(k.getTranslatedName());
                 }

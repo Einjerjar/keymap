@@ -1,40 +1,23 @@
 package com.github.einjerjar.mc.keymap.keys.layout;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.extern.jackson.Jacksonized;
 
+@Getter
+@Setter
+@Builder
 @ToString
-@Accessors(fluent = true, chain = true)
+@Jacksonized
+@Accessors(fluent = true)
 public class KeyData {
-    @Getter protected int code;
-    @Getter protected String name;
-    @Getter protected boolean enabled = true;
-    @Getter protected boolean mouse = false;
-    @Getter protected int width = 0;
-    @Getter protected int height = 0;
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setMouse(boolean mouse) {
-        this.mouse = mouse;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
+    protected int code;
+    protected String name;
+    @Builder.Default protected boolean enabled = true;
+    @Builder.Default protected boolean mouse = false;
+    @Builder.Default protected int width = 0;
+    @Builder.Default protected int height = 0;
 }

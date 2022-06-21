@@ -23,10 +23,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
-import java.util.HashMap;
-
 public class KeymapScreen extends EScreen {
-    protected static HashMap<KeyComboData, KeyHolder> holderMappings;
     protected int lastKeyCode;
     protected KeyComboData lastKeyComboData;
     protected VirtualKeyboardWidget vkBasic;
@@ -37,6 +34,9 @@ public class KeymapScreen extends EScreen {
     protected KeymapListWidget listKm;
     protected EButton btnReset;
     protected EButton btnResetAll;
+    protected EButton btnClearSearch;
+    protected EButton btnOpenSettings;
+    protected EButton btnOpenLayouts;
 
     protected Point<Integer> margin = new Point<>(6);
     protected Point<Integer> padding = new Point<>(4);
@@ -55,12 +55,16 @@ public class KeymapScreen extends EScreen {
                 expectedScreenWidth - margin.x() * 2,
                 height - margin.y() * 2);
 
-        vkBasic = new VirtualKeyboardWidget(layout.keys().basic(), scr.x() + padding.x(), scr.y() + padding.y(), 0, 0);
+        vkBasic = new VirtualKeyboardWidget(layout.keys().basic(),
+                scr.x() + padding.x(),
+                scr.y() + padding.y() * 2 + 16,
+                0,
+                0);
         vkExtra = new VirtualKeyboardWidget(layout.keys().extra(), vkBasic.left(), vkBasic.bottom() + 4, 0, 0);
         vkMouse = new VirtualKeyboardWidget(layout.keys().mouse(), vkExtra.left(), vkExtra.bottom() + 2, 0, 0);
         vkNumpad = new VirtualKeyboardWidget(layout.keys().numpad(), vkMouse.right() + 4, vkBasic.bottom() + 4, 0, 0);
 
-                vkBasic.onKeyClicked(this::onVKKeyClicked);
+        vkBasic.onKeyClicked(this::onVKKeyClicked);
         vkExtra.onKeyClicked(this::onVKKeyClicked);
         vkMouse.onKeyClicked(this::onVKKeyClicked);
         vkNumpad.onKeyClicked(this::onVKKeyClicked);
@@ -74,21 +78,51 @@ public class KeymapScreen extends EScreen {
         for (EWidget w : vkMouse.childKeys()) addRenderableWidget(w);
         for (EWidget w : vkNumpad.childKeys()) addRenderableWidget(w);
 
-        int spaceLeft = expectedScreenWidth - padding.x() * 2 - vkBasic.rect().w();
+        int spaceLeft = scr.w() - padding.x() * 3 - vkBasic.rect().w();
 
         listKm = new KeymapListWidget(font.lineHeight,
                 vkBasic.right() + padding.x(),
-                vkBasic.top() + padding.y() * 2 + 16,
+                vkBasic.top(),
                 spaceLeft,
                 scr.h() - padding.y() * 4 - 16 * 2);
 
         listKm.onItemSelected(source -> this.onKeyListClicked((KeymapListWidget) source));
 
-        btnReset = new EButton(new TranslatableComponent("keymap.btnReset"), listKm.left(), listKm.bottom() + padding.y(), (listKm.rect().w() - padding.x()) / 2, 16);
-        btnResetAll = new EButton(new TranslatableComponent("keymap.btnResetAll"), btnReset.right() + padding.x(), listKm.bottom() + padding.y(), (listKm.rect().w() - padding.x()) / 2, 16);
+        btnReset = new EButton(new TranslatableComponent("keymap.btnReset"),
+                listKm.left(),
+                listKm.bottom() + padding.y(),
+                (listKm.rect().w() - padding.x()) / 2,
+                16);
+        btnResetAll = new EButton(new TranslatableComponent("keymap.btnResetAll"),
+                btnReset.right() + padding.x(),
+                listKm.bottom() + padding.y(),
+                (listKm.rect().w() - padding.x()) / 2,
+                16);
 
         btnReset.clickAction(this::onBtnResetClicked);
+        btnReset.setTooltip(new TranslatableComponent("keymap.btnResetTip"));
         btnResetAll.clickAction(this::onBtnResetAllClicked);
+        btnResetAll.setTooltip(new TranslatableComponent("keymap.btnResetAllTip"));
+
+        int vkHalf = (vkBasic.rect().w() - padding.x()) / 2;
+        btnOpenSettings = new EButton(new TranslatableComponent("keymap.btnOpenSettings"),
+                scr.x() + padding.x(),
+                scr.y() + padding.y(),
+                vkHalf,
+                16);
+        btnOpenLayouts = new EButton(new TranslatableComponent("keymap.btnOpenLayouts"),
+                btnOpenSettings.right() + padding.x(),
+                scr.y() + padding.y(),
+                vkHalf,
+                16);
+        btnClearSearch = new EButton(new TranslatableComponent("keymap.btnClearSearch"),
+                listKm.right() - 16,
+                scr.y() + padding.y(),
+                16,
+                16);
+
+        btnOpenSettings.setTooltip(new TranslatableComponent("keymap.btnOpenSettingsTip"));
+        btnOpenLayouts.setTooltip(new TranslatableComponent("keymap.btnOpenLayoutsTip"));
 
         assert minecraft != null;
         for (KeymapSource source : KeymapRegistry.sources()) {
@@ -103,6 +137,9 @@ public class KeymapScreen extends EScreen {
         addRenderableWidget(listKm);
         addRenderableWidget(btnReset);
         addRenderableWidget(btnResetAll);
+        addRenderableWidget(btnOpenSettings);
+        addRenderableWidget(btnOpenLayouts);
+        addRenderableWidget(btnClearSearch);
     }
 
     protected void onBtnResetClicked(EWidget source) {
@@ -142,7 +179,8 @@ public class KeymapScreen extends EScreen {
         if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
 
         if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode == keyCode) processSimpleModifiers();
-        else if (!KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyComboData.onlyKey()) processSimpleModifiers();
+        else if (!KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyComboData.onlyKey())
+            processSimpleModifiers();
         else processComplexKey();
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
@@ -154,7 +192,11 @@ public class KeymapScreen extends EScreen {
                 source.lastActionFrom().key().name(),
                 source.lastActionFrom().key().mouse(),
                 source.lastActionFrom().isSpecial());
-        KeyComboData kd = new KeyComboData(source.lastActionFrom().key().code(), source.lastActionFrom().key().mouse() ? KeyType.MOUSE : KeyType.KEYBOARD, false, false, false);
+        KeyComboData kd = new KeyComboData(source.lastActionFrom().key().code(),
+                source.lastActionFrom().key().mouse() ? KeyType.MOUSE : KeyType.KEYBOARD,
+                false,
+                false,
+                false);
         listKm.setKeyForLastSelectedItem(kd);
     }
 

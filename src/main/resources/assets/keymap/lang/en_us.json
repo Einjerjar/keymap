@@ -1,4 +1,14 @@
 {
   "keymap.btnReset": "Reset",
-  "keymap.btnResetAll": "Reset All"
+  "keymap.btnResetTip": "Reset the currently selected item to its default value.",
+  "keymap.btnResetAll": "Reset All",
+  "keymap.btnResetAllTip": "Reset all the keybindings to their default values.",
+  "keymap.btnOpenSettings": "Settings",
+  "keymap.btnOpenSettingsTip": "Open the settings screen",
+  "keymap.btnOpenLayouts": "Layouts",
+  "keymap.btnOpenLayoutsTip": "Open the layout selection screen",
+  "keymap.btnClearSearch": "❌",
+  "keymap.btnClearSearchTip": "Clear the current search input",
+  "keymap.dummy": "",
+  "keymap.dummy2": "line above is simply to allow me to quickly create lines by duplication cuz I'm that lazy, this line is here so I could still have a comma on the line above... thinking about it, doesn't the fact that I'm writing this random description here make me less lazy? :D"
 }

@@ -1,7 +1,7 @@
 package com.github.einjerjar.mc.widgets.utils;
 
-public class Utils {
-    private Utils() {
+public class WidgetUtils {
+    private WidgetUtils() {
     }
 
     public static double clamp(double x, double min, double max) {

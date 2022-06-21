@@ -1,12 +1,12 @@
 package com.github.einjerjar.mc.keymap.keys.layout;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.github.einjerjar.mc.keymap.Keymap;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import lombok.extern.jackson.Jacksonized;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -18,16 +18,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+@Builder
 @ToString
-@Accessors(fluent = true, chain = true)
-@NoArgsConstructor
+@Jacksonized
+@Accessors(fluent = true)
 public class KeyLayout {
     private static final String LAYOUT_ROOT = "assets/keymap/layouts/";
     @Getter protected static KeyLayout layoutDefault;
     @Getter protected static KeyLayout layoutCurrent;
     @Getter protected static HashMap<String, KeyLayout> layouts = new HashMap<>();
-    @Getter protected KeyMeta meta;
-    @Getter protected Keys keys;
+    @Getter @Setter protected KeyMeta meta;
+    @Getter @Setter protected Keys keys;
 
     public static void registerLayout(KeyLayout layout) {
         layouts.put(layout.meta.code, layout);
@@ -41,7 +42,7 @@ public class KeyLayout {
         for (KeyRow row : rows) {
             for (KeyData key : row.row) {
                 if (key.code() < 10) {
-                    key.setMouse(true);
+                    key.mouse(true);
                 }
             }
         }
@@ -55,14 +56,14 @@ public class KeyLayout {
         try {
             ClassLoader loader = KeyLayout.class.getClassLoader();
             URI layoutUri = Objects.requireNonNull(loader.getResource(LAYOUT_ROOT)).toURI();
-            Yaml yaml = new Yaml(new Constructor(KeyLayout.class));
+            ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
             Path path = Paths.get(layoutUri);
 
             paths = Files.list(path);
 
             paths.forEach(p -> {
                 try (InputStream is = loader.getResourceAsStream(LAYOUT_ROOT + p.getFileName())) {
-                    KeyLayout layout = yaml.load(is);
+                    KeyLayout layout = mapper.readValue(is, KeyLayout.class);
                     registerLayout(layout);
                 } catch (Exception e) {
                     Keymap.logger().error(e.getMessage());
@@ -90,13 +91,5 @@ public class KeyLayout {
             Keymap.logger().warn("Cannot find layout for [{}], defaulting to en_us", code);
             return layouts.get("en_us");
         }
-    }
-
-    public void setMeta(KeyMeta meta) {
-        this.meta = meta;
-    }
-
-    public void setKeys(Keys keys) {
-        this.keys = keys;
     }
 }

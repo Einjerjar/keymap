@@ -1,37 +1,21 @@
 package com.github.einjerjar.mc.keymap.keys.layout;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@Builder
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Accessors(fluent = true, chain = true)
+@Jacksonized
+@Accessors(fluent = true)
 public class Keys {
-    @Getter protected List<KeyRow> basic = new ArrayList<>();
-    @Getter protected List<KeyRow> mouse = new ArrayList<>();
-    @Getter protected List<KeyRow> extra = new ArrayList<>();
-    @Getter protected List<KeyRow> numpad = new ArrayList<>();
-
-    public void setBasic(List<KeyRow> basic) {
-        this.basic = basic;
-    }
-
-    public void setMouse(List<KeyRow> mouse) {
-        this.mouse = mouse;
-    }
-
-    public void setExtra(List<KeyRow> extra) {
-        this.extra = extra;
-    }
-
-    public void setNumpad(List<KeyRow> numpad) {
-        this.numpad = numpad;
-    }
+    @Builder.Default protected List<KeyRow> basic = new ArrayList<>();
+    @Builder.Default protected List<KeyRow> mouse = new ArrayList<>();
+    @Builder.Default protected List<KeyRow> extra = new ArrayList<>();
+    @Builder.Default protected List<KeyRow> numpad = new ArrayList<>();
 }

@@ -272,6 +272,6 @@ keys:
     - row:
         - name: "0"
           code: 320
+          width: 18
         - name: .
           code: 330
-          width: 18

@@ -59,10 +59,13 @@ dependencies {
     modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
     modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
 
-	// https://mvnrepository.com/artifact/org.yaml/snakeyaml
-	implementation include('org.yaml:snakeyaml:1.30')
-
 	implementation 'org.reflections:reflections:0.10.2'
+
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+	implementation include('com.fasterxml.jackson.core:jackson-databind:2.13.3')
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
+	implementation include('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3')
+
 }
 
 processResources {

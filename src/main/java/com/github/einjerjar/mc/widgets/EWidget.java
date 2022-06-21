@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(fluent = true, chain = true)
@@ -46,6 +47,14 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
 
     @Override public List<Component> getTooltips() {
         return tooltips;
+    }
+
+    protected void setTooltip(Component tip) {
+        if (tooltips == null) {
+            tooltips = new ArrayList<>();
+        }
+        tooltips.clear();
+        tooltips.add(tip);
     }
 
     protected void init() {

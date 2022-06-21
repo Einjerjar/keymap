@@ -1,22 +1,18 @@
 package com.github.einjerjar.mc.keymap.keys.layout;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@Builder
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Accessors(fluent = true, chain = true)
+@Jacksonized
+@Accessors(fluent = true)
 public class KeyRow {
-    @Getter protected List<KeyData> row = new ArrayList<>();
-
-    public void setRow(List<KeyData> row) {
-        this.row = row;
-    }
+    @Builder.Default protected List<KeyData> row = new ArrayList<>();
 }

@@ -104,11 +104,11 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     }
 
     public void setScrollPos(double pos) {
-        scrollOffset = Utils.clamp(pos, 0, maxScroll());
+        scrollOffset = WidgetUtils.clamp(pos, 0, maxScroll());
     }
 
     public void relativeScrollPos(double pos) {
-        scrollOffset = Utils.clamp(scrollOffset + pos, 0, maxScroll());
+        scrollOffset = WidgetUtils.clamp(scrollOffset + pos, 0, maxScroll());
     }
 
     // endregion
@@ -149,7 +149,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         return null;
     }
 
-    protected void sort() {};
+    protected void sort() {}
 
     // endregion
 

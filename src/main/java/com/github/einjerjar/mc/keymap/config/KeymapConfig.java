@@ -1,45 +1,47 @@
 package com.github.einjerjar.mc.keymap.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.github.einjerjar.mc.keymap.Keymap;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.extern.jackson.Jacksonized;
 import net.fabricmc.loader.api.FabricLoader;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 
+@Getter
+@Setter
+@Builder
 @ToString
-@Accessors(fluent = true, chain = true)
+@Jacksonized
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(fluent = true)
 public class KeymapConfig {
     static KeymapConfig instance;
-    static DumperOptions dumperOptions;
-    static Yaml yaml;
+    static ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
     static File cfgFile = new File(FabricLoader.getInstance().getConfigDir().resolve("keymap.yaml").toUri());
 
     // hidden
-    @Getter @Setter public boolean firstOpenDone = false;
+    @Builder.Default protected boolean firstOpenDone = false;
 
     // layout
-    @Getter @Setter public boolean autoSelectLayout = false;
-    @Getter @Setter public String customLayout = "en_us";
+    @Builder.Default protected boolean autoSelectLayout = false;
+    @Builder.Default protected String customLayout = "en_us";
 
     // general
-    @Getter @Setter public boolean replaceKeybindScreen = true;
-    @Getter @Setter public boolean malilibSupport = true;
-    @Getter @Setter public boolean debug = false;
+    @Builder.Default protected boolean replaceKeybindScreen = true;
+    @Builder.Default protected boolean malilibSupport = true;
+    @Builder.Default protected boolean showHelpTooltips = true;
+    @Builder.Default protected boolean debug = false;
 
     // tooltip
-    @Getter @Setter public boolean keybindNameOnHover = true;
-    @Getter @Setter public boolean keybindKeyOnHover = true;
-    @Getter @Setter public boolean keyButtonModName = true;
-    @Getter @Setter public boolean keyButtonMalilibKeybinds = true;
+    @Builder.Default protected boolean keybindNameOnHover = true;
+    @Builder.Default protected boolean keybindKeyOnHover = true;
+    @Builder.Default protected boolean keyButtonModName = true;
+    @Builder.Default protected boolean keyButtonMalilibKeybinds = true;
 
     public static KeymapConfig instance() {
         if (instance == null) instance = new KeymapConfig();
@@ -47,27 +49,17 @@ public class KeymapConfig {
     }
 
     public static void save() {
-        prepYaml();
-        try (FileWriter writer = new FileWriter(cfgFile)) {
-            yaml.dump(instance(), writer);
+        try {
+            mapper.writeValue(cfgFile, instance());
         } catch (Exception e) {
             Keymap.logger().error("!! Cant save config !!");
             e.printStackTrace();
         }
     }
 
-    public static void prepYaml() {
-        if (yaml != null) return;
-        dumperOptions = new DumperOptions();
-        dumperOptions.setIndent(2);
-        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        yaml = new Yaml(new Constructor(KeymapConfig.class), new Representer(dumperOptions), dumperOptions);
-    }
-
     public static void load() {
-        prepYaml();
-        try (FileReader reader = new FileReader(cfgFile)) {
-            instance = yaml.load(reader);
+        try {
+            instance = mapper.readValue(cfgFile, KeymapConfig.class);
         } catch (Exception e) {
             Keymap.logger().warn("!! Cant read config, using default settings !!");
             e.printStackTrace();
