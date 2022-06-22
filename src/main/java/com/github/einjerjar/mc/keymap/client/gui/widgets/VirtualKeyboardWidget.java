@@ -31,6 +31,13 @@ public class VirtualKeyboardWidget extends EWidget {
         return false;
     }
 
+    public VirtualKeyboardWidget destroy() {
+        for (KeyWidget childKey : childKeys) {
+            childKey.destroy();
+        }
+        return this;
+    }
+
     protected void _onKeyClicked(KeyWidget source) {
         lastActionFrom = source;
         if (onKeyClicked != null) onKeyClicked.run(this);

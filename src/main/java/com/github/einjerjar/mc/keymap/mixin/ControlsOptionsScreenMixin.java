@@ -1,6 +1,8 @@
 package com.github.einjerjar.mc.keymap.mixin;
 
 import com.github.einjerjar.mc.keymap.client.gui.screen.KeymapScreen;
+import com.github.einjerjar.mc.keymap.client.gui.screen.LayoutSelectionScreen;
+import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -14,7 +16,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ControlsOptionsScreenMixin {
     @Inject(at = @At("HEAD"), method = "method_19872", cancellable = true)
     public void openKeybindScreen(Button button, CallbackInfo ci) {
-        Minecraft.getInstance().setScreen(new KeymapScreen((Screen) (Object) this));
+        Screen scr;
+        if (KeymapConfig.instance().firstOpenDone()) {
+            scr = new KeymapScreen((Screen) (Object) this);
+        } else {
+            scr = new LayoutSelectionScreen((Screen) (Object) this);
+        }
+        Minecraft.getInstance().setScreen(scr);
         ci.cancel();
     }
 }

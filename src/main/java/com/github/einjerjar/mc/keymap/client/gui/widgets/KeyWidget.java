@@ -51,6 +51,16 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
         updateTooltips();
     }
 
+    public void destroy() {
+        if (key.code() == -2) {
+            for (int i = 0; i < 10; i++) {
+                KeybindingRegistry.removeListener(i, this);
+            }
+        } else {
+            KeybindingRegistry.removeListener(key.code(), this);
+        }
+    }
+
     public boolean isSpecial() {
         return key.code() == -2;
     }

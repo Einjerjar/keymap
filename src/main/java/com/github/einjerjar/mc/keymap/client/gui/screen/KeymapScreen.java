@@ -28,7 +28,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import org.jetbrains.annotations.NotNull;
 
 public class KeymapScreen extends EScreen {
     protected int                   lastKeyCode;
@@ -56,7 +55,6 @@ public class KeymapScreen extends EScreen {
     }
 
     @Override protected void onInit() {
-        renderBg = false;
         KeyLayout layout = KeyLayout.getLayoutWithCode(KeymapConfig.instance().customLayout());
         KeybindingRegistry.load();
 
@@ -151,6 +149,7 @@ public class KeymapScreen extends EScreen {
         btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip2"));
 
         btnOpenSettings.clickAction(this::onBtnOpenSettingsClicked);
+        btnOpenLayouts.clickAction(this::onBtnOpenLayoutsClicked);
         btnClearSearch.clickAction(this::onBtnClearSearchClicked);
 
         assert minecraft != null;
@@ -181,6 +180,11 @@ public class KeymapScreen extends EScreen {
         addRenderableWidget(inpSearch);
     }
 
+    @Override public void onClose() {
+        KeybindingRegistry.clearSubscribers();
+        super.onClose();
+    }
+
     protected void onBtnClearSearchClicked(EWidget source) {
         if (inpSearch.text().isEmpty()) onClose();
         else inpSearch.text("");
@@ -206,6 +210,11 @@ public class KeymapScreen extends EScreen {
     protected void onBtnOpenSettingsClicked(EWidget source) {
         assert minecraft != null;
         minecraft.setScreen(ConfigScreen.getScreen(this));
+    }
+
+    protected void onBtnOpenLayoutsClicked(EWidget source) {
+        assert minecraft != null;
+        minecraft.setScreen(new LayoutSelectionScreen(this));
     }
 
     protected void onBtnResetClicked(EWidget source) {
@@ -290,14 +299,8 @@ public class KeymapScreen extends EScreen {
         Keymap.logger().info(listKm.itemSelected().map().getTranslatableName());
     }
 
-    @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(poseStack);
+    @Override protected void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         fill(poseStack, 0, 0, width, height, 0x55000000);
         if (scr != null) drawOutline(poseStack, scr, 0xFFFFFFFF);
-        super.render(poseStack, mouseX, mouseY, partialTick);
-    }
-
-    @Override protected void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        // empty just because
     }
 }

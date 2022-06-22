@@ -152,6 +152,7 @@ public abstract class EScreen extends Screen {
     @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if (renderBg) renderBackground(poseStack);
         hoveredWidget = null;
+        preRenderScreen(poseStack, mouseX, mouseY, partialTick);
         if (autoRenderChild) {
             for (EWidget d : widgets()) {
                 d.render(poseStack, mouseX, mouseY, partialTick);
@@ -160,7 +161,7 @@ public abstract class EScreen extends Screen {
                 }
             }
         }
-        renderScreen(poseStack, mouseX, mouseY, partialTick);
+        postRenderScreen(poseStack, mouseX, mouseY, partialTick);
 
         if (KeymapConfig.instance().debug2()) {
             fill(poseStack, 0, 0, width, 30, 0x66_000000);
@@ -169,6 +170,7 @@ public abstract class EScreen extends Screen {
             debugHover.render(poseStack, mouseX, mouseY, partialTick);
             debugFocus.render(poseStack, mouseX, mouseY, partialTick);
         }
+        postRenderDebugScreen(poseStack, mouseX, mouseY, partialTick);
 
         if (hoveredWidget != null && hoveredWidget.getTooltips() != null) renderTooltip(poseStack,
                 hoveredWidget.getTooltips(),
@@ -177,7 +179,13 @@ public abstract class EScreen extends Screen {
                 mouseY);
     }
 
-    protected abstract void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
+    protected abstract void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
+
+    protected void postRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    }
+
+    protected void postRenderDebugScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    }
 
     public int left() {
         return 0;

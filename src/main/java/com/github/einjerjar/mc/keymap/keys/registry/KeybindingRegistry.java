@@ -21,6 +21,10 @@ public class KeybindingRegistry {
         loadWithoutClearingSubscribers();
     }
 
+    public static void clearSubscribers() {
+        subscribers().clear();
+    }
+
     public static void loadWithoutClearingSubscribers() {
         keys.clear();
         if (!KeymapRegistry.collected()) KeymapRegistry.collect();

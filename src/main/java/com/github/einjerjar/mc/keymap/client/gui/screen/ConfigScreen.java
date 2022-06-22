@@ -26,6 +26,7 @@ public class ConfigScreen {
         buildGeneral(builder, entryBuilder, k);
         buildLayout(builder, entryBuilder, k);
         buildTooltips(builder, entryBuilder, k);
+        buildExtra(builder, entryBuilder, k);
 
 
         builder.setSavingRunnable(KeymapConfig::save);
@@ -97,5 +98,17 @@ public class ConfigScreen {
 
     protected static void buildTooltips(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
         ConfigCategory catTooltips = builder.getOrCreateCategory(new TranslatableComponent("keymap.catTooltips"));
+    }
+
+    protected static void buildExtra(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
+        ConfigCategory catExtra = builder.getOrCreateCategory(new TranslatableComponent("keymap.catExtra"));
+
+        catExtra.addEntry(
+                entryBuilder.startBooleanToggle(
+                                new TranslatableComponent("keymap.optFirstOpenDoneExtra"),
+                                k.firstOpenDone()
+                        ).setSaveConsumer(k::firstOpenDone)
+                        .build()
+        );
     }
 }

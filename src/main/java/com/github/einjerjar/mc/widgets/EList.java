@@ -62,6 +62,11 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         return items;
     }
 
+    public void setItemSelectedWithIndex(int i) {
+        if (size() == 0) return;
+        if (size() <= i) setItemSelected(items.get(0));
+        else setItemSelected(items.get(i));
+    }
 
     // FIXME: Redundant code
     protected void setItemSelected(T t) {
@@ -191,9 +196,11 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
             return false;
         }
         itemHovered = getHoveredItem(mouseX, mouseY);
-        if (itemHovered == null && itemSelected != null && canDeselectItem) {
-            setLastItemSelected(itemSelected);
-            setItemSelected(null);
+        if (itemHovered == null && itemSelected != null) {
+            if (canDeselectItem) {
+                setLastItemSelected(itemSelected);
+                setItemSelected(null);
+            }
             return false;
         }
 
@@ -266,6 +273,12 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         }
 
         public void updateTooltips() {
+        }
+
+        public void provideTooltips(List<Component> tips) {
+            tooltips.clear();
+            if (tips == null) return;
+            tooltips.addAll(tips);
         }
 
         public abstract void renderWidget(@NotNull PoseStack poseStack, Rect r, float partialTick);

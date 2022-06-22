@@ -436,6 +436,15 @@
             "width": 6
           }
         ]
+      },
+      {
+        "row": [
+          {
+            "name": "Other Mouse",
+            "code": -2,
+            "width": 54
+          }
+        ]
       }
     ],
     "numpad": [
