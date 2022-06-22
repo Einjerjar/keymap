@@ -30,9 +30,12 @@ public class Keymap implements ModInitializer {
         logger.info(KeymapConfig.instance().toString());
 
         KeyLayout.loadKeys();
-        KeyLayout.layouts().forEach((s, keyLayout) -> logger.info("Layout for {} @ {}",
-                keyLayout.meta().code(),
-                keyLayout.meta().name()));
+
+        for (KeyLayout keyLayout : KeyLayout.layouts().values()) {
+            logger.info("Layout for {} @ {}",
+                    keyLayout.meta().code(),
+                    keyLayout.meta().name());
+        }
 
         KeymapRegistry.collect();
         CategoryRegistry.collect();

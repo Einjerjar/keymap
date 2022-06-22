@@ -23,7 +23,7 @@ public class KeybindRegistry {
     @Getter protected static       HashMap<KeyComboData, KeyMapping> bindMap       = new HashMap<>();
     protected                      HashMap<KeyMapping, KeyComboData> bindings      = new HashMap<>();
 
-    public static KeybindRegistry instance() {
+    public static synchronized KeybindRegistry instance() {
         if (instance == null) instance = new KeybindRegistry();
         return instance;
     }

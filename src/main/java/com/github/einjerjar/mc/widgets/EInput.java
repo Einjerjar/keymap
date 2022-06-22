@@ -78,10 +78,6 @@ public class EInput extends EWidget {
         moveCursor(0);
     }
 
-    @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
     protected void write(String s) {
         if (cursor == text.length()) text.append(s);
         else text.insert(cursor, s);

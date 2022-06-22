@@ -36,11 +36,6 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     protected boolean       didDrag            = false;
     protected Point<Double> lastClick          = new Point<>(0d);
 
-    @Getter @Setter protected boolean drawBorder = true;
-    @Getter @Setter protected boolean drawBg     = true;
-
-    @Getter @Setter ColorGroup color = ColorGroups.WHITE;
-
     @Setter SimpleWidgetAction<EList<T>> onItemSelected;
 
 

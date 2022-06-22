@@ -53,8 +53,8 @@ public class KeyLayout {
         GsonBuilder  builder = new GsonBuilder().setPrettyPrinting();
         Gson         gson    = builder.create();
         ClassLoader  loader  = KeyLayout.class.getClassLoader();
-        Stream<Path> files   = null;
         FileSystem   fs      = null;
+        Stream<Path> files   = null;
 
         try {
             URI  layoutUri = Objects.requireNonNull(loader.getResource(LAYOUT_ROOT).toURI());

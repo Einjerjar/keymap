@@ -44,7 +44,7 @@ public class KeymapConfig {
     protected boolean keyButtonModName         = true;
     protected boolean keyButtonMalilibKeybinds = true;
 
-    public static KeymapConfig instance() {
+    public static synchronized KeymapConfig instance() {
         if (instance == null) instance = new KeymapConfig();
         return instance;
     }
