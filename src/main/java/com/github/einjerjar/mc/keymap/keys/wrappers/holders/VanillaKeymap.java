@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.keys.wrappers.holders;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
+import com.github.einjerjar.mc.keymap.keys.wrappers.categories.VanillaCategory;
 import com.github.einjerjar.mc.keymap.mixin.KeyMappingAccessor;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -92,15 +93,23 @@ public class VanillaKeymap implements KeyHolder {
         return true;
     }
 
+    @Override public String getModName() {
+        String s = getCategory();
+        if (VanillaCategory.MC_CATEGORIES.contains(getCategory())) s = "advancements.story.root.title";
+        return Language.getInstance().getOrDefault(s);
+    }
+
     protected void updateSearchString() {
         String cat = Language.getInstance().getOrDefault(getCategory());
         searchString = String.format(
-                "%s [%s] #%s (%s) @%s",
-                translatedName.getString(),
-                translatedKey.getString(),
-                Utils.slugify(translatedKey.getString()),
-                cat,
-                Utils.slugify(cat)
+                "%s [%s] $%s {%s} #%s (%s) @%s",
+                translatedName.getString(),                 // name
+                translatedKey.getString(),                  // [key]
+                Utils.slugify(translatedKey.getString()),   // $key-slug
+                getModName(),                               // {mod}
+                Utils.slugify(getModName()),                // #mod-slug
+                cat,                                        // (cat)
+                Utils.slugify(cat)                          // @cat-slug
         ).toLowerCase();
     }
 

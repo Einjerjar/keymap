@@ -36,13 +36,12 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     protected boolean       didDrag            = false;
     protected Point<Double> lastClick          = new Point<>(0d);
 
-    @Getter @Setter protected Point<Integer> padding    = new Point<>(4);
-    @Getter @Setter protected boolean        drawBorder = true;
-    @Getter @Setter protected boolean        drawBg     = true;
+    @Getter @Setter protected boolean drawBorder = true;
+    @Getter @Setter protected boolean drawBg     = true;
 
     @Getter @Setter ColorGroup color = ColorGroups.WHITE;
 
-    @Setter SimpleAction<EList<T>> onItemSelected;
+    @Setter SimpleWidgetAction<EList<T>> onItemSelected;
 
 
     // region Constructor
@@ -58,6 +57,10 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     // endregion
 
     // region Helpers
+
+    protected List<T> filteredItems() {
+        return items;
+    }
 
 
     // FIXME: Redundant code
@@ -81,6 +84,9 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         }
     }
 
+    public void updateFilteredList() {
+    }
+
     public void addItem(T item) {
         if (items.contains(item)) return;
         items.add(item);
@@ -92,10 +98,11 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
 
     public void clearItems() {
         items.clear();
+        updateFilteredList();
     }
 
     public int size() {
-        return items.size();
+        return filteredItems().size();
     }
 
     protected int scrollBarX() {
@@ -110,7 +117,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         y -= top() + padding.y() - scrollOffset;
         int ix = y / itemHeight;
         if (ix < 0 || ix >= size()) return null;
-        return items.get(ix);
+        return filteredItems().get(ix);
     }
 
     protected int contentHeight() {
@@ -155,7 +162,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         if (itemHovered != null) itemHovered.hovered(true);
 
         for (int i = 0; i < size(); i++) {
-            T e = items.get(i);
+            T e = filteredItems().get(i);
             Rect r = new Rect(left() + padding.x(),
                     top() + i * itemHeight + padding.y() - ((int) scrollOffset),
                     rect.w() - padding.x() * 2,

@@ -36,6 +36,7 @@ public class KeymapConfig {
     protected boolean malilibSupport       = true;
     protected boolean showHelpTooltips     = true;
     protected boolean debug                = false;
+    protected boolean debug2               = false;
 
     // tooltip
     protected boolean keybindNameOnHover       = true;

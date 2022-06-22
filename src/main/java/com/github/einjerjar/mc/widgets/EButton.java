@@ -9,8 +9,8 @@ import net.minecraft.network.chat.Component;
 
 @Accessors(fluent = true, chain = true)
 public class EButton extends EWidget {
-    @Getter @Setter Component             text;
-    @Setter         SimpleAction<EWidget> clickAction;
+    @Getter @Setter Component                   text;
+    @Setter         SimpleWidgetAction<EWidget> clickAction;
 
     public EButton(Component text, int x, int y, int w, int h) {
         super(x, y, w, h);

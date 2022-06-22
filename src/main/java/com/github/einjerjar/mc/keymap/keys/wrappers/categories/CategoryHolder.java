@@ -8,4 +8,6 @@ public interface CategoryHolder {
     Component getTranslatedName();
 
     String getModName();
+
+    String getFilterSlug();
 }

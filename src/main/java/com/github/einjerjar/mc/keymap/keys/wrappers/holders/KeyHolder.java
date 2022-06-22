@@ -28,5 +28,7 @@ public interface KeyHolder {
 
     boolean setKey(List<Integer> keys, boolean mouse);
 
+    String getModName();
+
     boolean resetKey();
 }

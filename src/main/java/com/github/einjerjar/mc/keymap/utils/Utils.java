@@ -9,6 +9,14 @@ public class Utils {
     private Utils() {
     }
 
+    public static int clamp(int x, int min, int max) {
+        return Math.max(Math.min(x, max), min);
+    }
+
+    public static double clamp(double x, double min, double max) {
+        return Math.max(Math.min(x, max), min);
+    }
+
     public static String slugify(final String s) {
         //algorithm used in https://github.com/slugify/slugify/blob/master/core/src/main/java/com/github/slugify/Slugify.java
         final String intermediateResult = Normalizer

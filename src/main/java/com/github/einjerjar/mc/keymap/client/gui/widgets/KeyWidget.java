@@ -8,6 +8,7 @@ import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EWidget;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
 import com.github.einjerjar.mc.widgets.utils.ColorSet;
+import com.github.einjerjar.mc.widgets.utils.Styles;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -21,12 +22,12 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingRegistrySubscriber {
-    @Getter protected         KeyData                 key;
-    @Getter protected         InputConstants.Key      mcKey;
-    @Setter protected         SimpleAction<KeyWidget> onClick;
-    @Setter protected         SpecialKeyWidgetAction  onSpecialClick;
-    @Getter @Setter protected boolean                 selected = false;
-    protected                 TextComponent           text;
+    @Getter protected         KeyData                       key;
+    @Getter protected         InputConstants.Key            mcKey;
+    @Setter protected         SimpleWidgetAction<KeyWidget> onClick;
+    @Setter protected         SpecialKeyWidgetAction        onSpecialClick;
+    @Getter @Setter protected boolean                       selected = false;
+    protected                 TextComponent                 text;
 
     public KeyWidget(KeyData key, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -95,7 +96,9 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
     }
 
     public void updateNormalTooltip() {
-        tooltips.add(new TextComponent(mcKey.getDisplayName().getString()).withStyle(Styles.header()));
+        tooltips.add(new TextComponent(String.format("(%s) ",
+                text.getString())).withStyle(Styles.yellow()).append(new TextComponent(mcKey.getDisplayName().getString()).withStyle(
+                Styles.headerBold())));
         if (KeybindingRegistry.keys().containsKey(this.key.code())) {
             List<KeyHolder> holders = KeybindingRegistry.keys().get(this.key.code());
             int             size    = holders.size();

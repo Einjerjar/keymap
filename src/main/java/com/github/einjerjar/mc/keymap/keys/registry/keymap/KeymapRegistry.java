@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap.keys.registry;
+package com.github.einjerjar.mc.keymap.keys.registry.keymap;
 
 import com.github.einjerjar.mc.keymap.Keymap;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 
-@Accessors(fluent = true, chain = true)
+@Accessors(fluent = true)
 public class KeymapRegistry {
     @Getter protected static List<KeymapSource> sources   = new ArrayList<>();
     @Getter protected static boolean            collected = false;
@@ -17,12 +17,11 @@ public class KeymapRegistry {
 
     public static void collect() {
         if (collected) {
-            Keymap.logger().warn(
-                    "KeymapRegistry collect() method has already been called once, and is being called again!");
+            Keymap.logger().warn("KeymapRegistry collect() already called!");
         }
         sources.clear();
 
-        register(new VanillaSource());
+        register(new VanillaKeymapSource());
 
         collected = true;
     }

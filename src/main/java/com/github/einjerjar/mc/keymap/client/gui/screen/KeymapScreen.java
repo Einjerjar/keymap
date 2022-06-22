@@ -1,18 +1,24 @@
 package com.github.einjerjar.mc.keymap.client.gui.screen;
 
 import com.github.einjerjar.mc.keymap.Keymap;
+import com.github.einjerjar.mc.keymap.client.gui.widgets.CategoryListWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeymapListWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.VirtualKeyboardWidget;
+import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
-import com.github.einjerjar.mc.keymap.keys.registry.KeymapRegistry;
-import com.github.einjerjar.mc.keymap.keys.registry.KeymapSource;
+import com.github.einjerjar.mc.keymap.keys.registry.category.CategoryRegistry;
+import com.github.einjerjar.mc.keymap.keys.registry.category.CategorySource;
+import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapRegistry;
+import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapSource;
+import com.github.einjerjar.mc.keymap.keys.wrappers.categories.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
 import com.github.einjerjar.mc.widgets.EButton;
+import com.github.einjerjar.mc.widgets.EInput;
 import com.github.einjerjar.mc.widgets.EScreen;
 import com.github.einjerjar.mc.widgets.EWidget;
 import com.github.einjerjar.mc.widgets.utils.Point;
@@ -32,12 +38,14 @@ public class KeymapScreen extends EScreen {
     protected VirtualKeyboardWidget vkMouse;
     protected VirtualKeyboardWidget vkNumpad;
 
-    protected KeymapListWidget listKm;
-    protected EButton          btnReset;
-    protected EButton          btnResetAll;
-    protected EButton          btnClearSearch;
-    protected EButton          btnOpenSettings;
-    protected EButton          btnOpenLayouts;
+    protected KeymapListWidget   listKm;
+    protected CategoryListWidget listCat;
+    protected EButton            btnReset;
+    protected EButton            btnResetAll;
+    protected EButton            btnClearSearch;
+    protected EButton            btnOpenSettings;
+    protected EButton            btnOpenLayouts;
+    protected EInput             inpSearch;
 
     protected Point<Integer> margin  = new Point<>(6);
     protected Point<Integer> padding = new Point<>(4);
@@ -49,7 +57,7 @@ public class KeymapScreen extends EScreen {
 
     @Override protected void onInit() {
         renderBg = false;
-        KeyLayout layout = KeyLayout.getLayoutWithCode("en_us");
+        KeyLayout layout = KeyLayout.getLayoutWithCode(KeymapConfig.instance().customLayout());
         KeybindingRegistry.load();
 
         int expectedScreenWidth = Math.min(450, width);
@@ -89,7 +97,21 @@ public class KeymapScreen extends EScreen {
                 spaceLeft,
                 scr.h() - padding.y() * 4 - 16 * 2);
 
-        listKm.onItemSelected(source -> this.onKeyListClicked((KeymapListWidget) source));
+        listCat = new CategoryListWidget(
+                font.lineHeight,
+                vkNumpad.right() + padding.x(),
+                vkNumpad.top(),
+                vkBasic.right() - vkNumpad.right() - padding.x(),
+                vkNumpad.rect().h()
+        );
+
+
+        listKm.onItemSelected(this::onListKmSelected);
+        listKm.onItemSelected(this::onListKmSelected);
+        listCat.onItemSelected(this::onListCatSelected);
+
+        inpSearch = new EInput(listKm.left(), scr.y() + padding.y(), listKm.rect().w() - 16 - padding.x(), 16);
+        inpSearch.onChanged(this::onSearchChanged);
 
         btnReset    = new EButton(new TranslatableComponent("keymap.btnReset"),
                 listKm.left(),
@@ -126,6 +148,10 @@ public class KeymapScreen extends EScreen {
 
         btnOpenSettings.setTooltip(new TranslatableComponent("keymap.btnOpenSettingsTip"));
         btnOpenLayouts.setTooltip(new TranslatableComponent("keymap.btnOpenLayoutsTip"));
+        btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip2"));
+
+        btnOpenSettings.clickAction(this::onBtnOpenSettingsClicked);
+        btnClearSearch.clickAction(this::onBtnClearSearchClicked);
 
         assert minecraft != null;
         for (KeymapSource source : KeymapRegistry.sources()) {
@@ -135,14 +161,51 @@ public class KeymapScreen extends EScreen {
             }
         }
 
+        for (CategorySource source : CategoryRegistry.sources()) {
+            if (!source.canUseSource()) continue;
+            for (CategoryHolder categoryHolder : source.getCategoryHolders()) {
+                listCat.addItem(new CategoryListWidget.CategoryListEntry(categoryHolder, listCat));
+            }
+        }
+
+        listKm.updateFilteredList();
         listKm.sort();
 
         addRenderableWidget(listKm);
+        addRenderableWidget(listCat);
         addRenderableWidget(btnReset);
         addRenderableWidget(btnResetAll);
         addRenderableWidget(btnOpenSettings);
         addRenderableWidget(btnOpenLayouts);
         addRenderableWidget(btnClearSearch);
+        addRenderableWidget(inpSearch);
+    }
+
+    protected void onBtnClearSearchClicked(EWidget source) {
+        if (inpSearch.text().isEmpty()) onClose();
+        else inpSearch.text("");
+    }
+
+    protected void onListCatSelected(EWidget source) {
+        inpSearch.text(listCat.itemSelected().category().getFilterSlug());
+        EWidget f = (EWidget) getFocused();
+        if (f != null) f.focused(false);
+        setFocused(inpSearch);
+        inpSearch.focused(true);
+    }
+
+    protected void onSearchChanged(EInput source, String newText) {
+        listKm.filterString(newText);
+        if (newText.isEmpty()) {
+            btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip2"));
+        } else {
+            btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip"));
+        }
+    }
+
+    protected void onBtnOpenSettingsClicked(EWidget source) {
+        assert minecraft != null;
+        minecraft.setScreen(ConfigScreen.getScreen(this));
     }
 
     protected void onBtnResetClicked(EWidget source) {
@@ -165,6 +228,11 @@ public class KeymapScreen extends EScreen {
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         EWidget focus = (EWidget) getFocused();
+        if (focus == null && keyCode == InputConstants.KEY_F && hasControlDown()) {
+            setFocused(inpSearch);
+            inpSearch.focused(true);
+            return true;
+        }
         if (focus != null && focus.keyPressed(keyCode, scanCode, modifiers)) return true;
         if (keyCode == InputConstants.KEY_ESCAPE) {
             onClose();
@@ -178,6 +246,9 @@ public class KeymapScreen extends EScreen {
     }
 
     @Override public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (getFocused() != listKm) {
+            return super.keyReleased(keyCode, scanCode, modifiers);
+        }
         if (lastKeyComboData == null) return false;
         if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
 
@@ -190,17 +261,15 @@ public class KeymapScreen extends EScreen {
 
     private void onVKKeyClicked(VirtualKeyboardWidget source) {
         if (source.lastActionFrom() == null) return;
-        Keymap.logger().warn("Code: [{}], Key: [{}], Mouse: [{}], Special: [{}]",
-                source.lastActionFrom().key().code(),
-                source.lastActionFrom().key().name(),
-                source.lastActionFrom().key().mouse(),
-                source.lastActionFrom().isSpecial());
         KeyComboData kd = new KeyComboData(source.lastActionFrom().key().code(),
                 source.lastActionFrom().key().mouse() ? KeyType.MOUSE : KeyType.KEYBOARD,
                 false,
                 false,
                 false);
-        listKm.setKeyForLastSelectedItem(kd);
+        if (!listKm.setKeyForLastSelectedItem(kd)) {
+            inpSearch.text(String.format("[%s]",
+                    source.lastActionFrom().mcKey().getDisplayName().getString().toLowerCase()));
+        }
     }
 
     private void onVKSpecialClicked(VirtualKeyboardWidget source, KeyWidget keySource, int button) {
@@ -216,9 +285,9 @@ public class KeymapScreen extends EScreen {
         }
     }
 
-    private void onKeyListClicked(KeymapListWidget source) {
-        if (source.itemSelected() == null) return;
-        Keymap.logger().info(source.itemSelected().map().getTranslatableName());
+    private void onListKmSelected(EWidget source) {
+        if (listKm.itemSelected() == null) return;
+        Keymap.logger().info(listKm.itemSelected().map().getTranslatableName());
     }
 
     @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {

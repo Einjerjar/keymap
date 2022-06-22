@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap.keys.registry;
+package com.github.einjerjar.mc.keymap.keys.registry.keymap;
 
 import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
 

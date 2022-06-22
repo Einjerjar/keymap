@@ -4,7 +4,6 @@ import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyData;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyRow;
 import com.github.einjerjar.mc.widgets.EWidget;
-import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,12 +14,12 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class VirtualKeyboardWidget extends EWidget {
-    @Getter @Setter protected int                                 gap       = 2;
-    @Setter protected         SimpleAction<VirtualKeyboardWidget> onKeyClicked;
-    @Setter protected         SpecialVKKeyClicked                 onSpecialKeyClicked;
-    @Getter protected         List<KeyWidget>                     childKeys = new ArrayList<>();
-    @Getter protected         KeyWidget                           lastActionFrom;
-    protected                 List<KeyRow>                        keys;
+    @Getter @Setter protected int                                       gap       = 2;
+    @Setter protected         SimpleWidgetAction<VirtualKeyboardWidget> onKeyClicked;
+    @Setter protected         SpecialVKKeyClicked                       onSpecialKeyClicked;
+    @Getter protected         List<KeyWidget>                           childKeys = new ArrayList<>();
+    @Getter protected         KeyWidget                                 lastActionFrom;
+    protected                 List<KeyRow>                              keys;
 
     public VirtualKeyboardWidget(List<KeyRow> keys, int x, int y, int w, int h) {
         super(x, y, w, h);

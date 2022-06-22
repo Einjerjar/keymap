@@ -1,11 +1,25 @@
 package com.github.einjerjar.mc.keymap.keys.wrappers.categories;
 
+import com.github.einjerjar.mc.keymap.utils.Utils;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 
+import java.util.List;
+
 public class VanillaCategory implements CategoryHolder {
-    String    category;
-    Component translatedName;
+    public static final List<String> MC_CATEGORIES = List.of(
+            "key.categories.movement",
+            "key.categories.misc",
+            "key.categories.multiplayer",
+            "key.categories.gameplay",
+            "key.categories.ui",
+            "key.categories.inventory",
+            "key.categories.creative"
+    );
+
+    protected String    category;
+    protected Component translatedName;
 
     public VanillaCategory(String category) {
         this.category       = category;
@@ -21,6 +35,12 @@ public class VanillaCategory implements CategoryHolder {
     }
 
     @Override public String getModName() {
-        return "Minecraft";
+        String s = category;
+        if (MC_CATEGORIES.contains(category)) s = "advancements.story.root.title";
+        return Language.getInstance().getOrDefault(s);
+    }
+
+    @Override public String getFilterSlug() {
+        return String.format("@%s", Utils.slugify(Language.getInstance().getOrDefault(category)));
     }
 }

@@ -33,8 +33,8 @@ public abstract class EScreen extends Screen {
     @Override protected void init() {
         debugFocus = new ELabel(new TextComponent("focused"), 0, 4, width, font.lineHeight);
         debugHover = new ELabel(new TextComponent("hovered"), 0, 14, width, font.lineHeight);
-        debugFocus.color(ColorGroups.RED);
-        debugHover.color(ColorGroups.GREEN);
+        debugFocus.color(ColorGroups.WHITE);
+        debugHover.color(ColorGroups.WHITE);
         debugFocus.center(true);
         debugHover.center(true);
 
@@ -162,8 +162,8 @@ public abstract class EScreen extends Screen {
         }
         renderScreen(poseStack, mouseX, mouseY, partialTick);
 
-        if (KeymapConfig.instance().debug()) {
-            fill(poseStack, 0, 0, width, 30, 0xaa_000000);
+        if (KeymapConfig.instance().debug2()) {
+            fill(poseStack, 0, 0, width, 30, 0x66_000000);
             debugHover.text(new TextComponent(hoveredWidget != null ? hoveredWidget.getClass().getName() : "none"));
             debugFocus.text(new TextComponent(getFocused() != null ? getFocused().getClass().getName() : "none"));
             debugHover.render(poseStack, mouseX, mouseY, partialTick);

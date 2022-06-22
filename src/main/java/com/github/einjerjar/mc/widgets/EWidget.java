@@ -37,6 +37,8 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
 
     @Getter @Setter protected List<Component> tooltips;
 
+    @Getter @Setter protected Point<Integer> padding = new Point<>(4);
+
     protected EWidget(int x, int y, int w, int h) {
         this.rect = new Rect(x, y, w, h);
     }
@@ -55,6 +57,15 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
         }
         tooltips.clear();
         tooltips.add(tip);
+    }
+
+    protected boolean onCharTyped(char codePoint, int modifiers) {
+        return false;
+    }
+
+    @Override public boolean charTyped(char codePoint, int modifiers) {
+        if (enabled() && visible() && focused()) return onCharTyped(codePoint, modifiers);
+        return false;
     }
 
     protected void init() {
@@ -112,7 +123,7 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
     }
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (!focused || !hovered) return false;
+        if (!focused) return false;
         return onKeyPressed(keyCode, scanCode, modifiers);
     }
 
@@ -222,7 +233,7 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
 
     }
 
-    public interface SimpleAction<T> {
+    public interface SimpleWidgetAction<T> {
         void run(T source);
     }
 }

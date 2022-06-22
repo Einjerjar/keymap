@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.client.gui.widgets;
 
-import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
@@ -10,6 +9,7 @@ import com.github.einjerjar.mc.keymap.keys.wrappers.holders.VanillaKeymap;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EList;
 import com.github.einjerjar.mc.widgets.utils.Rect;
+import com.github.einjerjar.mc.widgets.utils.Styles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -19,16 +19,50 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+@Accessors(fluent = true)
 public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
+
+    @Getter protected String                filterString     = "";
+    protected         List<KeymapListEntry> filteredItemList = new ArrayList<>();
+
     public KeymapListWidget(int itemHeight, int x, int y, int w, int h) {
         super(itemHeight, x, y, w, h);
+        updateFilteredList();
     }
 
-    public KeymapListWidget(int itemHeight, Rect rect) {
-        super(itemHeight, rect);
+    @Override protected List<KeymapListEntry> filteredItems() {
+        return filteredItemList;
+    }
+
+    public KeymapListWidget filterString(String s) {
+        this.filterString = s.trim().toLowerCase();
+        updateFilteredList();
+        return this;
+    }
+
+    @Override public void updateFilteredList() {
+        filteredItemList.clear();
+        if (filterString.trim().isBlank()) {
+            filteredItemList.addAll(items);
+        } else {
+            for (KeymapListEntry item : items) {
+                List<String> segments = Arrays.stream(filterString.split(" ")).filter(s -> !s.isBlank()).toList();
+                long matches = segments.stream()
+                        .sequential()
+                        .filter(s -> item.map
+                                .getSearchString()
+                                .contains(s)).toList().size();
+                if (matches == segments.size()) {
+                    filteredItemList.add(item);
+                }
+            }
+        }
+        setScrollPos(0);
     }
 
     public void resetKey() {
@@ -45,7 +79,6 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
     // FIXME: Redundant code
     @Override protected void setItemSelected(KeymapListEntry t) {
-        Keymap.logger().warn("KEK");
         if (itemSelected != null) {
             itemSelected.selected(false);
             KeybindingRegistry.notifySubscriber(itemSelected.map.getCode().get(0), false);
@@ -105,12 +138,13 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
     @Override public void sort() {
         this.items().sort(Comparator.comparing(o -> o.map.getTranslatedName().getString()));
+        this.filteredItemList.sort(Comparator.comparing(o -> o.map.getTranslatedName().getString()));
     }
 
     @Accessors(fluent = true, chain = true)
     public static class KeymapListEntry extends EListEntry<KeymapListEntry> {
-        @Getter KeyHolder map;
-        @Getter Component keyString;
+        @Getter protected KeyHolder map;
+        @Getter protected Component keyString;
 
         public KeymapListEntry(KeyHolder map, KeymapListWidget container) {
             super(container);
@@ -130,8 +164,10 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         @Override public void updateTooltips() {
             tooltips.clear();
             tooltips.add(new TextComponent(this.keyString.getString()).withStyle(Styles.header()));
-            tooltips.add(new TextComponent(String.format("[%s]",
-                    Language.getInstance().getOrDefault(this.map().getCategory()))).withStyle(Styles.muted2()));
+            tooltips.add(new TextComponent(String.format("[@%s #%s]",
+                    Language.getInstance().getOrDefault(this.map().getCategory()),
+                    Language.getInstance().getOrDefault(this.map().getModName())
+            )).withStyle(Styles.muted2()));
             tooltips.add(map.getTranslatedKey());
             updateDebugTooltips();
         }

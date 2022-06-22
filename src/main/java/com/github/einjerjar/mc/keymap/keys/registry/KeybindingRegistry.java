@@ -1,5 +1,7 @@
 package com.github.einjerjar.mc.keymap.keys.registry;
 
+import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapRegistry;
+import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapSource;
 import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
 import lombok.Getter;
 import lombok.experimental.Accessors;
