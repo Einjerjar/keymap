@@ -17,6 +17,10 @@ public class EButton extends EWidget {
         this.text = text;
     }
 
+    @Override public void setTooltip(Component tip) {
+        super.setTooltip(tip);
+    }
+
     @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         ColorSet colors = colorVariant();
         drawBg(poseStack, colors.bg());

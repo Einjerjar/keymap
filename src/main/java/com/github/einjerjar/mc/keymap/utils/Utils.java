@@ -1,12 +1,25 @@
 package com.github.einjerjar.mc.keymap.utils;
 
+
+import net.minecraft.locale.Language;
+
 import java.text.Normalizer;
 
 public class Utils {
-    public static final  String SEPARATOR       = "--------------------";
-    private static final int    MAX_SLUG_LENGTH = 256;
+    public static final    String   SEPARATOR        = "--------------------";
+    protected static final int      MAX_SLUG_LENGTH  = 256;
+    protected static       Language languageInstance = null;
 
     private Utils() {
+    }
+
+    public static synchronized Language languageInstance() {
+        if (languageInstance == null) languageInstance = Language.getInstance();
+        return languageInstance;
+    }
+
+    public static String translate(String key) {
+        return languageInstance().getOrDefault(key);
     }
 
     public static int clamp(int x, int min, int max) {

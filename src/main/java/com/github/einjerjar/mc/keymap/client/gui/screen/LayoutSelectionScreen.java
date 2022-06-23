@@ -5,12 +5,10 @@ import com.github.einjerjar.mc.keymap.client.gui.widgets.VirtualKeyboardWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
-import com.github.einjerjar.mc.widgets.EButton;
-import com.github.einjerjar.mc.widgets.EScreen;
-import com.github.einjerjar.mc.widgets.EWidget;
-import com.github.einjerjar.mc.widgets.ValueMapList;
+import com.github.einjerjar.mc.widgets.*;
 import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Rect;
+import com.github.einjerjar.mc.widgets.utils.Styles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,6 +23,9 @@ public class LayoutSelectionScreen extends EScreen {
     protected ValueMapList          listLayouts;
     protected EButton               btnSave;
     protected EButton               btnCancel;
+    protected ELabel                lblScreenLabel;
+    protected ELabel                lblCreditTitle;
+    protected ELabel                lblCreditName;
 
     protected Rect           scr;
     protected Point<Integer> margin  = new Point<>(6);
@@ -83,9 +84,47 @@ public class LayoutSelectionScreen extends EScreen {
         btnSave.clickAction(this::onBtnSaveClicked);
         btnCancel.clickAction(this::onBtnCancelClicked);
 
+        lblScreenLabel = new ELabel(
+                new TranslatableComponent("keymap.scrLayout"),
+                scr.left(), scr.top() + padding.y(), scr.w(), 16
+        );
+        lblCreditTitle = new ELabel(
+                new TranslatableComponent("keymap.lblCredits"),
+                vkNumpad.right() + padding.x(),
+                vkNumpad.top() + padding.y() * 2,
+                vkBasic.right() - vkNumpad.right() - padding.x(),
+                font.lineHeight
+        );
+        lblCreditName = new ELabel(
+                new TextComponent(qAuthor(layout)).withStyle(Styles.headerBold()),
+                lblCreditTitle.left(),
+                lblCreditTitle.bottom() + padding.y(),
+                lblCreditTitle.rect().w(),
+                font.lineHeight
+        );
+        lblScreenLabel.center(true);
+        lblCreditTitle.center(true);
+        lblCreditName.center(true);
+
+        creditVis(layout);
+
         addRenderableWidget(listLayouts);
         addRenderableWidget(btnSave);
         addRenderableWidget(btnCancel);
+        addRenderableWidget(lblScreenLabel);
+        addRenderableWidget(lblCreditTitle);
+        addRenderableWidget(lblCreditName);
+    }
+
+    protected String qAuthor(KeyLayout layout) {
+        return layout.meta().author() == null ? "" : layout.meta().author();
+    }
+
+    protected void creditVis(KeyLayout layout) {
+        String qa = qAuthor(layout);
+        lblCreditTitle.visible(!qa.isBlank());
+        lblCreditName.visible(!qa.isBlank());
+        lblCreditName.text(new TextComponent(qa).withStyle(Styles.headerBold()));
     }
 
     protected void onBtnSaveClicked(EWidget source) {
@@ -113,6 +152,8 @@ public class LayoutSelectionScreen extends EScreen {
         removeWidget(vkNumpad.destroy());
         KeybindingRegistry.clearSubscribers();
         generateVk(layout);
+
+        creditVis(layout);
     }
 
     @Override public void onClose() {

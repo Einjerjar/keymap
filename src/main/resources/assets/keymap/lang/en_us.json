@@ -2,6 +2,8 @@
   "keymap.keyCat": "Keymap",
   "keymap.keyOpenKeymap": "Open Keymap Screen",
   "keymap.scrSettings": "Keymap Settings",
+  "keymap.scrLayout": "Layout Selection",
+  "keymap.lblCredits": "Credits",
   "keymap.catGeneral": "General",
   "keymap.catLayout": "Layout",
   "keymap.catTooltips": "Tooltips",

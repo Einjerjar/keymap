@@ -32,7 +32,7 @@ public class ValueMapList extends EList<ValueMapList.ValueMapEntry<?>> {
 
     public <T> void setItemSelectedWithValue(T value) {
         for (ValueMapEntry<?> filteredItem : filteredItems()) {
-            Keymap.logger().warn("A: {}, B: {}", filteredItem.value, value);
+            // Keymap.logger().warn("A: {}, B: {}", filteredItem.value, value);
             if (Objects.equals(filteredItem.value, value)) {
                 setItemSelected(filteredItem);
                 return;

@@ -43,13 +43,13 @@ public class ConfigScreen {
                         .setSaveConsumer(k::replaceKeybindScreen)
                         .build()
         );
-        catGeneral.addEntry(
-                entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optMalilibSupport"),
-                                k.malilibSupport())
-                        .setSaveConsumer(k::malilibSupport)
-                        .build()
-        );
+        // catGeneral.addEntry(
+        //         entryBuilder.startBooleanToggle(
+        //                         new TranslatableComponent("keymap.optMalilibSupport"),
+        //                         k.malilibSupport())
+        //                 .setSaveConsumer(k::malilibSupport)
+        //                 .build()
+        // );
         catGeneral.addEntry(
                 entryBuilder.startBooleanToggle(
                                 new TranslatableComponent("keymap.optShowHelpTooltips"),
