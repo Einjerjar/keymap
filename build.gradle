@@ -53,13 +53,13 @@ dependencies {
     modRuntimeOnly name: "minihud-fabric-${project.version_minihud}"
 
     // Performance
-    // modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
-    // modRuntimeOnly "maven.modrinth:phosphor:${project.version_phosphor}"
-    // modRuntimeOnly "maven.modrinth:ferrite-core:${project.version_ferrite_core}"
-    // modRuntimeOnly "maven.modrinth:lazydfu:${project.version_lazydfu}"
-    // modRuntimeOnly "maven.modrinth:ksyxis:${project.version_ksyxis}"
-    // modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
-    // modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
+    modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
+    modRuntimeOnly "maven.modrinth:phosphor:${project.version_phosphor}"
+    modRuntimeOnly "maven.modrinth:ferrite-core:${project.version_ferrite_core}"
+    modRuntimeOnly "maven.modrinth:lazydfu:${project.version_lazydfu}"
+    modRuntimeOnly "maven.modrinth:ksyxis:${project.version_ksyxis}"
+    modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
+    modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
 
     // https://mvnrepository.com/artifact/org.yaml/snakeyaml
     implementation include('org.yaml:snakeyaml:1.30')
