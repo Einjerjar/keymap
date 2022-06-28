@@ -109,7 +109,7 @@ public class TestingScreen extends FlatScreen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             KeymapMain.reloadLayouts();
-            this.onClose();
+            this.close();
             return true;
         }
         keyPress = Text.of(String.format(
