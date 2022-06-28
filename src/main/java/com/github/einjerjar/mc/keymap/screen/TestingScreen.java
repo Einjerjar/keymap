@@ -12,7 +12,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,11 +35,11 @@ public class TestingScreen extends FlatScreen {
     Text keyPress;
 
     public TestingScreen() {
-        super(new LiteralText("Test"));
+        super(Text.of("Test"));
     }
 
     public TestingScreen(Screen parent) {
-        super(new LiteralText("Test"), parent);
+        super(Text.of("Test"), parent);
     }
 
     @Override
@@ -113,7 +112,7 @@ public class TestingScreen extends FlatScreen {
             this.onClose();
             return true;
         }
-        keyPress = new LiteralText(String.format(
+        keyPress = Text.of(String.format(
             "KeyCode: %s , ScanCode: %s , Modifiers: %s, Translation: %s , Translation2: %s",
             keyCode,
             scanCode,

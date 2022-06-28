@@ -6,7 +6,6 @@ import com.github.einjerjar.mc.keymap.keys.key.MalilibKeybind;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class MalilibCategory implements CategoryHolder {
 
     public MalilibCategory(KeybindCategory category) {
         this.category = category;
-        this.categoryName = new LiteralText(category.getModName());
+        this.categoryName = Text.of(category.getModName());
 
         for (ConfigHotkey hk : category.getHotkeys().stream().filter(hotkey -> hotkey instanceof ConfigHotkey).map(hotkey -> (ConfigHotkey) hotkey).toList()) {
             MalilibKeybind mk = new MalilibKeybind(hk);

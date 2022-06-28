@@ -11,7 +11,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public abstract class FlatContainer extends FlatWidget<FlatContainer> implements
 
     @Override
     public Text getFirstToolTip() {
-        return Utils.safeGet(getToolTips(), 0, new LiteralText(""));
+        return Utils.safeGet(getToolTips(), 0, Text.of(""));
     }
 
     public <T extends Element & Drawable> FlatContainer addDrawable(T element) {

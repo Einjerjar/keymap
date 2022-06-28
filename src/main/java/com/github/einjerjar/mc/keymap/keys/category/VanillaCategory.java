@@ -3,7 +3,6 @@ package com.github.einjerjar.mc.keymap.keys.category;
 import com.github.einjerjar.mc.keymap.keys.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +18,7 @@ public class VanillaCategory implements CategoryHolder {
 
     public VanillaCategory(String category) {
         this.category = category;
-        this.categoryName = new TranslatableText(category);
+        this.categoryName = Text.translatable(category);
     }
 
     @Override

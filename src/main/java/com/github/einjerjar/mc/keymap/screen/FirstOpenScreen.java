@@ -26,8 +26,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 import java.util.*;
 
@@ -47,7 +46,7 @@ public class FirstOpenScreen extends FlatScreen {
     protected SimpleRect r;
 
     public FirstOpenScreen(Screen parent) {
-        super(new LiteralText("First Open Screen"), parent);
+        super(Text.of("First Open Screen"), parent);
     }
 
     @Override protected void init() {
@@ -73,30 +72,30 @@ public class FirstOpenScreen extends FlatScreen {
             r.y,
             spaceLeft,
             textRenderer.fontHeight,
-            new TranslatableText("key.keymap.screen.first.select_layout").getWithStyle(Utils.styleKey).get(0));
+            Text.translatable("key.keymap.screen.first.select_layout").getWithStyle(Utils.styleKey).get(0));
 
         labelCreditHeader = new FlatText(
             kbNumpad.right + gap.x * 2,
             kbNumpad.y + 15,
             kbKeys.w - kbNumpad.w - kbMouse.w - gap.x * 4,
             textRenderer.fontHeight,
-            new TranslatableText("key.keymap.screen.first.credit").getWithStyle(Utils.styleSimpleBold).get(0));
+            Text.translatable("key.keymap.screen.first.credit").getWithStyle(Utils.styleSimpleBold).get(0));
 
         labelCredit = new FlatText(
             kbNumpad.right + gap.x * 2,
             kbNumpad.y + textRenderer.fontHeight + gap.y * 2 + 15,
             kbKeys.w - kbNumpad.w - kbMouse.w - gap.x * 4,
             textRenderer.fontHeight,
-            new LiteralText("E").getWithStyle(Utils.styleKey).get(0));
+            Text.of("E").getWithStyle(Utils.styleKey).get(0));
         if (KeymapMain.keys().author() != null) {
-            labelCredit.setText(new LiteralText(KeymapMain.keys().author()).getWithStyle(Utils.styleKey).get(0));
+            labelCredit.setText(Text.of(KeymapMain.keys().author()).getWithStyle(Utils.styleKey).get(0));
         }
 
         flatStringList = new FlatStringList<>(kbKeys.right + gap.x * 2, r.y + textRenderer.fontHeight + gap.y * 2, spaceLeft, r.h - textRenderer.fontHeight - gap.y * 4 - 16, textRenderer.fontHeight);
         flatStringList.drawBorder(true);
         flatStringList.onSelectedAction(w -> reloadKeyDisplay());
 
-        KeyboardLayoutBase.layouts().forEach((s, klb) -> flatStringList.addEntry(new FlatStringList.FlatStringEntry<>(klb.code(), new LiteralText(klb.name()))));
+        KeyboardLayoutBase.layouts().forEach((s, klb) -> flatStringList.addEntry(new FlatStringList.FlatStringEntry<>(klb.code(), Text.of(klb.name()))));
 
         int selectedIndex = 0;
         for (int i = 0; i < flatStringList.entries().size(); i++) {
@@ -112,7 +111,7 @@ public class FirstOpenScreen extends FlatScreen {
             flatStringList.left(),
             flatStringList.bottom() + gap.y * 2,
             flatStringList.w(),
-            16, new TranslatableText("key.keymap.screen.first.confirm"));
+            16, Text.translatable("key.keymap.screen.first.confirm"));
 
         btnConfirm.action(w -> {
             // KeymapMain.LOGGER().info("Selected: {}", flatStringList.getSelectedEntry().entryIndex());
@@ -129,7 +128,7 @@ public class FirstOpenScreen extends FlatScreen {
         addSelectableChild(flatStringList);
         addSelectableChild(btnConfirm);
 
-        for (KeyBinding kb : client.options.keysAll) {
+        for (KeyBinding kb : client.options.allKeys) {
             String cat = kb.getCategory();
             if (!mappedCategories.containsKey(cat)) {
                 mappedCategories.put(cat, new VanillaCategory(cat));
@@ -193,7 +192,7 @@ public class FirstOpenScreen extends FlatScreen {
         SimpleRect kbNumpad = addKeys(KeymapMain.keys().numpad(), kbMouse.right + gap.x * 2, kbExtra.y);
 
         if (KeymapMain.keys().author() != null) {
-            labelCredit.setText(new LiteralText(KeymapMain.keys().author()).getWithStyle(Utils.styleKey).get(0));
+            labelCredit.setText(Text.of(KeymapMain.keys().author()).getWithStyle(Utils.styleKey).get(0));
         }
 
         updateKeyWidgets();

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 @Accessors(fluent = true, chain = true)
@@ -68,7 +67,7 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
                 keys = mk.getKeysString(false);
             }
 
-            this.displayText = new LiteralText(String.format(
+            this.displayText = Text.of(String.format(
                 "%s §a[%s]",
                 holder.translation().getString(),
                 keys
@@ -82,7 +81,7 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
                 keys = mk.getKeysString(false);
             }
 
-            displayText = new LiteralText(String.format(
+            displayText = Text.of(String.format(
                 "%s §a[%s]",
                 holder.translation().getString(),
                 keys
@@ -100,21 +99,21 @@ public class FlatKeyList extends FlatEntryList<FlatKeyList.FlatKeyListEntry> {
                 maxL = Math.max(maxL, holder.keyTranslation().getString().length());
                 try {
                     if (holder instanceof MalilibKeybind ml) {
-                        tooltips.add(new LiteralText(ml.getKeysString(false)).getWithStyle(Utils.stylePassive).get(0));
+                        tooltips.add(Text.of(ml.getKeysString(false)).getWithStyle(Utils.stylePassive).get(0));
                     } else {
                         tooltips.add(holder.keyTranslation().getWithStyle(Utils.stylePassive).get(0));
                     }
                 } catch (Exception ignored) {
                 }
                 if (tooltips.size() > 1) {
-                    tooltips.add(1, new LiteralText("-".repeat(maxL)).getWithStyle(Utils.stylePassive).get(0));
+                    tooltips.add(1, Text.of("-".repeat(maxL)).getWithStyle(Utils.stylePassive).get(0));
                 }
             }
         }
 
         @Override
         public void renderWidget(MatrixStack matrices, int x, int y, int w, int h, boolean hovered, float delta) {
-            WidgetUtils.drawCenteredText(matrices, tr, new LiteralText(tr.trimToWidth(this.displayText, w).getString()), x, y, w, h, true, false, true, colors.text.normal);
+            WidgetUtils.drawCenteredText(matrices, tr, Text.of(tr.trimToWidth(this.displayText, w).getString()), x, y, w, h, true, false, true, colors.text.normal);
         }
     }
 }

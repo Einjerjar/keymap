@@ -5,7 +5,7 @@ plugins {
 }
 
 loom {
-    // accessWidenerPath = file("src/main/resources/keymap.accesswidener")
+    accessWidenerPath = file("src/main/resources/keymap.accesswidener")
 }
 
 sourceCompatibility = JavaVersion.VERSION_17

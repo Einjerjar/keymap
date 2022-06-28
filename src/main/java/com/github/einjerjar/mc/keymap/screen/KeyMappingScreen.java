@@ -31,8 +31,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 import java.util.*;
 
@@ -66,11 +65,11 @@ public class KeyMappingScreen extends FlatScreen {
     protected FlatKeyWidget lastKey = null;
 
     public KeyMappingScreen(Screen parent) {
-        super(new LiteralText(""), parent);
+        super(Text.of(""), parent);
     }
 
     public KeyMappingScreen() {
-        super(new LiteralText(""));
+        super(Text.of(""));
     }
 
     // @Override
@@ -119,8 +118,8 @@ public class KeyMappingScreen extends FlatScreen {
         SimpleRect kbMouse  = addKeys(KeymapMain.keys().mouse(), r.x, kbExtra.bottom + gap.y * 2 + 16);
         SimpleRect kbNumpad = addKeys(KeymapMain.keys().numpad(), kbMouse.right + gap.x * 2, kbExtra.y);
 
-        buttonSettings = new FlatButton(r.x, r.y, kbKeys.w / 2 - gap.x, 16, new TranslatableText("key.keymap.screen.map.settings"));
-        buttonLayout = new FlatButton(r.x + kbKeys.w / 2 + gap.x, r.y, kbKeys.w / 2 - gap.x, 16, new TranslatableText("key.keymap.screen.map.layout"));
+        buttonSettings = new FlatButton(r.x, r.y, kbKeys.w / 2 - gap.x, 16, Text.translatable("key.keymap.screen.map.settings"));
+        buttonLayout = new FlatButton(r.x + kbKeys.w / 2 + gap.x, r.y, kbKeys.w / 2 - gap.x, 16, Text.translatable("key.keymap.screen.map.layout"));
 
         addSelectableChild(buttonSettings);
         addSelectableChild(buttonLayout);
@@ -145,11 +144,11 @@ public class KeyMappingScreen extends FlatScreen {
         hotkeyCapture = new HotkeyCapture(0, 0, width, height);
         hotkeyCapture.active(false);
 
-        buttonResetSelect = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.reset"));
-        buttonResetAll = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.reset_all"));
+        buttonResetSelect = new FlatButton(0, 0, 0, 0, Text.translatable("key.keymap.reset"));
+        buttonResetAll = new FlatButton(0, 0, 0, 0, Text.translatable("key.keymap.reset_all"));
 
-        buttonResetSelect.tooltip(new TranslatableText("key.keymap.tip.reset_selected"));
-        buttonResetAll.tooltip(new TranslatableText("key.keymap.tip.reset_all"));
+        buttonResetSelect.tooltip(Text.translatable("key.keymap.tip.reset_selected"));
+        buttonResetAll.tooltip(Text.translatable("key.keymap.tip.reset_all"));
 
         containerSideButtons = new FlexContainer(0, 0, 0, 16);
         containerSideButtons
@@ -235,7 +234,7 @@ public class KeyMappingScreen extends FlatScreen {
         });
 
         // Gather standard keybinds
-        for (KeyBinding kb : client.options.keysAll) {
+        for (KeyBinding kb : client.options.allKeys) {
             String cat = kb.getCategory();
             if (!mappedCategories.containsKey(cat)) {
                 mappedCategories.put(cat, new VanillaCategory(cat));
