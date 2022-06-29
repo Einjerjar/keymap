@@ -89,7 +89,7 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
     }
 
     public boolean onMouseClicked(boolean inside, double mouseX, double mouseY, int button) {
-        return false;
+        return true;
     }
 
     @Override public boolean mouseClicked(double mouseX, double mouseY, int button) {

@@ -3,7 +3,7 @@ package com.github.einjerjar.mc.keymap.client.gui.widgets;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyData;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
-import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
+import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EWidget;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;

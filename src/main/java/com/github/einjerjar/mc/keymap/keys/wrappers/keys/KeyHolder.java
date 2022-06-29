@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap.keys.wrappers.holders;
+package com.github.einjerjar.mc.keymap.keys.wrappers.keys;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import net.minecraft.network.chat.Component;
@@ -31,4 +31,6 @@ public interface KeyHolder {
     String getModName();
 
     boolean resetKey();
+
+    boolean isAssigned();
 }

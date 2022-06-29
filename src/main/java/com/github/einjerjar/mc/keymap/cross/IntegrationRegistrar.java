@@ -1,15 +1,14 @@
 package com.github.einjerjar.mc.keymap.cross;
 
-import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
+import com.github.einjerjar.mc.keymap.cross.compat.KeymapInvMoveCompat;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import me.pieking1215.invmove.InvMove;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Accessors(fluent = true)
 public class IntegrationRegistrar {
@@ -17,15 +16,8 @@ public class IntegrationRegistrar {
 
     public static void execute() {
         KeymapConfig k = KeymapConfig.instance();
-        if (k.malilibSupport()) {
-            Optional<ModContainer> malilibContainer = FabricLoader
-                    .getInstance()
-                    .getModContainer("malilib");
-            if (malilibContainer.isPresent()) {
-                ModContainer mod = malilibContainer.get();
-                Keymap.logger().info("Keymap found malilib @ {}", mod.getMetadata().getVersion().getFriendlyString());
-                enabledIntegrations.put("malilib", true);
-            }
+        if (FabricLoader.getInstance().isModLoaded("invmove")) {
+            InvMove.instance().modules.add(new KeymapInvMoveCompat());
         }
     }
 

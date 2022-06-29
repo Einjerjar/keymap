@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap.keys.wrappers.holders;
+package com.github.einjerjar.mc.keymap.keys.wrappers.keys;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.VanillaCategory;
@@ -126,5 +126,9 @@ public class VanillaKeymap implements KeyHolder {
     public boolean resetKey() {
         updateProps(map.getDefaultKey());
         return true;
+    }
+
+    @Override public boolean isAssigned() {
+        return ((KeyMappingAccessor)map).getKey().getValue() != -1;
     }
 }

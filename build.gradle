@@ -47,6 +47,9 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
+    // InvMove
+    modImplementation "maven.modrinth:invmove:${project.version_invmove}"
+
     // Malilib
     // modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.version_malilib}"
     // modRuntimeOnly fileTree(dir: "lib/${project.minecraft_version}", include: ['*.jar'])

@@ -2,6 +2,7 @@ package com.github.einjerjar.mc.widgets;
 
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
+import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,7 +24,11 @@ public abstract class EScreen extends Screen {
     protected ELabel  debugFocus;
     protected ELabel  debugHover;
     protected boolean renderBg        = true;
-    @Getter   Screen  parent;
+
+    protected Rect           scr;
+    protected Point<Integer> margin  = new Point<>(6);
+    protected Point<Integer> padding = new Point<>(4);
+    @Getter   Screen         parent;
 
     protected EScreen(Screen parent, Component text) {
         super(text);
@@ -41,12 +46,25 @@ public abstract class EScreen extends Screen {
         onInit();
     }
 
+    protected Rect scrFromWidth(int w) {
+        return new Rect(Math.max((width - w) / 2, 0) + margin.x(),
+                margin.y(),
+                w - margin.x() * 2,
+                height - margin.y() * 2);
+    }
+
     protected abstract void onInit();
 
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         EWidget focus = (EWidget) getFocused();
+
         if (focus != null && focus.keyPressed(keyCode, scanCode, modifiers)) return true;
+        if (focus != null && keyCode == InputConstants.KEY_ESCAPE) {
+            focus.focused(false);
+            setFocused(null);
+            return true;
+        }
         if (keyCode == InputConstants.KEY_ESCAPE) {
             onClose();
             return true;
@@ -91,7 +109,7 @@ public abstract class EScreen extends Screen {
         if (hoveredWidget != null) {
             hoveredWidget.focused(true);
             ret = hoveredWidget.mouseClicked(mouseX, mouseY, button);
-            setFocused(hoveredWidget);
+            if (ret) setFocused(hoveredWidget);
         }
 
         setDragging(true);

@@ -16,17 +16,14 @@ import com.github.einjerjar.mc.keymap.keys.registry.category.CategorySource;
 import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapRegistry;
 import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapSource;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.CategoryHolder;
-import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
+import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
 import com.github.einjerjar.mc.widgets.EButton;
 import com.github.einjerjar.mc.widgets.EInput;
 import com.github.einjerjar.mc.widgets.EScreen;
 import com.github.einjerjar.mc.widgets.EWidget;
-import com.github.einjerjar.mc.widgets.utils.Point;
-import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class KeymapScreen extends EScreen {
@@ -44,25 +41,18 @@ public class KeymapScreen extends EScreen {
     protected EButton            btnClearSearch;
     protected EButton            btnOpenSettings;
     protected EButton            btnOpenLayouts;
+    protected EButton            btnOpenHelp;
     protected EInput             inpSearch;
 
-    protected Point<Integer> margin  = new Point<>(6);
-    protected Point<Integer> padding = new Point<>(4);
-    protected Rect           scr;
-
     public KeymapScreen(Screen parent) {
-        super(parent, new TextComponent("Keymap"));
+        super(parent, new TranslatableComponent("keymap.scrMain"));
     }
 
     @Override protected void onInit() {
         KeyLayout layout = KeyLayout.getLayoutWithCode(KeymapConfig.instance().customLayout());
         KeybindingRegistry.load();
 
-        int expectedScreenWidth = Math.min(450, width);
-        scr = new Rect(Math.max((width - expectedScreenWidth) / 2, 0) + margin.x(),
-                margin.y(),
-                expectedScreenWidth - margin.x() * 2,
-                height - margin.y() * 2);
+        scr = scrFromWidth(Math.min(450, width));
 
         vkBasic  = new VirtualKeyboardWidget(layout.keys().basic(),
                 scr.x() + padding.x(),
@@ -122,21 +112,21 @@ public class KeymapScreen extends EScreen {
                 (listKm.rect().w() - padding.x()) / 2,
                 16);
 
-        btnReset.clickAction(this::onBtnResetClicked);
-        btnReset.setTooltip(new TranslatableComponent("keymap.btnResetTip"));
-        btnResetAll.clickAction(this::onBtnResetAllClicked);
-        btnResetAll.setTooltip(new TranslatableComponent("keymap.btnResetAllTip"));
-
-        int vkHalf = (vkBasic.rect().w() - padding.x()) / 2;
+        int vkSplit = (vkBasic.rect().w() - padding.x()) / 3;
         btnOpenSettings = new EButton(new TranslatableComponent("keymap.btnOpenSettings"),
                 scr.x() + padding.x(),
                 scr.y() + padding.y(),
-                vkHalf,
+                vkSplit,
                 16);
         btnOpenLayouts  = new EButton(new TranslatableComponent("keymap.btnOpenLayouts"),
                 btnOpenSettings.right() + padding.x(),
                 scr.y() + padding.y(),
-                vkHalf,
+                vkSplit,
+                16);
+        btnOpenHelp     = new EButton(new TranslatableComponent("keymap.btnOpenHelp"),
+                btnOpenLayouts.right() + padding.x(),
+                scr.y() + padding.y(),
+                vkBasic.right() - btnOpenLayouts.right() - padding.x(),
                 16);
         btnClearSearch  = new EButton(new TranslatableComponent("keymap.btnClearSearch"),
                 listKm.right() - 16,
@@ -144,12 +134,21 @@ public class KeymapScreen extends EScreen {
                 16,
                 16);
 
-        btnOpenSettings.setTooltip(new TranslatableComponent("keymap.btnOpenSettingsTip"));
-        btnOpenLayouts.setTooltip(new TranslatableComponent("keymap.btnOpenLayoutsTip"));
-        btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip2"));
+        if (KeymapConfig.instance().showHelpTooltips()) {
+            btnReset.setTooltip(new TranslatableComponent("keymap.btnResetTip"));
+            btnResetAll.setTooltip(new TranslatableComponent("keymap.btnResetAllTip"));
+            btnOpenSettings.setTooltip(new TranslatableComponent("keymap.btnOpenSettingsTip"));
+            btnOpenLayouts.setTooltip(new TranslatableComponent("keymap.btnOpenLayoutsTip"));
+            btnOpenHelp.setTooltip(new TranslatableComponent("keymap.btnOpenHelpTip"));
+            btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip2"));
+        }
+
+        btnReset.clickAction(this::onBtnResetClicked);
+        btnResetAll.clickAction(this::onBtnResetAllClicked);
 
         btnOpenSettings.clickAction(this::onBtnOpenSettingsClicked);
         btnOpenLayouts.clickAction(this::onBtnOpenLayoutsClicked);
+        btnOpenHelp.clickAction(this::onBtnOpenHelpClicked);
         btnClearSearch.clickAction(this::onBtnClearSearchClicked);
 
         assert minecraft != null;
@@ -176,6 +175,7 @@ public class KeymapScreen extends EScreen {
         addRenderableWidget(btnResetAll);
         addRenderableWidget(btnOpenSettings);
         addRenderableWidget(btnOpenLayouts);
+        addRenderableWidget(btnOpenHelp);
         addRenderableWidget(btnClearSearch);
         addRenderableWidget(inpSearch);
     }
@@ -183,6 +183,11 @@ public class KeymapScreen extends EScreen {
     @Override public void onClose() {
         KeybindingRegistry.clearSubscribers();
         super.onClose();
+    }
+
+    protected void onBtnOpenHelpClicked(EWidget source) {
+        assert minecraft != null;
+        minecraft.setScreen(new HelpScreen(this));
     }
 
     protected void onBtnClearSearchClicked(EWidget source) {
@@ -196,6 +201,7 @@ public class KeymapScreen extends EScreen {
         if (f != null) f.focused(false);
         setFocused(inpSearch);
         inpSearch.focused(true);
+        listKm.setItemSelected(null);
     }
 
     protected void onSearchChanged(EInput source, String newText) {
@@ -205,6 +211,7 @@ public class KeymapScreen extends EScreen {
         } else {
             btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip"));
         }
+        listKm.setItemSelected(null);
     }
 
     protected void onBtnOpenSettingsClicked(EWidget source) {
@@ -227,12 +234,12 @@ public class KeymapScreen extends EScreen {
 
     protected void processComplexKey() {
         Keymap.logger().error("Complex: {}", lastKeyComboData);
-        listKm.setKeyForSelectedItem(lastKeyComboData);
+        listKm.setKey(lastKeyComboData);
     }
 
     protected void processSimpleModifiers() {
         Keymap.logger().error("Simple: {}", lastKeyCode);
-        listKm.setKeyForSelectedItem(lastKeyComboData);
+        listKm.setKey(lastKeyComboData);
     }
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -243,7 +250,12 @@ public class KeymapScreen extends EScreen {
             return true;
         }
         if (focus != null && focus.keyPressed(keyCode, scanCode, modifiers)) return true;
-        if (keyCode == InputConstants.KEY_ESCAPE) {
+        if (focus != null && keyCode == InputConstants.KEY_ESCAPE && focus != listKm) {
+            focus.focused(false);
+            setFocused(null);
+            return true;
+        }
+        if (keyCode == InputConstants.KEY_ESCAPE && focus == null) {
             onClose();
             return true;
         }
@@ -268,14 +280,22 @@ public class KeymapScreen extends EScreen {
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
+    @Override public boolean onMouseClicked(double mouseX, double mouseY, int button) {
+        if (getFocused() == listKm && hoveredWidget != listKm) {
+            listKm.setItemSelected(null);
+        }
+        return false;
+    }
+
     private void onVKKeyClicked(VirtualKeyboardWidget source) {
+        Keymap.logger().warn("vkc: {}", source);
         if (source.lastActionFrom() == null) return;
         KeyComboData kd = new KeyComboData(source.lastActionFrom().key().code(),
                 source.lastActionFrom().key().mouse() ? KeyType.MOUSE : KeyType.KEYBOARD,
                 false,
                 false,
                 false);
-        if (!listKm.setKeyForLastSelectedItem(kd)) {
+        if (!listKm.setKey(kd)) {
             inpSearch.text(String.format("[%s]",
                     source.lastActionFrom().mcKey().getDisplayName().getString().toLowerCase()));
         }
@@ -290,7 +310,7 @@ public class KeymapScreen extends EScreen {
                     source.lastActionFrom().key().mouse(),
                     source.lastActionFrom().isSpecial());
             KeyComboData kd = new KeyComboData(button, KeyType.MOUSE, false, false, false);
-            listKm.setKeyForLastSelectedItem(kd);
+            listKm.setKey(kd);
         }
     }
 

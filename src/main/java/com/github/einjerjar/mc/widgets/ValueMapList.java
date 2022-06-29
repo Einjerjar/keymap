@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.widgets;
 
-import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -32,7 +31,6 @@ public class ValueMapList extends EList<ValueMapList.ValueMapEntry<?>> {
 
     public <T> void setItemSelectedWithValue(T value) {
         for (ValueMapEntry<?> filteredItem : filteredItems()) {
-            // Keymap.logger().warn("A: {}, B: {}", filteredItem.value, value);
             if (Objects.equals(filteredItem.value, value)) {
                 setItemSelected(filteredItem);
                 return;

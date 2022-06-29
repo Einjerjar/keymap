@@ -1,7 +1,7 @@
 package com.github.einjerjar.mc.keymap.keys.registry.keymap;
 
-import com.github.einjerjar.mc.keymap.keys.wrappers.holders.KeyHolder;
-import com.github.einjerjar.mc.keymap.keys.wrappers.holders.VanillaKeymap;
+import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
+import com.github.einjerjar.mc.keymap.keys.wrappers.keys.VanillaKeymap;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 

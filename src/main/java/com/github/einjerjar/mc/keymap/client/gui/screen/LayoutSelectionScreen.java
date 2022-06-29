@@ -7,7 +7,6 @@ import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
 import com.github.einjerjar.mc.widgets.*;
 import com.github.einjerjar.mc.widgets.utils.Point;
-import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.github.einjerjar.mc.widgets.utils.Styles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -23,11 +22,11 @@ public class LayoutSelectionScreen extends EScreen {
     protected ValueMapList          listLayouts;
     protected EButton               btnSave;
     protected EButton               btnCancel;
+    protected EButton               btnClose;
     protected ELabel                lblScreenLabel;
     protected ELabel                lblCreditTitle;
     protected ELabel                lblCreditName;
 
-    protected Rect           scr;
     protected Point<Integer> margin  = new Point<>(6);
     protected Point<Integer> padding = new Point<>(4);
 
@@ -40,11 +39,7 @@ public class LayoutSelectionScreen extends EScreen {
         KeyLayout layout = KeyLayout.getLayoutWithCode(KeymapConfig.instance().customLayout());
         KeybindingRegistry.load();
 
-        int expectedScreenWidth = Math.min(450, width);
-        scr = new Rect(Math.max((width - expectedScreenWidth) / 2, 0) + margin.x(),
-                margin.y(),
-                expectedScreenWidth - margin.x() * 2,
-                height - margin.y() * 2);
+        scr = scrFromWidth(Math.min(450, width));
 
         generateVk(layout);
 
@@ -95,7 +90,7 @@ public class LayoutSelectionScreen extends EScreen {
                 vkBasic.right() - vkNumpad.right() - padding.x(),
                 font.lineHeight
         );
-        lblCreditName = new ELabel(
+        lblCreditName  = new ELabel(
                 new TextComponent(qAuthor(layout)).withStyle(Styles.headerBold()),
                 lblCreditTitle.left(),
                 lblCreditTitle.bottom() + padding.y(),
@@ -108,12 +103,26 @@ public class LayoutSelectionScreen extends EScreen {
 
         creditVis(layout);
 
+        btnClose = new EButton(new TranslatableComponent("keymap.btnClearSearch"),
+                listLayouts.right() - 16,
+                scr.y() + padding.y(),
+                16,
+                16);
+
+        btnClose.clickAction(this::onBtnCloseClicked);
+
+
         addRenderableWidget(listLayouts);
         addRenderableWidget(btnSave);
         addRenderableWidget(btnCancel);
         addRenderableWidget(lblScreenLabel);
         addRenderableWidget(lblCreditTitle);
         addRenderableWidget(lblCreditName);
+        addRenderableWidget(btnClose);
+    }
+
+    protected void onBtnCloseClicked(EWidget source) {
+        onClose();
     }
 
     protected String qAuthor(KeyLayout layout) {
