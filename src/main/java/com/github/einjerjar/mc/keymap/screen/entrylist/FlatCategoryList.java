@@ -7,9 +7,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 @Accessors(fluent = true, chain = true)
 public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategoryEntry> {
@@ -29,9 +27,9 @@ public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategor
             this.tr = MinecraftClient.getInstance().textRenderer;
             this.category = category;
             if (category.equalsIgnoreCase("__ALL__")) {
-                this.categoryTranslation = new TranslatableText("key.keymap.cat.all");
+                this.categoryTranslation = Text.translatable("key.keymap.cat.all");
             } else {
-                this.categoryTranslation = new TranslatableText(category);
+                this.categoryTranslation = Text.translatable(category);
             }
             this.categoryTranslationString = this.categoryTranslation.getString();
         }
@@ -45,7 +43,7 @@ public class FlatCategoryList extends FlatEntryList<FlatCategoryList.FlatCategor
                     tooltips.add(categoryTranslation);
                 }
             }
-            WidgetUtils.drawCenteredText(matrices, tr, new LiteralText(trimmedCategoryString), x, y, w, h, true, false, true, colors.text.normal);
+            WidgetUtils.drawCenteredText(matrices, tr, Text.of(trimmedCategoryString), x, y, w, h, true, false, true, colors.text.normal);
         }
     }
 }

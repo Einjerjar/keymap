@@ -11,8 +11,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
+
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -49,12 +49,12 @@ public class HotkeyCapture extends FlatContainer {
         color = ColorGroup.fromBaseColor(0xff_333333);
         color.bg.normal = (color.bg.normal & 0x00_ffffff) | 0xee_000000;
 
-        labelContainer = new FlatText(w / 2 + x, h / 2 + y - tr.fontHeight * 2, 0, 0, new TranslatableText("key.keymap.set_hotkey"));
-        labelHotkey = new FlatText(w / 2 + x, h / 2 + y, 0, 0, new LiteralText("A + B + C"));
+        labelContainer = new FlatText(w / 2 + x, h / 2 + y - tr.fontHeight * 2, 0, 0, Text.translatable("key.keymap.set_hotkey"));
+        labelHotkey = new FlatText(w / 2 + x, h / 2 + y, 0, 0, Text.of("A + B + C"));
 
-        buttonOk = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.ok"));
-        buttonClear = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.clear"));
-        buttonCancel = new FlatButton(0, 0, 0, 0, new TranslatableText("key.keymap.cancel"));
+        buttonOk = new FlatButton(0, 0, 0, 0, Text.translatable("key.keymap.ok"));
+        buttonClear = new FlatButton(0, 0, 0, 0, Text.translatable("key.keymap.clear"));
+        buttonCancel = new FlatButton(0, 0, 0, 0, Text.translatable("key.keymap.cancel"));
 
         buttonOk.action(button -> ok());
         buttonClear.action(button -> clearKeys());
@@ -117,7 +117,7 @@ public class HotkeyCapture extends FlatContainer {
 
     public void clearKeys() {
         pressed.clear();
-        labelHotkey.setText(new LiteralText(""));
+        labelHotkey.setText(Text.of(""));
     }
 
     public void close() {
@@ -144,7 +144,7 @@ public class HotkeyCapture extends FlatContainer {
                 sb.append(kk.getLocalizedText().getString()).append(" + ");
             }
             sb.delete(sb.length() - 3, sb.length());
-            labelHotkey.setText(new LiteralText(sb.toString()));
+            labelHotkey.setText(Text.of(sb.toString()));
         }
 
         return true;
@@ -156,7 +156,7 @@ public class HotkeyCapture extends FlatContainer {
             sb.append(kk.getLocalizedText().getString()).append(" + ");
         }
         if (sb.length() > 3) sb.delete(sb.length() - 3, sb.length());
-        labelHotkey.setText(new LiteralText(sb.toString()));
+        labelHotkey.setText(Text.of(sb.toString()));
 
         return this;
     }

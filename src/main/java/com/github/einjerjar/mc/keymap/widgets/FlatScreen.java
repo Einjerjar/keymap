@@ -30,13 +30,13 @@ public abstract class FlatScreen extends Screen {
     }
 
     @Override
-    public void onClose() {
+    public void close() {
         if (parent != null) {
             //noinspection ConstantConditions
             client.setScreen(parent);
             return;
         }
-        super.onClose();
+        super.close();
     }
 
     protected void renderChildren(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -149,7 +149,7 @@ public abstract class FlatScreen extends Screen {
             }
         }
         if (keyCode == InputUtil.GLFW_KEY_ESCAPE && shouldCloseOnEsc()) {
-            onClose();
+            close();
             return true;
         }
         if (keyCode == InputUtil.GLFW_KEY_TAB) {

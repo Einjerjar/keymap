@@ -10,9 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.List;
 import java.util.Map;
@@ -31,11 +29,11 @@ public class FlatKeyWidget extends FlatButton {
     @Getter @Setter boolean selected = false;
 
     public FlatKeyWidget(int x, int y, KeyboardKey key, Map<Integer, List<KeybindHolder>> mappedKeys) {
-        super(x, y, 16 + key.extraWidth(), 16 + key.extraHeight(), new LiteralText(""));
+        super(x, y, 16 + key.extraWidth(), 16 + key.extraHeight(), Text.of(""));
         this.key = key;
         this.enabled = key.enabled();
         this.mappedKeybindHolders = mappedKeys;
-        this.displayText = new LiteralText(key.text().toUpperCase());
+        this.displayText = Text.of(key.text().toUpperCase());
         updateState();
     }
 
@@ -60,7 +58,7 @@ public class FlatKeyWidget extends FlatButton {
         try {
             tooltips.add(key.key().getLocalizedText().getWithStyle(Utils.styleKey).get(0));
         } catch (Exception e) {
-            tooltips.add(new LiteralText(key.text()).getWithStyle(Utils.styleKey).get(0));
+            tooltips.add(Text.of(key.text()).getWithStyle(Utils.styleKey).get(0));
         }
         if (mappedKeybindHolders.containsKey(key.keyCode())) {
             List<KeybindHolder> kbs = mappedKeybindHolders.get(key.keyCode());
@@ -68,13 +66,13 @@ public class FlatKeyWidget extends FlatButton {
             int maxChars = tooltips.get(0).getString().length();
             int maxWidth = tr.getWidth(tooltips.get(0));
             for (KeybindHolder kb : kbs) {
-                Text t = new TranslatableText(kb.translationKey()).getWithStyle(Utils.styleKeybind).get(0);
+                Text t = Text.translatable(kb.translationKey()).getWithStyle(Utils.styleKeybind).get(0);
                 maxChars = Math.max(t.getString().length(), maxChars);
                 maxWidth = Math.max(tr.getWidth(t), maxWidth);
                 tooltips.add(t);
             }
             if (kbs.size() > 0) {
-                tooltips.add(1, new LiteralText(tr.trimToWidth("-".repeat(maxChars), maxWidth)).getWithStyle(Utils.styleSeparator).get(0));
+                tooltips.add(1, Text.of(tr.trimToWidth("-".repeat(maxChars), maxWidth)).getWithStyle(Utils.styleSeparator).get(0));
             }
         }
     }

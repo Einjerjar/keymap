@@ -5,7 +5,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +20,7 @@ public class VanillaKeybind extends KeybindHolder {
         this.key = key;
         this.keyCode = Collections.singletonList(key.boundKey.getCode());
         this.boundKeyTranslation = key.getBoundKeyLocalizedText();
-        this.translation = new TranslatableText(key.getTranslationKey());
+        this.translation = Text.translatable(key.getTranslationKey());
         this.translationKey = key.getTranslationKey();
     }
 
@@ -80,7 +79,7 @@ public class VanillaKeybind extends KeybindHolder {
     public void updateState() {
         this.keyCode = Collections.singletonList(key.boundKey.getCode());
         this.boundKeyTranslation = key.getBoundKeyLocalizedText();
-        this.translation = new TranslatableText(key.getTranslationKey());
+        this.translation = Text.translatable(key.getTranslationKey());
         this.translationKey = key.getTranslationKey();
     }
 }

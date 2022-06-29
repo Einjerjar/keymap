@@ -5,7 +5,6 @@ import com.github.einjerjar.mc.keymap.keys.KeybindHolder;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -72,7 +71,7 @@ public class MalilibKeybind extends KeybindHolder {
     public void updateState() {
         InputUtil.Key firstKey = InputUtil.Type.KEYSYM.createFromCode(Utils.safeGet(hotkey.getKeybind().getKeys(), 0, -1));
         this.boundKeyTranslation = firstKey.getLocalizedText();
-        this.translation = new LiteralText(hotkey.getConfigGuiDisplayName());
+        this.translation = Text.of(hotkey.getConfigGuiDisplayName());
         // this.translationKey = "config.name." + hotkey.getPrettyName().toLowerCase();
         this.keyCode = hotkey.getKeybind().getKeys();
 

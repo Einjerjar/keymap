@@ -22,7 +22,7 @@ public class FlatStringList<E> extends FlatEntryList<FlatStringList.FlatStringEn
 
     @ToString
     @Accessors(fluent = true, chain = true)
-    public static class FlatStringEntry<T> extends FlatEntry<FlatStringEntry<T>> {
+    public static class FlatStringEntry<T> extends FlatEntryList.FlatEntry<FlatStringEntry<T>> {
         @Getter Text entryText;
         @Getter T entryIndex;
 

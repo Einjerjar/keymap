@@ -17,7 +17,6 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +76,7 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
 
     @Override
     public Text getFirstToolTip() {
-        return hoveredEntry != null ? hoveredEntry.getFirstToolTip() : new LiteralText("");
+        return hoveredEntry != null ? hoveredEntry.getFirstToolTip() : Text.of("");
     }
 
     @Override
@@ -169,11 +168,11 @@ public abstract class FlatEntryList<T extends FlatEntryList.FlatEntry<T>> extend
             WidgetUtils.drawBoxOutline(this, matrices, left(), top(), right() - left(), bottom() - top(), 0xFFFFFFFF);
         }
 
-        // drawCenteredText(matrices, tr, new LiteralText(String.format(
+        // drawCenteredText(matrices, tr, Text.of(String.format(
         //     "x:%s y:%s w:%s h:%s",
         //     x, y, w, h
         // )), x, y, 0xff_00ff00);
-        // WidgetUtils.drawCenteredText(matrices, tr, new LiteralText("A"), x + w - scrollBarW, y, w, h, true, false, false, 0xff_ff0000);
+        // WidgetUtils.drawCenteredText(matrices, tr, Text.of("A"), x + w - scrollBarW, y, w, h, true, false, false, 0xff_ff0000);
     }
 
     public void renderScrollbar() {

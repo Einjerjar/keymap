@@ -9,7 +9,6 @@ import lombok.experimental.Accessors;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -29,7 +28,7 @@ public class FlatInput extends FlatSelectableWidget<FlatInput> {
     public FlatInput(int x, int y, int w, int h, String text) {
         super(FlatInput.class, x, y, w, h);
         this.text = Utils.or(text, "");
-        this.lText = new LiteralText(this.text);
+        this.lText = Text.of(this.text);
         this.drawBg(true)
             .drawBorder(true);
     }
@@ -40,7 +39,7 @@ public class FlatInput extends FlatSelectableWidget<FlatInput> {
 
     public FlatInput setText(String text, boolean reset) {
         this.text = text;
-        this.lText = new LiteralText(this.text);
+        this.lText = Text.of(this.text);
 
         if (onTextChanged != null) {
             onTextChanged.run(this);
@@ -111,7 +110,7 @@ public class FlatInput extends FlatSelectableWidget<FlatInput> {
 
         // text
         WidgetUtils.drawCenteredText(matrices, tr, lText, x + padX, y, w, h, true, false, true, cText);
-        // WidgetUtils.drawCenteredText(matrices, tr, new LiteralText("" + cursorPosX), x + padX, y, w, h, true, false, false, ColorGroup.RED.text.normal);
+        // WidgetUtils.drawCenteredText(matrices, tr, Text.of("" + cursorPosX), x + padX, y, w, h, true, false, false, ColorGroup.RED.text.normal);
 
         // cursor
         if (cursorVis && focused) {
