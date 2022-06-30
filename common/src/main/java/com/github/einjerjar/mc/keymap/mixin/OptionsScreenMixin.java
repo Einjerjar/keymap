@@ -27,6 +27,7 @@ public class OptionsScreenMixin extends Screen {
 
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
+        if (!KeymapConfig.instance().replaceKeybindScreen()) return;
         for (GuiEventListener child : children()) {
             if (child instanceof Button bb && bb.x == this.width / 2 + 5 && bb.y == this.height / 6 + 72 - 6) {
                 this.removeWidget(bb);
