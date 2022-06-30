@@ -29,6 +29,6 @@ public class KeymapForge {
     }
 
     public static File configDirProvider() {
-        return new File(FMLPaths.GAMEDIR.get().resolve(FMLConfig.defaultConfigPath() + "/keymap.json").toUri());
+        return new File(FMLPaths.GAMEDIR.get().resolve("config/keymap.json").toUri());
     }
 }

@@ -43,27 +43,6 @@ public class ConfigScreen {
                         .setSaveConsumer(k::replaceKeybindScreen)
                         .build()
         );
-        catGeneral.addEntry(
-                entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optShowHelpTooltips"),
-                                k.showHelpTooltips())
-                        .setSaveConsumer(k::showHelpTooltips)
-                        .build()
-        );
-        catGeneral.addEntry(
-                entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optDebug"),
-                                k.debug())
-                        .setSaveConsumer(k::debug)
-                        .build()
-        );
-        catGeneral.addEntry(
-                entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optDebug2"),
-                                k.debug2())
-                        .setSaveConsumer(k::debug2)
-                        .build()
-        );
     }
 
     protected static void buildLayout(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
@@ -91,6 +70,14 @@ public class ConfigScreen {
 
     protected static void buildTooltips(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
         ConfigCategory catTooltips = builder.getOrCreateCategory(new TranslatableComponent("keymap.catTooltips"));
+
+        catTooltips.addEntry(
+                entryBuilder.startBooleanToggle(
+                                new TranslatableComponent("keymap.optShowHelpTooltips"),
+                                k.showHelpTooltips())
+                        .setSaveConsumer(k::showHelpTooltips)
+                        .build()
+        );
     }
 
     protected static void buildExtra(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
@@ -101,6 +88,20 @@ public class ConfigScreen {
                                 new TranslatableComponent("keymap.optFirstOpenDoneExtra"),
                                 k.firstOpenDone()
                         ).setSaveConsumer(k::firstOpenDone)
+                        .build()
+        );
+        catExtra.addEntry(
+                entryBuilder.startBooleanToggle(
+                                new TranslatableComponent("keymap.optDebug"),
+                                k.debug())
+                        .setSaveConsumer(k::debug)
+                        .build()
+        );
+        catExtra.addEntry(
+                entryBuilder.startBooleanToggle(
+                                new TranslatableComponent("keymap.optDebug2"),
+                                k.debug2())
+                        .setSaveConsumer(k::debug2)
                         .build()
         );
     }

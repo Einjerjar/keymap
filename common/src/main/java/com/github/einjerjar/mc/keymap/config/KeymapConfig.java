@@ -21,8 +21,10 @@ public class KeymapConfig {
     static                 KeymapConfig            instance;
     static                 GsonBuilder             builder = new GsonBuilder().setPrettyPrinting();
     static                 Gson                    gson    = builder.create();
-    @Getter @Setter static KeymapConfigDirProvider configDirProvider;
-    // hidden
+    private static File cfgFile = null;
+    @Getter @Setter private static KeymapConfigDirProvider configDirProvider;
+
+    // extra
     protected boolean firstOpenDone = false;
     // layout
     protected boolean autoSelectLayout = false;
@@ -30,14 +32,15 @@ public class KeymapConfig {
     // general
     protected boolean replaceKeybindScreen = true;
     protected boolean malilibSupport       = true;
-    protected boolean showHelpTooltips     = true;
     protected boolean debug                = false;
     protected boolean debug2               = false;
     // tooltip
-    protected boolean keybindNameOnHover       = true;
-    protected boolean keybindKeyOnHover        = true;
-    protected boolean keyButtonModName         = true;
-    protected boolean keyButtonMalilibKeybinds = true;
+    protected boolean showHelpTooltips     = true;
+
+    private static synchronized File cfgFile() {
+        if (cfgFile == null) cfgFile = configDirProvider.execute();
+        return cfgFile;
+    }
 
     public static synchronized KeymapConfig instance() {
         if (instance == null) instance = new KeymapConfig();
@@ -45,7 +48,7 @@ public class KeymapConfig {
     }
 
     public static void save() {
-        try (FileWriter writer = new FileWriter(configDirProvider.execute())) {
+        try (FileWriter writer = new FileWriter(cfgFile())) {
             gson.toJson(instance(), writer);
         } catch (Exception e) {
             Keymap.logger().error("!! Cant save config !!");
@@ -54,7 +57,7 @@ public class KeymapConfig {
     }
 
     public static void load() {
-        try (FileReader reader = new FileReader(configDirProvider.execute())) {
+        try (FileReader reader = new FileReader(cfgFile())) {
             instance = gson.fromJson(reader, KeymapConfig.class);
         } catch (FileNotFoundException e) {
             Keymap.logger().warn("!! Config not found, using default settings !!");
