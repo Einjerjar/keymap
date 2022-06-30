@@ -2,7 +2,7 @@ package com.github.einjerjar.mc.keymapforge.cross;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
 public class CrossKeybind {
     private CrossKeybind() {

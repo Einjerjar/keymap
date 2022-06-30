@@ -3,7 +3,7 @@
   "package": "com.github.einjerjar.mc.keymap.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "ControlsOptionsScreenMixin"
+    "OptionsScreenMixin"
   ],
   "mixins": [
   ],

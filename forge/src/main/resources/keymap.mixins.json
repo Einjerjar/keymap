@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "com.github.einjerjar.mc.keymapforge.mixin",
+  "package": "com.github.einjerjar.mc.keymap.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "ControlsOptionsScreenMixin"
+    "OptionsScreenMixin"
   ],
   "mixins": [
   ],
