@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[40,)"
+#issueTrackerURL = ""
+license = "ISC"
+
+[[mods]]
+modId = "keymap"
+version = "${version}"
+displayName = "keymap"
+authors = "Einjerjar"
+description = '''
+keymap
+'''
+#logoFile = ""
+
+[[dependencies.keymap]]
+modId = "forge"
+mandatory = true
+versionRange = "[40,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.keymap]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.18.2,)"
+ordering = "NONE"
+side = "BOTH"

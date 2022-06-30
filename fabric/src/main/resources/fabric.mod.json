@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "keymap",
+  "version": "${version}",
+  "name": "keymap",
+  "description": "keymap",
+  "authors": [
+    "Einjerjar"
+  ],
+  "contact": {},
+  "license": "ISC",
+  "icon": "assets/keymap/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.einjerjar.mc.keymap.KeymapFabricLike"
+    ],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "keymap.mixins.json",
+    "keymap-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.18.2"
+  }
+}

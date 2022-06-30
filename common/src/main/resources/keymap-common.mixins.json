@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.github.einjerjar.mc.keymap.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "ControlsOptionsScreenMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
