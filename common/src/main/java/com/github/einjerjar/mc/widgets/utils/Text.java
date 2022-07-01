@@ -1,8 +1,7 @@
 package com.github.einjerjar.mc.widgets.utils;
 
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class Text {
 
@@ -10,10 +9,10 @@ public class Text {
     }
 
     public static MutableComponent literal(String s) {
-        return new TextComponent(s);
+        return Component.literal(s);
     }
 
     public static MutableComponent translatable(String s) {
-        return new TranslatableComponent(s);
+        return Component.translatable(s);
     }
 }
