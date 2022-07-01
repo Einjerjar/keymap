@@ -11,11 +11,14 @@ loom {
     // accessWidenerPath = project(":common").loom.accessWidenerPath
 
     forge {
+        //mixin {
+        //    add("main", "keymap-common-refmap.json")
+        //}
+        //mixinConfig 'keymap.mixins.json'
+        mixinConfig 'keymap-common.mixins.json'
         // convertAccessWideners = true
         // extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
         accessTransformer file('src/main/resources/META-INF/accesstransformer.cfg')
-        // mixinConfig 'keymap-common.mixins.json'
-        mixinConfig 'keymap.mixins.json'
     }
 }
 
