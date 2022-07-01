@@ -13,4 +13,4 @@ include("fabric")
 // include("quilt")
 include("forge")
 
-rootProject.name = "architectury-example-mod"
+rootProject.name = "keymap-v2"
