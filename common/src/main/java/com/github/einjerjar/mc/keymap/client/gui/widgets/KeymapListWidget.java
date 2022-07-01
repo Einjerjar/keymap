@@ -11,6 +11,7 @@ import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EList;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.github.einjerjar.mc.widgets.utils.Styles;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -19,8 +20,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -178,20 +177,20 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
         protected void updateDebugTooltips() {
             if (KeymapConfig.instance().debug()) {
-                tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
-                tooltips.add(new TextComponent(String.format("Search: %s",
+                tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+                tooltips.add(Text.literal(String.format("Search: %s",
                         map.getSearchString())).withStyle(Styles.yellow()));
             }
         }
 
         @Override public void updateTooltips() {
             tooltips.clear();
-            tooltips.add(new TextComponent(this.keyString.getString()).withStyle(Styles.headerBold()));
-            tooltips.add(new TextComponent(String.format("[@%s #%s]",
+            tooltips.add(Text.literal(this.keyString.getString()).withStyle(Styles.headerBold()));
+            tooltips.add(Text.literal(String.format("[@%s #%s]",
                     Language.getInstance().getOrDefault(this.map().getCategory()),
                     Language.getInstance().getOrDefault(this.map().getModName())
             )).withStyle(Styles.muted2()));
-            tooltips.add(map.isAssigned() ? map.getTranslatedKey() : new TranslatableComponent("key.keyboard.unknown"));
+            tooltips.add(map.isAssigned() ? map.getTranslatedKey() : Text.translatable("key.keyboard.unknown"));
             updateDebugTooltips();
         }
 

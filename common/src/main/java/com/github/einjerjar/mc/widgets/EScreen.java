@@ -4,13 +4,13 @@ import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
 import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Rect;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -36,8 +36,8 @@ public abstract class EScreen extends Screen {
     }
 
     @Override protected void init() {
-        debugFocus = new ELabel(new TextComponent("focused"), 0, 4, width, font.lineHeight);
-        debugHover = new ELabel(new TextComponent("hovered"), 0, 14, width, font.lineHeight);
+        debugFocus = new ELabel(Text.literal("focused"), 0, 4, width, font.lineHeight);
+        debugHover = new ELabel(Text.literal("hovered"), 0, 14, width, font.lineHeight);
         debugFocus.color(ColorGroups.WHITE);
         debugHover.color(ColorGroups.WHITE);
         debugFocus.center(true);
@@ -183,8 +183,8 @@ public abstract class EScreen extends Screen {
 
         if (KeymapConfig.instance().debug2()) {
             fill(poseStack, 0, 0, width, 30, 0x66_000000);
-            debugHover.text(new TextComponent(hoveredWidget != null ? hoveredWidget.getClass().getName() : "none"));
-            debugFocus.text(new TextComponent(getFocused() != null ? getFocused().getClass().getName() : "none"));
+            debugHover.text(Text.literal(hoveredWidget != null ? hoveredWidget.getClass().getName() : "none"));
+            debugFocus.text(Text.literal(getFocused() != null ? getFocused().getClass().getName() : "none"));
             debugHover.render(poseStack, mouseX, mouseY, partialTick);
             debugFocus.render(poseStack, mouseX, mouseY, partialTick);
         }

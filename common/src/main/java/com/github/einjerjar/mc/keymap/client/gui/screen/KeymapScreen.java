@@ -21,10 +21,10 @@ import com.github.einjerjar.mc.widgets.EButton;
 import com.github.einjerjar.mc.widgets.EInput;
 import com.github.einjerjar.mc.widgets.EScreen;
 import com.github.einjerjar.mc.widgets.EWidget;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class KeymapScreen extends EScreen {
     protected int                   lastKeyCode;
@@ -45,7 +45,7 @@ public class KeymapScreen extends EScreen {
     protected EInput             inpSearch;
 
     public KeymapScreen(Screen parent) {
-        super(parent, new TranslatableComponent("keymap.scrMain"));
+        super(parent, Text.translatable("keymap.scrMain"));
     }
 
     @Override protected void onInit() {
@@ -101,46 +101,46 @@ public class KeymapScreen extends EScreen {
         inpSearch = new EInput(listKm.left(), scr.y() + padding.y(), listKm.rect().w() - 16 - padding.x(), 16);
         inpSearch.onChanged(this::onSearchChanged);
 
-        btnReset    = new EButton(new TranslatableComponent("keymap.btnReset"),
+        btnReset    = new EButton(Text.translatable("keymap.btnReset"),
                 listKm.left(),
                 listKm.bottom() + padding.y(),
                 (listKm.rect().w() - padding.x()) / 2,
                 16);
-        btnResetAll = new EButton(new TranslatableComponent("keymap.btnResetAll"),
+        btnResetAll = new EButton(Text.translatable("keymap.btnResetAll"),
                 btnReset.right() + padding.x(),
                 listKm.bottom() + padding.y(),
                 (listKm.rect().w() - padding.x()) / 2,
                 16);
 
         int vkSplit = (vkBasic.rect().w() - padding.x()) / 3;
-        btnOpenSettings = new EButton(new TranslatableComponent("keymap.btnOpenSettings"),
+        btnOpenSettings = new EButton(Text.translatable("keymap.btnOpenSettings"),
                 scr.x() + padding.x(),
                 scr.y() + padding.y(),
                 vkSplit,
                 16);
-        btnOpenLayouts  = new EButton(new TranslatableComponent("keymap.btnOpenLayouts"),
+        btnOpenLayouts  = new EButton(Text.translatable("keymap.btnOpenLayouts"),
                 btnOpenSettings.right() + padding.x(),
                 scr.y() + padding.y(),
                 vkSplit,
                 16);
-        btnOpenHelp     = new EButton(new TranslatableComponent("keymap.btnOpenHelp"),
+        btnOpenHelp     = new EButton(Text.translatable("keymap.btnOpenHelp"),
                 btnOpenLayouts.right() + padding.x(),
                 scr.y() + padding.y(),
                 vkBasic.right() - btnOpenLayouts.right() - padding.x(),
                 16);
-        btnClearSearch  = new EButton(new TranslatableComponent("keymap.btnClearSearch"),
+        btnClearSearch  = new EButton(Text.translatable("keymap.btnClearSearch"),
                 listKm.right() - 16,
                 scr.y() + padding.y(),
                 16,
                 16);
 
         if (KeymapConfig.instance().showHelpTooltips()) {
-            btnReset.setTooltip(new TranslatableComponent("keymap.btnResetTip"));
-            btnResetAll.setTooltip(new TranslatableComponent("keymap.btnResetAllTip"));
-            btnOpenSettings.setTooltip(new TranslatableComponent("keymap.btnOpenSettingsTip"));
-            btnOpenLayouts.setTooltip(new TranslatableComponent("keymap.btnOpenLayoutsTip"));
-            btnOpenHelp.setTooltip(new TranslatableComponent("keymap.btnOpenHelpTip"));
-            btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip2"));
+            btnReset.setTooltip(Text.translatable("keymap.btnResetTip"));
+            btnResetAll.setTooltip(Text.translatable("keymap.btnResetAllTip"));
+            btnOpenSettings.setTooltip(Text.translatable("keymap.btnOpenSettingsTip"));
+            btnOpenLayouts.setTooltip(Text.translatable("keymap.btnOpenLayoutsTip"));
+            btnOpenHelp.setTooltip(Text.translatable("keymap.btnOpenHelpTip"));
+            btnClearSearch.setTooltip(Text.translatable("keymap.btnClearSearchTip2"));
         }
 
         btnReset.clickAction(this::onBtnResetClicked);
@@ -207,9 +207,9 @@ public class KeymapScreen extends EScreen {
     protected void onSearchChanged(EInput source, String newText) {
         listKm.filterString(newText);
         if (newText.isEmpty()) {
-            btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip2"));
+            btnClearSearch.setTooltip(Text.translatable("keymap.btnClearSearchTip2"));
         } else {
-            btnClearSearch.setTooltip(new TranslatableComponent("keymap.btnClearSearchTip"));
+            btnClearSearch.setTooltip(Text.translatable("keymap.btnClearSearchTip"));
         }
         listKm.setItemSelected(null);
     }

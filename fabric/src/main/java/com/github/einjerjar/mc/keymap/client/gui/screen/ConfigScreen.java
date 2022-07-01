@@ -2,12 +2,12 @@ package com.github.einjerjar.mc.keymap.client.gui.screen;
 
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class ConfigScreen {
 
@@ -19,7 +19,7 @@ public class ConfigScreen {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(new TranslatableComponent("keymap.scrSettings"));
+                .setTitle(Text.translatable("keymap.scrSettings"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
@@ -35,10 +35,10 @@ public class ConfigScreen {
     }
 
     protected static void buildGeneral(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
-        ConfigCategory catGeneral = builder.getOrCreateCategory(new TranslatableComponent("keymap.catGeneral"));
+        ConfigCategory catGeneral = builder.getOrCreateCategory(Text.translatable("keymap.catGeneral"));
         catGeneral.addEntry(
                 entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optReplaceKeybindScreen"),
+                                Text.translatable("keymap.optReplaceKeybindScreen"),
                                 k.replaceKeybindScreen())
                         .setSaveConsumer(k::replaceKeybindScreen)
                         .build()
@@ -46,11 +46,11 @@ public class ConfigScreen {
     }
 
     protected static void buildLayout(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
-        ConfigCategory catLayout = builder.getOrCreateCategory(new TranslatableComponent("keymap.catLayout"));
+        ConfigCategory catLayout = builder.getOrCreateCategory(Text.translatable("keymap.catLayout"));
 
         catLayout.addEntry(
                 entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optAutoSelectLayout"),
+                                Text.translatable("keymap.optAutoSelectLayout"),
                                 k.autoSelectLayout())
                         .setSaveConsumer(k::autoSelectLayout)
                         .build()
@@ -58,7 +58,7 @@ public class ConfigScreen {
 
         catLayout.addEntry(
                 entryBuilder.startDropdownMenu(
-                                new TranslatableComponent("keymap.optCustomLayout"),
+                                Text.translatable("keymap.optCustomLayout"),
                                 DropdownMenuBuilder.TopCellElementBuilder.of(k.customLayout(), s -> s)
                         )
                         .setSelections(() -> KeyLayout.layouts().keySet().iterator())
@@ -69,11 +69,11 @@ public class ConfigScreen {
     }
 
     protected static void buildTooltips(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
-        ConfigCategory catTooltips = builder.getOrCreateCategory(new TranslatableComponent("keymap.catTooltips"));
+        ConfigCategory catTooltips = builder.getOrCreateCategory(Text.translatable("keymap.catTooltips"));
 
         catTooltips.addEntry(
                 entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optShowHelpTooltips"),
+                                Text.translatable("keymap.optShowHelpTooltips"),
                                 k.showHelpTooltips())
                         .setSaveConsumer(k::showHelpTooltips)
                         .build()
@@ -81,25 +81,25 @@ public class ConfigScreen {
     }
 
     protected static void buildExtra(ConfigBuilder builder, ConfigEntryBuilder entryBuilder, KeymapConfig k) {
-        ConfigCategory catExtra = builder.getOrCreateCategory(new TranslatableComponent("keymap.catExtra"));
+        ConfigCategory catExtra = builder.getOrCreateCategory(Text.translatable("keymap.catExtra"));
 
         catExtra.addEntry(
                 entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optFirstOpenDoneExtra"),
+                                Text.translatable("keymap.optFirstOpenDoneExtra"),
                                 k.firstOpenDone()
                         ).setSaveConsumer(k::firstOpenDone)
                         .build()
         );
         catExtra.addEntry(
                 entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optDebug"),
+                                Text.translatable("keymap.optDebug"),
                                 k.debug())
                         .setSaveConsumer(k::debug)
                         .build()
         );
         catExtra.addEntry(
                 entryBuilder.startBooleanToggle(
-                                new TranslatableComponent("keymap.optDebug2"),
+                                Text.translatable("keymap.optDebug2"),
                                 k.debug2())
                         .setSaveConsumer(k::debug2)
                         .build()

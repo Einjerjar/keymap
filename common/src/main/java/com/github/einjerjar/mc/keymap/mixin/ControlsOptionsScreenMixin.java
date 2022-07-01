@@ -3,7 +3,6 @@ package com.github.einjerjar.mc.keymap.mixin;
 import com.github.einjerjar.mc.keymap.client.gui.screen.KeymapScreen;
 import com.github.einjerjar.mc.keymap.client.gui.screen.LayoutSelectionScreen;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -23,6 +22,7 @@ public class ControlsOptionsScreenMixin extends OptionsSubScreen {
     public ControlsOptionsScreenMixin(Screen arg, Options arg2, Component arg3) {
         super(arg, arg2, arg3);
     }
+
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
         if (!KeymapConfig.instance().replaceKeybindScreen()) return;

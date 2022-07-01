@@ -11,7 +11,6 @@ import com.github.einjerjar.mc.keymapforge.cross.CrossKeybind;
 import com.github.einjerjar.mc.keymapforge.cross.IntegrationRegistrar;
 import com.github.einjerjar.mc.keymapforge.cross.TickEventRegistrar;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;

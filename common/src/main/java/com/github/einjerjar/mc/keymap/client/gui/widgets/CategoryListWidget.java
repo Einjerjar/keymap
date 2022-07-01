@@ -6,11 +6,11 @@ import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EList;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.github.einjerjar.mc.widgets.utils.Styles;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 @Accessors(fluent = true)
@@ -44,12 +44,12 @@ public class CategoryListWidget extends EList<CategoryListWidget.CategoryListEnt
 
         @Override public void updateTooltips() {
             tooltips.clear();
-            tooltips.add(new TextComponent(keyString.getString()).withStyle(Styles.headerBold()));
-            tooltips.add(new TextComponent(category.getModName()).withStyle(Styles.muted2()));
+            tooltips.add(Text.literal(keyString.getString()).withStyle(Styles.headerBold()));
+            tooltips.add(Text.literal(category.getModName()).withStyle(Styles.muted2()));
 
             if (KeymapConfig.instance().debug()) {
-                tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
-                tooltips.add(new TextComponent(String.format("Search: %s",
+                tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+                tooltips.add(Text.literal(String.format("Search: %s",
                         category.getFilterSlug())).withStyle(Styles.yellow()));
             }
         }
