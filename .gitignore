@@ -19,3 +19,4 @@ classes/
 *.launch
 
 **/e/**/*
+**/_builds/**/*
