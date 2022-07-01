@@ -15,6 +15,9 @@
     "main": [
       "com.github.einjerjar.mc.keymap.KeymapFabricLike"
     ],
+    "modmenu": [
+      "com.github.einjerjar.mc.keymap.ModMenuIntegration"
+    ],
     "client": [],
     "server": []
   },
