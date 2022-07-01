@@ -19,6 +19,7 @@ public class Keymap {
     @Getter protected static final String             MOD_NAME = "keymap";
     @Getter protected static final Logger             logger   = LogManager.getLogger();
     @Getter protected static       CrossKeybindShared kmOpenMapper;
+
     private Keymap() {
     }
 

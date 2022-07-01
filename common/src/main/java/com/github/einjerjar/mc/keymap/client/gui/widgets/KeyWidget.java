@@ -9,13 +9,13 @@ import com.github.einjerjar.mc.widgets.EWidget;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
 import com.github.einjerjar.mc.widgets.utils.ColorSet;
 import com.github.einjerjar.mc.widgets.utils.Styles;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
     @Setter protected         SimpleWidgetAction<KeyWidget> onClick;
     @Setter protected         SpecialKeyWidgetAction        onSpecialClick;
     @Getter @Setter protected boolean                       selected = false;
-    protected                 TextComponent                 text;
+    protected                 Component                     text;
 
     public KeyWidget(KeyData key, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -36,7 +36,7 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
 
     protected void _init(KeyData key) {
         this.key      = key;
-        this.text     = new TextComponent(key.name());
+        this.text     = Text.literal(key.name());
         this.mcKey    = getMCKey(key);
         this.tooltips = new ArrayList<>();
         this.tooltips.add(mcKey.getDisplayName());
@@ -66,13 +66,13 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
     }
 
     public boolean updateTooltipForOtherMouseKeys() {
-        tooltips.add(new TextComponent(text.getString()).withStyle(Styles.header()));
+        tooltips.add(Text.literal(text.getString()).withStyle(Styles.header()));
         List<Component> boundKeys = new ArrayList<>();
         // 10 mouse keys
         for (int i = 0; i < 10; i++) {
             if (KeybindingRegistry.keys().containsKey(i)) {
                 for (KeyHolder k : KeybindingRegistry.keys().get(i)) {
-                    boundKeys.add(new TextComponent(String.format("[%s] %s", i, k.getTranslatedName().getString())));
+                    boundKeys.add(Text.literal(String.format("[%s] %s", i, k.getTranslatedName().getString())));
                 }
             }
         }
@@ -81,7 +81,7 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
         this.color(ColorGroups.WHITE);
         if (size > 0) {
             this.color(ColorGroups.GREEN);
-            tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
+            tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
             tooltips.addAll(boundKeys);
         }
         if (selected) this.color(ColorGroups.YELLOW);
@@ -98,16 +98,16 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
 
     protected void updateDebugTooltips() {
         if (KeymapConfig.instance().debug()) {
-            tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
-            tooltips.add(new TextComponent(String.format("Code: %d", key.code())).withStyle(Styles.yellow()));
-            tooltips.add(new TextComponent(String.format("Mouse?: %b", key.mouse())).withStyle(Styles.yellow()));
-            tooltips.add(new TextComponent(String.format("Name: %s", key.name())).withStyle(Styles.yellow()));
+            tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+            tooltips.add(Text.literal(String.format("Code: %d", key.code())).withStyle(Styles.yellow()));
+            tooltips.add(Text.literal(String.format("Mouse?: %b", key.mouse())).withStyle(Styles.yellow()));
+            tooltips.add(Text.literal(String.format("Name: %s", key.name())).withStyle(Styles.yellow()));
         }
     }
 
     public void updateNormalTooltip() {
-        tooltips.add(new TextComponent(String.format("(%s) ",
-                text.getString())).withStyle(Styles.yellow()).append(new TextComponent(mcKey.getDisplayName().getString()).withStyle(
+        tooltips.add(Text.literal(String.format("(%s) ",
+                text.getString())).withStyle(Styles.yellow()).append(Text.literal(mcKey.getDisplayName().getString()).withStyle(
                 Styles.headerBold())));
         if (KeybindingRegistry.keys().containsKey(this.key.code())) {
             List<KeyHolder> holders = KeybindingRegistry.keys().get(this.key.code());
@@ -117,7 +117,7 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
             if (size > 1) this.color(ColorGroups.RED);
 
             if (size > 0) {
-                tooltips.add(new TextComponent(Utils.SEPARATOR).withStyle(Styles.muted()));
+                tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
                 for (KeyHolder k : holders) {
                     tooltips.add(k.getTranslatedName());
                 }

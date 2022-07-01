@@ -8,11 +8,10 @@ import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
 import com.github.einjerjar.mc.widgets.*;
 import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Styles;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class LayoutSelectionScreen extends EScreen {
     protected VirtualKeyboardWidget vkBasic;
@@ -32,7 +31,7 @@ public class LayoutSelectionScreen extends EScreen {
 
 
     public LayoutSelectionScreen(Screen parent) {
-        super(parent, new TextComponent("Keymap Layout"));
+        super(parent, Text.literal("Keymap Layout"));
     }
 
     @Override protected void onInit() {
@@ -62,14 +61,14 @@ public class LayoutSelectionScreen extends EScreen {
         listLayouts.setItemSelectedWithValue(KeymapConfig.instance().customLayout());
 
         btnSave   = new EButton(
-                new TranslatableComponent("keymap.btnSave"),
+                Text.translatable("keymap.btnSave"),
                 listLayouts.left(),
                 listLayouts.bottom() + padding.y(),
                 (listLayouts.rect().w() - padding.x()) / 2,
                 16
         );
         btnCancel = new EButton(
-                new TranslatableComponent("keymap.btnCancel"),
+                Text.translatable("keymap.btnCancel"),
                 listLayouts.right() - btnSave.rect().w(),
                 btnSave.top(),
                 btnSave.rect().w(),
@@ -80,18 +79,18 @@ public class LayoutSelectionScreen extends EScreen {
         btnCancel.clickAction(this::onBtnCancelClicked);
 
         lblScreenLabel = new ELabel(
-                new TranslatableComponent("keymap.scrLayout"),
+                Text.translatable("keymap.scrLayout"),
                 scr.left(), scr.top() + padding.y(), scr.w(), 16
         );
         lblCreditTitle = new ELabel(
-                new TranslatableComponent("keymap.lblCredits"),
+                Text.translatable("keymap.lblCredits"),
                 vkNumpad.right() + padding.x(),
                 vkNumpad.top() + padding.y() * 2,
                 vkBasic.right() - vkNumpad.right() - padding.x(),
                 font.lineHeight
         );
         lblCreditName  = new ELabel(
-                new TextComponent(qAuthor(layout)).withStyle(Styles.headerBold()),
+                Text.literal(qAuthor(layout)).withStyle(Styles.headerBold()),
                 lblCreditTitle.left(),
                 lblCreditTitle.bottom() + padding.y(),
                 lblCreditTitle.rect().w(),
@@ -103,7 +102,7 @@ public class LayoutSelectionScreen extends EScreen {
 
         creditVis(layout);
 
-        btnClose = new EButton(new TranslatableComponent("keymap.btnClearSearch"),
+        btnClose = new EButton(Text.translatable("keymap.btnClearSearch"),
                 listLayouts.right() - 16,
                 scr.y() + padding.y(),
                 16,
@@ -133,7 +132,7 @@ public class LayoutSelectionScreen extends EScreen {
         String qa = qAuthor(layout);
         lblCreditTitle.visible(!qa.isBlank());
         lblCreditName.visible(!qa.isBlank());
-        lblCreditName.text(new TextComponent(qa).withStyle(Styles.headerBold()));
+        lblCreditName.text(Text.literal(qa).withStyle(Styles.headerBold()));
     }
 
     protected void onBtnSaveClicked(EWidget source) {
