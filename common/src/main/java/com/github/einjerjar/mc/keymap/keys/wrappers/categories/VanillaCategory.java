@@ -1,9 +1,9 @@
 package com.github.einjerjar.mc.keymap.keys.wrappers.categories;
 
 import com.github.einjerjar.mc.keymap.utils.Utils;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class VanillaCategory implements CategoryHolder {
 
     public VanillaCategory(String category) {
         this.category       = category;
-        this.translatedName = new TranslatableComponent(category);
+        this.translatedName = Text.translatable(category);
     }
 
     @Override public String getTranslatableName() {
