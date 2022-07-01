@@ -10,6 +10,8 @@ import com.github.einjerjar.mc.keymapforge.client.gui.screen.ConfigScreen;
 import com.github.einjerjar.mc.keymapforge.cross.CrossKeybind;
 import com.github.einjerjar.mc.keymapforge.cross.IntegrationRegistrar;
 import com.github.einjerjar.mc.keymapforge.cross.TickEventRegistrar;
+import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
 
@@ -25,6 +27,9 @@ public class KeymapForge {
         IntegrationRegistrarShared.provider(IntegrationRegistrar::execute);
 
         Keymap.init();
+
+        ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class,
+                () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> ConfigScreenShared.provider().apply(screen)));
     }
 
     public static File configDirProvider() {
