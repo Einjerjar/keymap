@@ -3,13 +3,13 @@ package com.github.einjerjar.mc.keymap.keys.wrappers.keys;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.VanillaCategory;
 import com.github.einjerjar.mc.keymap.utils.Utils;
+import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class VanillaKeymap implements KeyHolder {
     public VanillaKeymap(KeyMapping map) {
         this.map = map;
         this.codes.add(map.key.getValue());
-        this.translatedName = new TranslatableComponent(map.getName());
+        this.translatedName = Text.translatable(map.getName());
         this.translatedKey  = map.key.getDisplayName();
         updateSearchString();
     }
