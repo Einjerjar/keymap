@@ -273,10 +273,11 @@ public class KeymapScreen extends EScreen {
         if (lastKeyComboData == null) return false;
         if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
 
-        if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode == keyCode) processSimpleModifiers();
-        else if (!KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyComboData.onlyKey())
-            processSimpleModifiers();
-        else processComplexKey();
+        // if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode == keyCode) processSimpleModifiers();
+        // else if (!KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyComboData.onlyKey())
+        //     processSimpleModifiers();
+        // else processComplexKey();
+        processSimpleModifiers();
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 

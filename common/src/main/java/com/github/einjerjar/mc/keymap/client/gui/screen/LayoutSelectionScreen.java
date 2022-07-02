@@ -13,6 +13,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
+import java.util.Map;
+
 public class LayoutSelectionScreen extends EScreen {
     protected VirtualKeyboardWidget vkBasic;
     protected VirtualKeyboardWidget vkExtra;
@@ -25,11 +27,6 @@ public class LayoutSelectionScreen extends EScreen {
     protected ELabel                lblScreenLabel;
     protected ELabel                lblCreditTitle;
     protected ELabel                lblCreditName;
-
-    protected Point<Integer> margin  = new Point<>(6);
-    protected Point<Integer> padding = new Point<>(4);
-
-
     public LayoutSelectionScreen(Screen parent) {
         super(parent, Text.literal("Keymap Layout"));
     }
@@ -51,9 +48,10 @@ public class LayoutSelectionScreen extends EScreen {
                 scr.h() - padding.y() * 4 - 16 * 2,
                 false);
 
-        for (String s : KeyLayout.layouts().keySet()) {
-            listLayouts.addItem(new ValueMapList.ValueMapEntry<>(KeyLayout.layouts().get(s).meta().name(),
-                    s,
+        for (Map.Entry<String, KeyLayout> v : KeyLayout.layouts().entrySet()) {
+            listLayouts.addItem(new ValueMapList.ValueMapEntry<>(
+                    KeyLayout.layouts().get(v.getKey()).meta().name(),
+                    v.getKey(),
                     listLayouts));
         }
 
@@ -136,6 +134,7 @@ public class LayoutSelectionScreen extends EScreen {
     }
 
     protected void onBtnSaveClicked(EWidget source) {
+        // Is def a safe cast
         ValueMapList.ValueMapEntry<String> selected = (ValueMapList.ValueMapEntry<String>) listLayouts.itemSelected();
         if (selected == null) {
             Keymap.logger().error("Cant save empty value!!");
@@ -151,6 +150,7 @@ public class LayoutSelectionScreen extends EScreen {
     }
 
     protected void onLayoutSelected(EWidget source) {
+        // Is def a safe cast
         ValueMapList.ValueMapEntry<String> selected = (ValueMapList.ValueMapEntry<String>) listLayouts.itemSelected();
 
         KeyLayout layout = KeyLayout.getLayoutWithCode(selected.value());

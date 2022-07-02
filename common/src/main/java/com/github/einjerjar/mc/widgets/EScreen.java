@@ -169,8 +169,8 @@ public abstract class EScreen extends Screen {
 
     @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if (renderBg) renderBackground(poseStack);
-        hoveredWidget = null;
         preRenderScreen(poseStack, mouseX, mouseY, partialTick);
+        hoveredWidget = null;
         if (autoRenderChild) {
             for (EWidget d : widgets()) {
                 d.render(poseStack, mouseX, mouseY, partialTick);
@@ -197,12 +197,16 @@ public abstract class EScreen extends Screen {
                 mouseY);
     }
 
-    protected abstract void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
+    protected void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    //    override to render after the bg, but before the widgets
+    }
 
     protected void postRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    //    override to render after the widgets, but not before the debug
     }
 
     protected void postRenderDebugScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    //    override to render after debug
     }
 
     public int left() {

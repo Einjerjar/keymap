@@ -69,6 +69,8 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
     }
 
     protected void init() {
+    //    override for widget's custom initializer
+    //    afaik, no particular purpose, but eh, I'll keep it for now
     }
 
     protected ColorSet colorVariant() {
@@ -86,6 +88,7 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
     }
 
     public void updateTooltips() {
+    //    override to allow external components to update any widget's tooltip (if any)
     }
 
     public boolean onMouseClicked(boolean inside, double mouseX, double mouseY, int button) {
@@ -230,7 +233,8 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
     }
 
     @Override public void updateNarration(@NotNull NarrationElementOutput narrationElementOutput) {
-
+    //    yeah idk, but required by an extended/implemented class, so yeah
+    //    tho method name is looks descriptive enough
     }
 
     public interface SimpleWidgetAction<T> {
