@@ -12,14 +12,16 @@
   "icon": "assets/keymap/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "com.github.einjerjar.mc.keymap.KeymapFabricLike"
-    ],
     "modmenu": [
       "com.github.einjerjar.mc.keymap.ModMenuIntegration"
     ],
-    "client": [],
-    "server": []
+    "main": [],
+    "client": [
+      "com.github.einjerjar.mc.keymap.KeymapFabricLike"
+    ],
+    "server": [
+      "com.github.einjerjar.mc.keymap.KeymapFabricLikeServer"
+    ]
   },
   "mixins": [
     "keymap.mixins.json",

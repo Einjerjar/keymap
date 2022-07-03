@@ -198,15 +198,15 @@ public abstract class EScreen extends Screen {
     }
 
     protected void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-    //    override to render after the bg, but before the widgets
+        //    override to render after the bg, but before the widgets
     }
 
     protected void postRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-    //    override to render after the widgets, but not before the debug
+        //    override to render after the widgets, but not before the debug
     }
 
     protected void postRenderDebugScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-    //    override to render after debug
+        //    override to render after debug
     }
 
     public int left() {

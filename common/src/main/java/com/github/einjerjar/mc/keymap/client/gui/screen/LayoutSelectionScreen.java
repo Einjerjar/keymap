@@ -1,32 +1,36 @@
 package com.github.einjerjar.mc.keymap.client.gui.screen;
 
 import com.github.einjerjar.mc.keymap.Keymap;
+import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.VirtualKeyboardWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
+import com.github.einjerjar.mc.keymap.utils.VKUtil;
 import com.github.einjerjar.mc.widgets.*;
-import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Styles;
 import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
+import java.util.List;
 import java.util.Map;
 
 public class LayoutSelectionScreen extends EScreen {
-    protected VirtualKeyboardWidget vkBasic;
-    protected VirtualKeyboardWidget vkExtra;
-    protected VirtualKeyboardWidget vkMouse;
-    protected VirtualKeyboardWidget vkNumpad;
-    protected ValueMapList          listLayouts;
-    protected EButton               btnSave;
-    protected EButton               btnCancel;
-    protected EButton               btnClose;
-    protected ELabel                lblScreenLabel;
-    protected ELabel                lblCreditTitle;
-    protected ELabel                lblCreditName;
+    protected List<VirtualKeyboardWidget> vks;
+    protected VirtualKeyboardWidget       vkBasic;
+    protected VirtualKeyboardWidget       vkExtra;
+    protected VirtualKeyboardWidget       vkMouse;
+    protected VirtualKeyboardWidget       vkNumpad;
+    protected ValueMapList                listLayouts;
+    protected EButton                     btnSave;
+    protected EButton                     btnCancel;
+    protected EButton                     btnClose;
+    protected ELabel                      lblScreenLabel;
+    protected ELabel                      lblCreditTitle;
+    protected ELabel                      lblCreditName;
+
     public LayoutSelectionScreen(Screen parent) {
         super(parent, Text.literal("Keymap Layout"));
     }
@@ -37,7 +41,7 @@ public class LayoutSelectionScreen extends EScreen {
 
         scr = scrFromWidth(Math.min(450, width));
 
-        generateVk(layout);
+        initVks(layout);
 
         int spaceLeft = scr.w() - padding.x() * 3 - vkBasic.rect().w();
 
@@ -118,6 +122,18 @@ public class LayoutSelectionScreen extends EScreen {
         addRenderableWidget(btnClose);
     }
 
+    protected void initVks(KeyLayout layout) {
+        vks = VKUtil.genLayout(layout, scr.x() + padding.x(), scr.y() + padding.y() * 2 + 16);
+        for (VirtualKeyboardWidget vk : vks) {
+            for (KeyWidget k : vk.childKeys()) addRenderableWidget(k);
+        }
+
+        vkBasic  = vks.get(0);
+        vkExtra  = vks.get(0);
+        vkMouse  = vks.get(0);
+        vkNumpad = vks.get(0);
+    }
+
     protected void onBtnCloseClicked(EWidget source) {
         onClose();
     }
@@ -154,12 +170,11 @@ public class LayoutSelectionScreen extends EScreen {
         ValueMapList.ValueMapEntry<String> selected = (ValueMapList.ValueMapEntry<String>) listLayouts.itemSelected();
 
         KeyLayout layout = KeyLayout.getLayoutWithCode(selected.value());
-        removeWidget(vkBasic.destroy());
-        removeWidget(vkExtra.destroy());
-        removeWidget(vkMouse.destroy());
-        removeWidget(vkNumpad.destroy());
+        for (VirtualKeyboardWidget vk : vks) {
+            removeWidget(vk.destroy());
+        }
         KeybindingRegistry.clearSubscribers();
-        generateVk(layout);
+        initVks(layout);
 
         creditVis(layout);
     }
@@ -173,22 +188,6 @@ public class LayoutSelectionScreen extends EScreen {
             KeymapConfig.save();
             Minecraft.getInstance().setScreen(new KeymapScreen(parent()));
         }
-    }
-
-    private void generateVk(KeyLayout layout) {
-        vkBasic  = new VirtualKeyboardWidget(layout.keys().basic(),
-                scr.x() + padding.x(),
-                scr.y() + padding.y() * 2 + 16,
-                0,
-                0);
-        vkExtra  = new VirtualKeyboardWidget(layout.keys().extra(), vkBasic.left(), vkBasic.bottom() + 4, 0, 0);
-        vkMouse  = new VirtualKeyboardWidget(layout.keys().mouse(), vkExtra.left(), vkExtra.bottom() + 2, 0, 0);
-        vkNumpad = new VirtualKeyboardWidget(layout.keys().numpad(), vkMouse.right() + 4, vkBasic.bottom() + 4, 0, 0);
-
-        addRenderableWidget(vkBasic);
-        addRenderableWidget(vkExtra);
-        addRenderableWidget(vkMouse);
-        addRenderableWidget(vkNumpad);
     }
 
     @Override protected void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {

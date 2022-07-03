@@ -15,9 +15,10 @@ import org.apache.logging.log4j.Logger;
 
 @Accessors(fluent = true, chain = true)
 public class Keymap {
-    public static final            String             MOD_ID   = "keymap";
-    @Getter protected static final String             MOD_NAME = "keymap";
-    @Getter protected static final Logger             logger   = LogManager.getLogger();
+    public static final            String             MOD_ID      = "keymap";
+    public static final            String             SERVER_WARN = "Keymap is being ran on a DedicatedServer environment, even though it can only work on Client side environment";
+    @Getter protected static final String             MOD_NAME    = "keymap";
+    @Getter protected static final Logger             logger      = LogManager.getLogger();
     @Getter protected static       CrossKeybindShared kmOpenMapper;
 
     private Keymap() {

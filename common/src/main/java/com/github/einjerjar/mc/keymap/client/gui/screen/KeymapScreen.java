@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.client.gui.screen;
 
-import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.CategoryListWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeymapListWidget;
@@ -17,6 +16,7 @@ import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapRegistry;
 import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapSource;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
+import com.github.einjerjar.mc.keymap.utils.VKUtil;
 import com.github.einjerjar.mc.widgets.EButton;
 import com.github.einjerjar.mc.widgets.EInput;
 import com.github.einjerjar.mc.widgets.EScreen;
@@ -25,6 +25,8 @@ import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
+
+import java.util.List;
 
 public class KeymapScreen extends EScreen {
     protected int                   lastKeyCode;
@@ -44,6 +46,8 @@ public class KeymapScreen extends EScreen {
     protected EButton            btnOpenHelp;
     protected EInput             inpSearch;
 
+    protected List<VirtualKeyboardWidget> vks;
+
     public KeymapScreen(Screen parent) {
         super(parent, Text.translatable("keymap.scrMain"));
     }
@@ -54,28 +58,7 @@ public class KeymapScreen extends EScreen {
 
         scr = scrFromWidth(Math.min(450, width));
 
-        vkBasic  = new VirtualKeyboardWidget(layout.keys().basic(),
-                scr.x() + padding.x(),
-                scr.y() + padding.y() * 2 + 16,
-                0,
-                0);
-        vkExtra  = new VirtualKeyboardWidget(layout.keys().extra(), vkBasic.left(), vkBasic.bottom() + 4, 0, 0);
-        vkMouse  = new VirtualKeyboardWidget(layout.keys().mouse(), vkExtra.left(), vkExtra.bottom() + 2, 0, 0);
-        vkNumpad = new VirtualKeyboardWidget(layout.keys().numpad(), vkMouse.right() + 4, vkBasic.bottom() + 4, 0, 0);
-
-        vkBasic.onKeyClicked(this::onVKKeyClicked);
-        vkExtra.onKeyClicked(this::onVKKeyClicked);
-        vkMouse.onKeyClicked(this::onVKKeyClicked);
-        vkNumpad.onKeyClicked(this::onVKKeyClicked);
-        vkExtra.onSpecialKeyClicked(this::onVKSpecialClicked);
-        vkBasic.onSpecialKeyClicked(this::onVKSpecialClicked);
-        vkMouse.onSpecialKeyClicked(this::onVKSpecialClicked);
-        vkNumpad.onSpecialKeyClicked(this::onVKSpecialClicked);
-
-        for (EWidget w : vkBasic.childKeys()) addRenderableWidget(w);
-        for (EWidget w : vkExtra.childKeys()) addRenderableWidget(w);
-        for (EWidget w : vkMouse.childKeys()) addRenderableWidget(w);
-        for (EWidget w : vkNumpad.childKeys()) addRenderableWidget(w);
+        initVks(layout);
 
         int spaceLeft = scr.w() - padding.x() * 3 - vkBasic.rect().w();
 
@@ -180,6 +163,24 @@ public class KeymapScreen extends EScreen {
         addRenderableWidget(inpSearch);
     }
 
+    protected void initVks(KeyLayout layout) {
+        vks = VKUtil.genLayout(layout,
+                scr.x() + padding.x(),
+                scr.y() + padding.y() * 2 + 16,
+                this::onVKKeyClicked,
+                this::onVKSpecialClicked);
+        for (VirtualKeyboardWidget vk : vks) {
+            for (KeyWidget k : vk.childKeys()) {
+                addRenderableWidget(k);
+            }
+        }
+
+        vkBasic  = vks.get(0);
+        vkExtra  = vks.get(0);
+        vkMouse  = vks.get(0);
+        vkNumpad = vks.get(0);
+    }
+
     @Override public void onClose() {
         KeybindingRegistry.clearSubscribers();
         super.onClose();
@@ -233,12 +234,12 @@ public class KeymapScreen extends EScreen {
     }
 
     protected void processComplexKey() {
-        Keymap.logger().error("Complex: {}", lastKeyComboData);
+        // Keymap.logger().error("Complex: {}", lastKeyComboData);
         listKm.setKey(lastKeyComboData);
     }
 
     protected void processSimpleModifiers() {
-        Keymap.logger().error("Simple: {}", lastKeyCode);
+        // Keymap.logger().error("Simple: {}", lastKeyCode);
         listKm.setKey(lastKeyComboData);
     }
 
@@ -273,11 +274,7 @@ public class KeymapScreen extends EScreen {
         if (lastKeyComboData == null) return false;
         if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
 
-        // if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode == keyCode) processSimpleModifiers();
-        // else if (!KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyComboData.onlyKey())
-        //     processSimpleModifiers();
-        // else processComplexKey();
-        processSimpleModifiers();
+        listKm.setKey(lastKeyComboData);
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 

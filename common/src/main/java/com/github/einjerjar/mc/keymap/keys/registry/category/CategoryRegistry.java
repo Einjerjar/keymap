@@ -18,9 +18,8 @@ public class CategoryRegistry {
     public static void collect() {
         if (collected) {
             Keymap.logger().warn("CategoryRegistry collect() already called!");
+            sources.clear();
         }
-
-        sources.clear();
 
         register(new AllCategorySource());
         register(new VanillaCategorySource());

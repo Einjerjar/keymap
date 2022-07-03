@@ -11,7 +11,7 @@ authors = "Einjerjar"
 description = '''
 keymap
 '''
-#logoFile = ""
+logoFile = "icon.png"
 
 [[dependencies.keymap]]
 modId = "forge"

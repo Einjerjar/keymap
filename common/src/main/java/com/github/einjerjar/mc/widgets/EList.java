@@ -88,7 +88,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     }
 
     public void updateFilteredList() {
-    //    override to do exactly as it says
+        //    override to do exactly as it says
     }
 
     public void addItem(T item) {
@@ -221,7 +221,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     }
 
     protected void sort() {
-    //    self explanatory
+        //    self explanatory
     }
 
     // endregion
@@ -320,7 +320,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         }
 
         public void updateTooltips() {
-        //    self explanatory
+            //    self explanatory
         }
 
         public void provideTooltips(List<Component> tips) {

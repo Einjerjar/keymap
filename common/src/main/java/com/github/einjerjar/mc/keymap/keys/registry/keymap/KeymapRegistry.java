@@ -18,8 +18,8 @@ public class KeymapRegistry {
     public static void collect() {
         if (collected) {
             Keymap.logger().warn("KeymapRegistry collect() already called!");
+            sources.clear();
         }
-        sources.clear();
 
         register(new VanillaKeymapSource());
 

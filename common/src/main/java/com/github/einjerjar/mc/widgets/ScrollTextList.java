@@ -21,7 +21,7 @@ public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
 
     public static ScrollTextList createFromString(String[] lines, int x, int y, int w, int h) {
         ScrollTextList list = new ScrollTextList(x, y, w, h);
-        Font f = Minecraft.getInstance().font;
+        Font           f    = Minecraft.getInstance().font;
         for (String line : lines) {
             int fullWidth = f.width(line);
             int lineWidth = w - list.padding.x() * 2;
