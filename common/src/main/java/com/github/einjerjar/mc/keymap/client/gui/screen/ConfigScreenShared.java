@@ -5,12 +5,15 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.screens.Screen;
 
-import java.util.function.Function;
-
 @Accessors(fluent = true)
 public class ConfigScreenShared {
-    @Getter @Setter protected static Function<Screen, Screen> provider;
+    @Getter @Setter protected static ConfigScreenProvider provider;
 
     private ConfigScreenShared() {
+    }
+
+    @FunctionalInterface
+    public interface ConfigScreenProvider {
+        Screen execute(Screen parent);
     }
 }

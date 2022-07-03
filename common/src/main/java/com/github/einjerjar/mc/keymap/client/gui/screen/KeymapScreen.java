@@ -1,5 +1,6 @@
 package com.github.einjerjar.mc.keymap.client.gui.screen;
 
+import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.CategoryListWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeymapListWidget;
@@ -217,7 +218,7 @@ public class KeymapScreen extends EScreen {
 
     protected void onBtnOpenSettingsClicked(EWidget source) {
         assert minecraft != null;
-        minecraft.setScreen(ConfigScreenShared.provider.apply(this));
+        minecraft.setScreen(ConfigScreenShared.provider().execute(this));
     }
 
     protected void onBtnOpenLayoutsClicked(EWidget source) {
@@ -231,16 +232,6 @@ public class KeymapScreen extends EScreen {
 
     protected void onBtnResetAllClicked(EWidget source) {
         listKm.resetAllKeys();
-    }
-
-    protected void processComplexKey() {
-        // Keymap.logger().error("Complex: {}", lastKeyComboData);
-        listKm.setKey(lastKeyComboData);
-    }
-
-    protected void processSimpleModifiers() {
-        // Keymap.logger().error("Simple: {}", lastKeyCode);
-        listKm.setKey(lastKeyComboData);
     }
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -272,6 +263,9 @@ public class KeymapScreen extends EScreen {
             return super.keyReleased(keyCode, scanCode, modifiers);
         }
         if (lastKeyComboData == null) return false;
+
+        // if last released is a modifier, even tho the last pressed was not, then ignore
+        // TODO: let the user know about this
         if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
 
         listKm.setKey(lastKeyComboData);

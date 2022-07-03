@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.keys.wrappers.keys;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
+import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.VanillaCategory;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.utils.Text;
@@ -128,6 +129,6 @@ public class VanillaKeymap implements KeyHolder {
     }
 
     @Override public boolean isAssigned() {
-        return map.key.getValue() != -1;
+        return map.key.getValue() != -1 || KeybindRegistry.contains(map);
     }
 }

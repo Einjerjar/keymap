@@ -26,8 +26,8 @@ public class KeymapForge {
         DistExecutor.safeRunWhenOn(Dist.DEDICATED_SERVER, () -> IDK::serverInit);
     }
 
-    public static File configDirProvider() {
-        return new File(FMLPaths.GAMEDIR.get().resolve("config/keymap.json").toUri());
+    public static File configDirProvider(String name) {
+        return new File(FMLPaths.GAMEDIR.get().resolve("config/" + name).toUri());
     }
 
     // Prevents referent issue from fml

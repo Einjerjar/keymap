@@ -4,6 +4,7 @@ import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
+import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.VanillaKeymap;
@@ -126,7 +127,7 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
         int code = kd.keyCode();
 
-        if (kd.keyCode() == InputConstants.KEY_ESCAPE) {
+        if (code == InputConstants.KEY_ESCAPE) {
             code = -1;
         }
 
@@ -141,7 +142,26 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
     }
 
     public boolean setKey(KeyComboData kd) {
-        boolean ret = setKeyForItem(kd);
+        boolean ret = false;
+        if (kd.onlyKey()) {
+            ret = setKeyForItem(kd);
+
+            // FIXME :: REMOVE ONLY IF UNSET OR BOUND TO NEW KEY
+
+            KeybindRegistry.remove(vk.map());
+        } else {
+            Keymap.logger().warn("COMPLEX {}", kd);
+            KeymapListEntry item = itemSelected != null ? itemSelected : lastItemSelected;
+            if (item != null && item.map instanceof VanillaKeymap vk) {
+                if (KeybindRegistry.contains(vk.map())) {
+                    KeybindRegistry.update(vk.map(), kd);
+                } else {
+                    KeybindRegistry.register(vk.map(), kd);
+                }
+                ret = true;
+                setKeyForItem(KeyComboData.UNBOUND);
+            }
+        }
         // twice to flush both current and last selected
         setItemSelected(null);
         setItemSelected(null);

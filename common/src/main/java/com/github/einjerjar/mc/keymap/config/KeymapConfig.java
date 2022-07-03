@@ -18,10 +18,9 @@ import java.io.FileWriter;
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class KeymapConfig {
-    static                         KeymapConfig            instance;
-    static                         GsonBuilder             builder = new GsonBuilder().setPrettyPrinting();
-    static                         Gson                    gson    = builder.create();
-    private static                 File                    cfgFile = null;
+    static                 KeymapConfig            instance;
+    static                 Gson                    gson    = new GsonBuilder().setPrettyPrinting().create();
+    private static         File                    cfgFile = null;
     @Getter @Setter private static KeymapConfigDirProvider configDirProvider;
 
     // extra
@@ -38,7 +37,7 @@ public class KeymapConfig {
     protected boolean showHelpTooltips     = true;
 
     private static synchronized File cfgFile() {
-        if (cfgFile == null) cfgFile = configDirProvider.execute();
+        if (cfgFile == null) cfgFile = configDirProvider.execute("keymap.json");
         return cfgFile;
     }
 
@@ -71,6 +70,6 @@ public class KeymapConfig {
 
     @FunctionalInterface
     public interface KeymapConfigDirProvider {
-        File execute();
+        File execute(String name);
     }
 }

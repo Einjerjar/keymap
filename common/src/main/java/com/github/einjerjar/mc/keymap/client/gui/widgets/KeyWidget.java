@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.client.gui.widgets;
 
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
+import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyData;
 import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
@@ -15,6 +16,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
     @Setter protected         SpecialKeyWidgetAction        onSpecialClick;
     @Getter @Setter protected boolean                       selected = false;
     protected                 Component                     text;
+    protected boolean hasComplex = false;
 
     public KeyWidget(KeyData key, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -109,12 +112,14 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
         tooltips.add(Text.literal(String.format("(%s) ",
                 text.getString())).withStyle(Styles.yellow()).append(Text.literal(mcKey.getDisplayName().getString()).withStyle(
                 Styles.headerBold())));
-        if (KeybindingRegistry.keys().containsKey(this.key.code())) {
-            List<KeyHolder> holders = KeybindingRegistry.keys().get(this.key.code());
+
+        hasComplex = KeybindRegistry.containsKey(key.code());
+        if (KeybindingRegistry.keys().containsKey(key.code())) {
+            List<KeyHolder> holders = KeybindingRegistry.keys().get(key.code());
             int             size    = holders.size();
-            if (size <= 0) this.color(ColorGroups.WHITE);
-            if (size == 1) this.color(ColorGroups.GREEN);
-            if (size > 1) this.color(ColorGroups.RED);
+            if (size <= 0) color(ColorGroups.WHITE);
+            if (size == 1) color(ColorGroups.GREEN);
+            if (size > 1) color(ColorGroups.RED);
 
             if (size > 0) {
                 tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
@@ -122,10 +127,17 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
                     tooltips.add(k.getTranslatedName());
                 }
             }
+            if (hasComplex) {
+                List<KeyMapping> m = KeybindRegistry.getMappings(key.code());
+                if (m.size() > 0 && tooltips.size() == 1) tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+                for (KeyMapping km : m) {
+                    tooltips.add(Text.translatable(km.getName()));
+                }
+            }
         } else {
-            this.color(ColorGroups.WHITE);
+            color(ColorGroups.WHITE);
         }
-        if (selected) this.color(ColorGroups.YELLOW);
+        if (selected) color(ColorGroups.YELLOW);
     }
 
     @Override public void updateTooltips() {
@@ -159,6 +171,9 @@ public class KeyWidget extends EWidget implements KeybindingRegistry.KeybindingR
     @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         ColorSet colors = colorVariant();
         drawBg(poseStack, colors.bg());
+        if (hasComplex) {
+            fill(poseStack, right() - 6, bottom() - 6, right(), bottom(), 0xFF_ffff00);
+        }
         drawOutline(poseStack, colors.border());
         drawCenteredString(poseStack, font, text, midX(), midY() - font.lineHeight / 2 + 1, colors.text());
     }
