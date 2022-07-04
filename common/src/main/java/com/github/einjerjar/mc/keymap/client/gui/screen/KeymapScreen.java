@@ -191,8 +191,12 @@ public class KeymapScreen extends EScreen {
     }
 
     protected void onBtnClearSearchClicked(EWidget source) {
-        if (inpSearch.text().isEmpty()) onClose();
+        if (inpSearch.text().isEmpty()) {
+            onClose();
+            return;
+        }
         else inpSearch.text("");
+        setFocused(null);
     }
 
     protected void onListCatSelected(EWidget source) {
@@ -226,10 +230,12 @@ public class KeymapScreen extends EScreen {
 
     protected void onBtnResetClicked(EWidget source) {
         listKm.resetKey();
+        setFocused(null);
     }
 
     protected void onBtnResetAllClicked(EWidget source) {
         listKm.resetAllKeys();
+        setFocused(null);
     }
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -264,7 +270,6 @@ public class KeymapScreen extends EScreen {
         if (lastKeyComboData == null) return false;
 
         // if last released is a modifier, even tho the last pressed was not, then ignore
-        // TODO: let the user know about this
         if (KeymapRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
 
         listKm.setKey(lastKeyComboData);

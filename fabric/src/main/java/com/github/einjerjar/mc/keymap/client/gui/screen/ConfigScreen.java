@@ -106,7 +106,7 @@ public class ConfigScreen {
         );
         catExtra.addEntry(
                 entryBuilder.startBooleanToggle(
-                                Text.translatable("keymap.keymap.optCrashOnProblematicError"),
+                                Text.translatable("keymap.optCrashOnProblematicError"),
                                 k.crashOnProblematicError())
                         .setSaveConsumer(k::crashOnProblematicError)
                         .build()

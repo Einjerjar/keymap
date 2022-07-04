@@ -123,7 +123,7 @@ public class LayoutSelectionScreen extends EScreen {
     protected void initVks(KeyLayout layout) {
         vks = VKUtil.genLayout(layout, scr.x() + padding.x(), scr.y() + padding.y() * 2 + 16);
         for (VirtualKeyboardWidget vk : vks) {
-            for (KeyWidget k : vk.childKeys()) addRenderableWidget(k);
+            addRenderableWidget(vk);
         }
 
         vkBasic  = vks.get(0);
