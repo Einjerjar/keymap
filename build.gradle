@@ -30,12 +30,6 @@ subprojects {
     }
 }
 
-gradle.projectsEvaluated {
-    subprojects { subproject -> {
-        subproject.archivesBaseName = "${rootProject.archives_base_name}-${subproject.name}"
-    }}
-}
-
 allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
