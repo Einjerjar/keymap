@@ -104,5 +104,12 @@ public class ConfigScreen {
                         .setSaveConsumer(k::debug2)
                         .build()
         );
+        catExtra.addEntry(
+                entryBuilder.startBooleanToggle(
+                                Text.translatable("keymap.optCrashOnProblematicError"),
+                                k.crashOnProblematicError())
+                        .setSaveConsumer(k::crashOnProblematicError)
+                        .build()
+        );
     }
 }

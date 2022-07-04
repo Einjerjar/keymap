@@ -10,27 +10,44 @@ import com.github.einjerjar.mc.keymapforge.client.gui.screen.ConfigScreen;
 import com.github.einjerjar.mc.keymapforge.cross.CrossKeybind;
 import com.github.einjerjar.mc.keymapforge.cross.IntegrationRegistrar;
 import com.github.einjerjar.mc.keymapforge.cross.TickEventRegistrar;
+import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlclient.ConfigGuiHandler;
 
 import java.io.File;
 
 @Mod(Keymap.MOD_ID)
 public class KeymapForge {
     public KeymapForge() {
-        KeymapConfig.configDirProvider(KeymapForge::configDirProvider);
-        ConfigScreenShared.provider(ConfigScreen::getScreen);
-        CrossKeybindShared.provider(CrossKeybind::execute);
-        TickEventRegistrarShared.provider(TickEventRegistrar::execute);
-        IntegrationRegistrarShared.provider(IntegrationRegistrar::execute);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> IDK::clientInit);
+        DistExecutor.safeRunWhenOn(Dist.DEDICATED_SERVER, () -> IDK::serverInit);
+    }
+
+    public static File configDirProvider(String name) {
+        return new File(FMLPaths.GAMEDIR.get().resolve("config/" + name).toUri());
+    }
+
+    // Prevents referent issue from fml
+    public static class IDK {
+        private IDK() {
+        }
+
+        private static void serverInit() {
+            Keymap.logger().warn(Keymap.SERVER_WARN);
+        }
+
+        private static void clientInit() {
+            KeymapConfig.configDirProvider(KeymapForge::configDirProvider);
+            ConfigScreenShared.provider(ConfigScreen::getScreen);
+            CrossKeybindShared.provider(CrossKeybind::execute);
+            TickEventRegistrarShared.provider(TickEventRegistrar::execute);
+            IntegrationRegistrarShared.provider(IntegrationRegistrar::execute);
 
         Keymap.init();
 
         ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class,
-                () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> ConfigScreenShared.provider().apply(
-                        screen)));
+                () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> ConfigScreenShared.provider().apply(screen)));
     }
 
     public static File configDirProvider() {

@@ -192,8 +192,8 @@
             "code": 93
           },
           {
-            "name": "ENT",
-            "code": 257,
+            "name": "\\",
+            "code": 92,
             "width": 10
           }
         ]
@@ -250,8 +250,8 @@
             "code": 39
           },
           {
-            "name": "\\",
-            "code": 92,
+            "name": "ENT",
+            "code": 257,
             "width": 18
           }
         ]

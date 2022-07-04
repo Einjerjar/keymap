@@ -8,7 +8,7 @@ import net.minecraft.client.KeyMapping;
 @Accessors(fluent = true)
 public class CrossKeybindShared {
     @Setter protected static CrossKeybindProvider provider;
-    protected                KeyMapping           keymap;
+    protected final          KeyMapping           keymap;
 
     public CrossKeybindShared(InputConstants.Type inputType, int keyCode, String name, String cat) {
         keymap = provider.execute(inputType, keyCode, name, cat);

@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 @Accessors(fluent = true)
 public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
-    protected static Font font = Minecraft.getInstance().font;
-
     protected ScrollTextList(int x, int y, int w, int h) {
         super(Minecraft.getInstance().font.lineHeight, x, y, w, h);
     }
@@ -23,8 +21,9 @@ public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
 
     public static ScrollTextList createFromString(String[] lines, int x, int y, int w, int h) {
         ScrollTextList list = new ScrollTextList(x, y, w, h);
+        Font           f    = Minecraft.getInstance().font;
         for (String line : lines) {
-            int fullWidth = font.width(line);
+            int fullWidth = f.width(line);
             int lineWidth = w - list.padding.x() * 2;
 
             if (fullWidth <= lineWidth) {
@@ -33,8 +32,8 @@ public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
             }
 
             String currentLine = line;
-            String trimmedLine = font.plainSubstrByWidth(line, lineWidth);
-            String tempLine    = "";
+            String trimmedLine = f.plainSubstrByWidth(line, lineWidth);
+            String tempLine;
             int    ix          = 0;
             while (!trimmedLine.equals(currentLine)) {
                 tempLine    = currentLine;
@@ -47,7 +46,7 @@ public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
                     currentLine = (tempLine.substring(trimmedLine.length())).trim();
                     list.addLine(trimmedLine, ix);
                 }
-                trimmedLine = font.plainSubstrByWidth(currentLine, lineWidth);
+                trimmedLine = f.plainSubstrByWidth(currentLine, lineWidth);
                 ix++;
             }
             list.addLine(trimmedLine, ix);
