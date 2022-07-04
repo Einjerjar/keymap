@@ -1,12 +1,13 @@
 package com.github.einjerjar.mc.keymap.keys.extrakeybind;
 
 import com.github.einjerjar.mc.keymap.keys.KeyType;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -14,11 +15,11 @@ import java.util.Objects;
 @Accessors(fluent = true, chain = true)
 public class KeyComboData {
     public static final KeyComboData UNBOUND = new KeyComboData(-1);
-    protected int     keyCode;
-    protected KeyType keyType;
-    protected boolean alt;
-    protected boolean shift;
-    protected boolean ctrl;
+    protected           int          keyCode;
+    protected           KeyType      keyType;
+    protected           boolean      alt;
+    protected           boolean      shift;
+    protected           boolean      ctrl;
 
     public KeyComboData(int keyCode) {
         this(keyCode, KeyType.KEYBOARD);
@@ -44,6 +45,24 @@ public class KeyComboData {
         }
     }
 
+    public InputConstants.Key toKey() {
+        InputConstants.Type t = keyType == KeyType.KEYBOARD ? InputConstants.Type.KEYSYM : InputConstants.Type.MOUSE;
+        return t.getOrCreate(keyCode);
+    }
+
+    public String searchString() {
+        return toKey().getDisplayName().getString();
+    }
+
+    public String toKeyString() {
+        List<String> x = new ArrayList<>();
+        if (ctrl) x.add("ctrl");
+        if (alt) x.add("alt");
+        if (shift) x.add("shift");
+        x.add(toKey().getDisplayName().getString());
+        return String.join(" + ", x);
+    }
+
     public boolean onlyKey() {
         return !(alt || shift || ctrl);
     }
@@ -56,7 +75,7 @@ public class KeyComboData {
     }
 
     public boolean isModifier() {
-        return KeybindRegistry.MODIFIER_KEYS.contains(keyCode);
+        return KeymapRegistry.MODIFIER_KEYS.contains(keyCode);
     }
 
     public boolean isModifierOnly() {

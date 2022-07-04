@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap.keys.registry.keymap;
+package com.github.einjerjar.mc.keymap.keys.sources.keymap;
 
 import com.github.einjerjar.mc.keymap.Keymap;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(fluent = true)
-public class KeymapRegistry {
+public class KeymapSources {
     @Getter protected static List<KeymapSource> sources   = new ArrayList<>();
     @Getter protected static boolean            collected = false;
 
-    private KeymapRegistry() {
+    private KeymapSources() {
     }
 
     public static void collect() {

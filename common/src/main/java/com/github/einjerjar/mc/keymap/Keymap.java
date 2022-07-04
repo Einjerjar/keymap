@@ -4,10 +4,9 @@ import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.cross.CrossKeybindShared;
 import com.github.einjerjar.mc.keymap.cross.IntegrationRegistrarShared;
 import com.github.einjerjar.mc.keymap.cross.TickEventRegistrarShared;
-import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
-import com.github.einjerjar.mc.keymap.keys.registry.category.CategoryRegistry;
-import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapRegistry;
+import com.github.einjerjar.mc.keymap.keys.sources.category.CategorySources;
+import com.github.einjerjar.mc.keymap.keys.sources.keymap.KeymapSources;
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -44,8 +43,8 @@ public class Keymap {
                     keyLayout.meta().name());
         }
 
-        KeymapRegistry.collect();
-        CategoryRegistry.collect();
+        KeymapSources.collect();
+        CategorySources.collect();
 
         TickEventRegistrarShared.provider().execute();
         IntegrationRegistrarShared.provider().execute();

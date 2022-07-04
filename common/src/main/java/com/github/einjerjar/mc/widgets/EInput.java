@@ -11,8 +11,8 @@ import net.minecraft.locale.Language;
 
 @Accessors(fluent = true)
 public class EInput extends EWidget {
-    protected StringBuilder text        = new StringBuilder();
-    protected String        placeholder = Language.getInstance().getOrDefault("keymap.inpSearchPlaceholder");
+    protected final StringBuilder text        = new StringBuilder();
+    protected final String        placeholder = Language.getInstance().getOrDefault("keymap.inpSearchPlaceholder");
 
     protected String display = "";
     @Getter   int    cursor  = 0;

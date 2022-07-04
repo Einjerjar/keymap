@@ -18,17 +18,17 @@ import java.util.Optional;
 
 @Accessors(fluent = true, chain = true)
 public abstract class EScreen extends Screen {
+    protected final Point<Integer> margin  = new Point<>(6);
+    protected final Point<Integer> padding = new Point<>(4);
+
     protected boolean autoRenderChild = true;
     protected boolean clickState      = false;
+    protected boolean renderBg        = true;
     protected EWidget hoveredWidget   = null;
     protected ELabel  debugFocus;
     protected ELabel  debugHover;
-    protected boolean renderBg        = true;
-
-    protected Rect           scr;
-    protected Point<Integer> margin  = new Point<>(6);
-    protected Point<Integer> padding = new Point<>(4);
-    @Getter   Screen         parent;
+    protected Rect    scr;
+    @Getter   Screen  parent;
 
     protected EScreen(Screen parent, Component text) {
         super(text);

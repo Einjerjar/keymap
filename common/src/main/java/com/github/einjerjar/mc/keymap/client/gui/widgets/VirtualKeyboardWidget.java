@@ -14,12 +14,14 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class VirtualKeyboardWidget extends EWidget {
-    @Getter @Setter protected int                                       gap       = 2;
+    @Getter @Setter protected int                                       gap = 2;
     @Setter protected         SimpleWidgetAction<VirtualKeyboardWidget> onKeyClicked;
     @Setter protected         SpecialVKKeyClicked                       onSpecialKeyClicked;
-    @Getter protected         List<KeyWidget>                           childKeys = new ArrayList<>();
-    @Getter protected         KeyWidget                                 lastActionFrom;
-    protected                 List<KeyRow>                              keys;
+
+    @Getter protected       KeyWidget       lastActionFrom;
+    @Getter protected final List<KeyWidget> childKeys = new ArrayList<>();
+
+    protected final List<KeyRow> keys;
 
     public VirtualKeyboardWidget(List<KeyRow> keys, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -46,7 +48,7 @@ public class VirtualKeyboardWidget extends EWidget {
 
     protected void _onSpecialKeyClicked(KeyWidget source, int button) {
         // redundant check for my sanity
-        if (!source.isSpecial()) {
+        if (source.isNormal()) {
             Keymap.logger().warn("False Special");
             _onKeyClicked(source);
             return;

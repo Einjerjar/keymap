@@ -33,27 +33,28 @@ public class ControlsOptionsScreenMixin extends OptionsSubScreen {
         for (GuiEventListener child : children()) {
             if (child instanceof Button bb && bb.x == j && bb.y == k) {
                 this.removeWidget(bb);
-
                 this.addRenderableWidget(new Button(j,
                         k,
                         150,
                         20,
-                        Text.translatable("keymap.keyCat"),
-                        button -> {
-                            if (KeymapConfig.instance().replaceKeybindScreen()) {
-                                Screen scr;
-                                if (KeymapConfig.instance().firstOpenDone()) {
-                                    scr = new KeymapScreen(this);
-                                } else {
-                                    scr = new LayoutSelectionScreen(this);
-                                }
-                                this.minecraft.setScreen(scr);
-                            } else {
-                                this.minecraft.setScreen(new KeyBindsScreen(this, this.options));
-                            }
-                        }));
+                        Text.translatable("keymap.keyCat"), this::clickHandler));
                 break;
             }
+        }
+    }
+
+    protected void clickHandler(Button button) {
+        assert minecraft != null;
+        if (KeymapConfig.instance().replaceKeybindScreen()) {
+            Screen scr;
+            if (KeymapConfig.instance().firstOpenDone()) {
+                scr = new KeymapScreen(this);
+            } else {
+                scr = new LayoutSelectionScreen(this);
+            }
+            minecraft.setScreen(scr);
+        } else {
+            minecraft.setScreen(new KeyBindsScreen(this, this.options));
         }
     }
 }

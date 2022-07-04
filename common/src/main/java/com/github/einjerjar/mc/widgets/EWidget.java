@@ -233,7 +233,7 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
     }
 
     @Override public void updateNarration(@NotNull NarrationElementOutput narrationElementOutput) {
-        //    yeah idk, but required by an extended/implemented class, so yeah
+        //    IDK, but required by an extended/implemented class, so yeah
         //    tho method name is looks descriptive enough
     }
 

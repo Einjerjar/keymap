@@ -5,7 +5,7 @@ import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.VirtualKeyboardWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
-import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
+import com.github.einjerjar.mc.keymap.keys.sources.KeymappingNotifier;
 import com.github.einjerjar.mc.keymap.utils.VKUtil;
 import com.github.einjerjar.mc.widgets.*;
 import com.github.einjerjar.mc.widgets.utils.Styles;
@@ -37,12 +37,10 @@ public class LayoutSelectionScreen extends EScreen {
 
     @Override protected void onInit() {
         KeyLayout layout = KeyLayout.getLayoutWithCode(KeymapConfig.instance().customLayout());
-        KeybindingRegistry.load();
+        KeymappingNotifier.load();
 
         scr = scrFromWidth(Math.min(450, width));
-
         initVks(layout);
-
         int spaceLeft = scr.w() - padding.x() * 3 - vkBasic.rect().w();
 
         listLayouts = new ValueMapList(font.lineHeight,
@@ -129,9 +127,9 @@ public class LayoutSelectionScreen extends EScreen {
         }
 
         vkBasic  = vks.get(0);
-        vkExtra  = vks.get(0);
-        vkMouse  = vks.get(0);
-        vkNumpad = vks.get(0);
+        vkExtra  = vks.get(1);
+        vkMouse  = vks.get(2);
+        vkNumpad = vks.get(3);
     }
 
     protected void onBtnCloseClicked(EWidget source) {
@@ -173,14 +171,14 @@ public class LayoutSelectionScreen extends EScreen {
         for (VirtualKeyboardWidget vk : vks) {
             removeWidget(vk.destroy());
         }
-        KeybindingRegistry.clearSubscribers();
+        KeymappingNotifier.clearSubscribers();
         initVks(layout);
 
         creditVis(layout);
     }
 
     @Override public void onClose() {
-        KeybindingRegistry.clearSubscribers();
+        KeymappingNotifier.clearSubscribers();
         if (KeymapConfig.instance().firstOpenDone()) {
             super.onClose();
         } else {

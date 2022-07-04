@@ -1,7 +1,7 @@
 package com.github.einjerjar.mc.keymap.keys.wrappers.keys;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
-import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
+import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeymapRegistry;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.VanillaCategory;
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.utils.Text;
@@ -18,19 +18,18 @@ import java.util.Objects;
 
 @Accessors(fluent = true, chain = true)
 public class VanillaKeymap implements KeyHolder {
-    @Getter protected KeyMapping    map;
-    protected         List<Integer> codes = new ArrayList<>();
-    protected         Component     translatedName;
-    protected         Component     translatedKey;
-    protected         boolean       complex;
-    protected         String        searchString;
+    @Getter protected KeyMapping map;
+
+    protected final List<Integer> codes = new ArrayList<>();
+    protected       Component     translatedName;
+    protected       Component     translatedKey;
+    protected       boolean       complex;
+    protected       String        searchString;
 
     public VanillaKeymap(KeyMapping map) {
-        this.map = map;
-        this.codes.add(map.key.getValue());
+        this.map            = map;
         this.translatedName = Text.translatable(map.getName());
-        this.translatedKey  = map.key.getDisplayName();
-        updateSearchString();
+        updateProps(map.key);
     }
 
     @Override public boolean equals(Object o) {
@@ -46,6 +45,10 @@ public class VanillaKeymap implements KeyHolder {
 
     @Override public List<Integer> getCode() {
         return codes;
+    }
+
+    @Override public Integer getSingleCode() {
+        return codes.get(0);
     }
 
     @Override public Integer getKeyHash() {
@@ -99,36 +102,56 @@ public class VanillaKeymap implements KeyHolder {
         return Language.getInstance().getOrDefault(s);
     }
 
+    protected String searchableKey() {
+        if (KeymapRegistry.bindMap().containsKey(map)) {
+            KeyComboData k = KeymapRegistry.bindMap().get(map);
+            return k.searchString();
+        }
+
+        return translatedKey.toString();
+    }
+
     protected void updateSearchString() {
         String cat = Language.getInstance().getOrDefault(getCategory());
-        searchString = String.format(
-                "%s [%s] $%s {%s} #%s (%s) @%s",
-                translatedName.getString(),                 // name
-                translatedKey.getString(),                  // [key]
-                Utils.slugify(translatedKey.getString()),   // $key-slug
-                getModName(),                               // {mod}
-                Utils.slugify(getModName()),                // #mod-slug
-                cat,                                        // (cat)
-                Utils.slugify(cat)                          // @cat-slug
+        searchString = String.format("%s [%s] $%s {%s} #%s (%s) @%s",
+                translatedName.getString(),
+                // name
+                searchableKey(),
+                // [key]
+                Utils.slugify(searchableKey()),
+                // $key-slug
+                getModName(),
+                // {mod}
+                Utils.slugify(getModName()),
+                // #mod-slug
+                cat,
+                // (cat)
+                Utils.slugify(cat)
+                // @cat-slug
         ).toLowerCase();
     }
 
-    protected void updateProps(InputConstants.Key key) {
+    public void updateProps(InputConstants.Key key) {
         map.setKey(key);
         codes.clear();
         codes.add(key.getValue());
-        translatedKey = key.getDisplayName();
-        updateSearchString();
 
+        if (KeymapRegistry.bindMap().containsKey(map)) {
+            KeyComboData k  = KeymapRegistry.bindMap().get(map);
+            String       kk = k.toKeyString();
+            translatedKey = Text.literal(kk);
+        } else {
+            translatedKey = key.getDisplayName();
+        }
+        updateSearchString();
     }
 
-    @Override
-    public boolean resetKey() {
+    @Override public boolean resetKey() {
         updateProps(map.getDefaultKey());
         return true;
     }
 
     @Override public boolean isAssigned() {
-        return map.key.getValue() != -1 || KeybindRegistry.contains(map);
+        return map.key.getValue() != -1 || KeymapRegistry.contains(map);
     }
 }

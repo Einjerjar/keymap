@@ -8,13 +8,13 @@ import com.github.einjerjar.mc.keymap.client.gui.widgets.VirtualKeyboardWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
-import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeybindRegistry;
+import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeymapRegistry;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
-import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
-import com.github.einjerjar.mc.keymap.keys.registry.category.CategoryRegistry;
-import com.github.einjerjar.mc.keymap.keys.registry.category.CategorySource;
-import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapRegistry;
-import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapSource;
+import com.github.einjerjar.mc.keymap.keys.sources.KeymappingNotifier;
+import com.github.einjerjar.mc.keymap.keys.sources.category.CategorySource;
+import com.github.einjerjar.mc.keymap.keys.sources.category.CategorySources;
+import com.github.einjerjar.mc.keymap.keys.sources.keymap.KeymapSource;
+import com.github.einjerjar.mc.keymap.keys.sources.keymap.KeymapSources;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.CategoryHolder;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
 import com.github.einjerjar.mc.keymap.utils.VKUtil;
@@ -55,12 +55,10 @@ public class KeymapScreen extends EScreen {
 
     @Override protected void onInit() {
         KeyLayout layout = KeyLayout.getLayoutWithCode(KeymapConfig.instance().customLayout());
-        KeybindingRegistry.load();
+        KeymappingNotifier.load();
 
         scr = scrFromWidth(Math.min(450, width));
-
         initVks(layout);
-
         int spaceLeft = scr.w() - padding.x() * 3 - vkBasic.rect().w();
 
         listKm = new KeymapListWidget(font.lineHeight,
@@ -136,14 +134,14 @@ public class KeymapScreen extends EScreen {
         btnClearSearch.clickAction(this::onBtnClearSearchClicked);
 
         assert minecraft != null;
-        for (KeymapSource source : KeymapRegistry.sources()) {
+        for (KeymapSource source : KeymapSources.sources()) {
             if (!source.canUseSource()) continue;
             for (KeyHolder kh : source.getKeyHolders()) {
                 listKm.addItem(new KeymapListWidget.KeymapListEntry(kh, listKm));
             }
         }
 
-        for (CategorySource source : CategoryRegistry.sources()) {
+        for (CategorySource source : CategorySources.sources()) {
             if (!source.canUseSource()) continue;
             for (CategoryHolder categoryHolder : source.getCategoryHolders()) {
                 listCat.addItem(new CategoryListWidget.CategoryListEntry(categoryHolder, listCat));
@@ -177,13 +175,13 @@ public class KeymapScreen extends EScreen {
         }
 
         vkBasic  = vks.get(0);
-        vkExtra  = vks.get(0);
-        vkMouse  = vks.get(0);
-        vkNumpad = vks.get(0);
+        vkExtra  = vks.get(1);
+        vkMouse  = vks.get(2);
+        vkNumpad = vks.get(3);
     }
 
     @Override public void onClose() {
-        KeybindingRegistry.clearSubscribers();
+        KeymappingNotifier.clearSubscribers();
         super.onClose();
     }
 
@@ -235,6 +233,7 @@ public class KeymapScreen extends EScreen {
     }
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        Keymap.logger().error("PRESS: {}", keyCode);
         EWidget focus = (EWidget) getFocused();
         if (focus == null && keyCode == InputConstants.KEY_F && hasControlDown()) {
             setFocused(inpSearch);
@@ -255,7 +254,7 @@ public class KeymapScreen extends EScreen {
         lastKeyCode      = keyCode;
         lastKeyComboData = kd;
 
-        return !KeybindRegistry.MODIFIER_KEYS().contains(keyCode);
+        return !KeymapRegistry.MODIFIER_KEYS().contains(keyCode);
     }
 
     @Override public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
@@ -266,9 +265,10 @@ public class KeymapScreen extends EScreen {
 
         // if last released is a modifier, even tho the last pressed was not, then ignore
         // TODO: let the user know about this
-        if (KeybindRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
+        if (KeymapRegistry.MODIFIER_KEYS().contains(keyCode) && lastKeyCode != keyCode) return false;
 
         listKm.setKey(lastKeyComboData);
+        setFocused(null);
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
@@ -295,11 +295,6 @@ public class KeymapScreen extends EScreen {
     private void onVKSpecialClicked(VirtualKeyboardWidget source, KeyWidget keySource, int button) {
         if (keySource == null) return;
         if (keySource.key().code() == -2) {
-            // Keymap.logger().warn("Code: [{}], Key: [{}], Mouse: [{}], Special: [{}], @MouseExtended",
-            //         button,
-            //         source.lastActionFrom().key().name(),
-            //         source.lastActionFrom().key().mouse(),
-            //         source.lastActionFrom().isSpecial());
             KeyComboData kd = new KeyComboData(button, KeyType.MOUSE, false, false, false);
             listKm.setKey(kd);
         }

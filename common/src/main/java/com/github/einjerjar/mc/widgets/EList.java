@@ -1,6 +1,8 @@
 package com.github.einjerjar.mc.widgets;
 
+import com.github.einjerjar.mc.keymap.client.gui.widgets.KeymapListWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
+import com.github.einjerjar.mc.keymap.keys.sources.KeymappingNotifier;
 import com.github.einjerjar.mc.widgets.utils.*;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -20,23 +22,24 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
-    @Getter protected boolean   dragging;
-    @Getter protected int       itemHeight;
-    @Getter protected int       scrollBarWidth = 6;
-    @Getter protected int       scrollSpeed    = 8;
-    @Getter protected List<T>   items          = new ArrayList<>();
-    @Getter protected T         itemHovered;
-    @Getter protected T         itemSelected;
-    @Getter protected T         lastItemSelected;
-    protected         Minecraft client;
+    protected final Point<Double> lastClick = new Point<>(0d);
 
-    protected double        scrollOffset       = 0;
-    protected double        lastDrag;
-    protected double        lastScrollPos;
-    protected boolean       canDeselectItem    = true;
-    protected boolean       lastClickWasInside = false;
-    protected boolean       didDrag            = false;
-    protected Point<Double> lastClick          = new Point<>(0d);
+    @Getter protected boolean dragging;
+    @Getter protected int     itemHeight;
+    @Getter protected int     scrollBarWidth = 6;
+    @Getter protected int     scrollSpeed    = 8;
+    @Getter protected List<T> items          = new ArrayList<>();
+    @Getter protected T       itemHovered;
+    @Getter protected T       itemSelected;
+    @Getter protected T       lastItemSelected;
+
+    protected Minecraft client;
+    protected double    scrollOffset       = 0;
+    protected double    lastDrag;
+    protected double    lastScrollPos;
+    protected boolean   canDeselectItem    = true;
+    protected boolean   lastClickWasInside = false;
+    protected boolean   didDrag            = false;
 
     @Setter SimpleWidgetAction<EList<T>> onItemSelected;
 
@@ -65,26 +68,22 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         else setItemSelected(items.get(i));
     }
 
+    protected void setSelected(T i, boolean selected) {
+        if (i != null) i.selected(selected);
+    }
+
     // FIXME: Redundant code
     protected void setItemSelected(T t) {
         setLastItemSelected(itemSelected);
-        if (itemSelected != null) {
-            itemSelected.selected(false);
-        }
+        setSelected(itemSelected, false);
         itemSelected = t;
-        if (t != null) {
-            itemSelected.selected(true);
-        }
+        setSelected(itemSelected, true);
     }
 
     protected void setLastItemSelected(T t) {
-        if (lastItemSelected != null) {
-            lastItemSelected.selected(false);
-        }
+        setSelected(lastItemSelected, false);
         lastItemSelected = t;
-        if (t != null) {
-            lastItemSelected.selected(true);
-        }
+        setSelected(lastItemSelected, true);
     }
 
     public void updateFilteredList() {
@@ -221,7 +220,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     }
 
     protected void sort() {
-        //    self explanatory
+        //    self-explanatory
     }
 
     // endregion
@@ -289,16 +288,17 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
 
     @Accessors(fluent = true, chain = true)
     public abstract static class EListEntry<T extends EListEntry<T>> extends GuiComponent implements Tooltipped {
-        @Getter @Setter protected boolean         selected = false;
-        @Getter @Setter protected boolean         hovered  = false;
-        @Getter protected         EList<T>        container;
-        protected                 ColorGroup      color    = new ColorGroup(
+        protected final Font            font;
+        protected final List<Component> tooltips = new ArrayList<>();
+
+        @Getter @Setter protected boolean    selected = false;
+        @Getter @Setter protected boolean    hovered  = false;
+        @Getter protected         EList<T>   container;
+        protected                 ColorGroup color    = new ColorGroup(
                 new ColorSet(0xffffff, ColorType.NORMAL),
                 new ColorSet(0xff3333, ColorType.HOVER),
                 new ColorSet(0x00ff00, ColorType.ACTIVE),
                 new ColorSet(0xffffff, ColorType.DISABLED));
-        protected                 Font            font;
-        protected                 List<Component> tooltips = new ArrayList<>();
 
         protected EListEntry(EList<T> container) {
             font           = Minecraft.getInstance().font;
@@ -320,7 +320,7 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
         }
 
         public void updateTooltips() {
-            //    self explanatory
+            //    self-explanatory
         }
 
         public void provideTooltips(List<Component> tips) {
