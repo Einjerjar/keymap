@@ -1,7 +1,7 @@
 Keymap Rewrite
 ===
 
-![](images/cover_1.png)
+![](images/cover_0.6.0.png)
 
 <div style="text-align: center">
 <p>Visual key remapping mod for Minecraft</p>
