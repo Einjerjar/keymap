@@ -18,17 +18,17 @@ import java.util.Optional;
 
 @Accessors(fluent = true, chain = true)
 public abstract class EScreen extends Screen {
+    protected final Point<Integer> margin  = new Point<>(6);
+    protected final Point<Integer> padding = new Point<>(4);
+
     protected boolean autoRenderChild = true;
     protected boolean clickState      = false;
+    protected boolean renderBg        = true;
     protected EWidget hoveredWidget   = null;
     protected ELabel  debugFocus;
     protected ELabel  debugHover;
-    protected boolean renderBg        = true;
-
-    protected Rect           scr;
-    protected Point<Integer> margin  = new Point<>(6);
-    protected Point<Integer> padding = new Point<>(4);
-    @Getter   Screen         parent;
+    protected Rect    scr;
+    @Getter   Screen  parent;
 
     protected EScreen(Screen parent, Component text) {
         super(text);
@@ -169,8 +169,8 @@ public abstract class EScreen extends Screen {
 
     @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if (renderBg) renderBackground(poseStack);
-        hoveredWidget = null;
         preRenderScreen(poseStack, mouseX, mouseY, partialTick);
+        hoveredWidget = null;
         if (autoRenderChild) {
             for (EWidget d : widgets()) {
                 d.render(poseStack, mouseX, mouseY, partialTick);
@@ -197,12 +197,16 @@ public abstract class EScreen extends Screen {
                 mouseY);
     }
 
-    protected abstract void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
+    protected void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        //    override to render after the bg, but before the widgets
+    }
 
     protected void postRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        //    override to render after the widgets, but not before the debug
     }
 
     protected void postRenderDebugScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        //    override to render after debug
     }
 
     public int left() {

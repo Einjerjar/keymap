@@ -1,7 +1,7 @@
 {
   "meta": {
-    "name": "Norwegian",
-    "code": "no_no"
+    "name": "Dvorak English (US)",
+    "code": "en_us_dvorak"
   },
   "keys": {
     "basic": [
@@ -78,7 +78,7 @@
       {
         "row": [
           {
-            "name": "|",
+            "name": "`",
             "code": 96
           },
           {
@@ -122,11 +122,11 @@
             "code": 48
           },
           {
-            "name": "+",
+            "name": "[",
             "code": 45
           },
           {
-            "name": "\\",
+            "name": "]",
             "code": 61
           },
           {
@@ -144,55 +144,55 @@
             "width": 10
           },
           {
-            "name": "Q",
+            "name": "'",
             "code": 81
           },
           {
-            "name": "W",
+            "name": ",",
             "code": 87
           },
           {
-            "name": "E",
+            "name": ".",
             "code": 69
           },
           {
-            "name": "R",
+            "name": "P",
             "code": 82
           },
           {
-            "name": "T",
+            "name": "Y",
             "code": 84
           },
           {
-            "name": "Z",
+            "name": "F",
             "code": 89
           },
           {
-            "name": "U",
+            "name": "G",
             "code": 85
           },
           {
-            "name": "I",
+            "name": "C",
             "code": 73
           },
           {
-            "name": "O",
+            "name": "R",
             "code": 79
           },
           {
-            "name": "P",
+            "name": "L",
             "code": 80
           },
           {
-            "name": "[",
+            "name": "/",
             "code": 91
           },
           {
-            "name": "]",
+            "name": "=",
             "code": 93
           },
           {
-            "name": "'",
+            "name": "\\",
             "code": 92,
             "width": 10
           }
@@ -210,43 +210,43 @@
             "code": 65
           },
           {
-            "name": "S",
+            "name": "O",
             "code": 83
           },
           {
-            "name": "D",
+            "name": "E",
             "code": 68
           },
           {
-            "name": "F",
+            "name": "U",
             "code": 70
           },
           {
-            "name": "G",
+            "name": "I",
             "code": 71
           },
           {
-            "name": "H",
+            "name": "D",
             "code": 72
           },
           {
-            "name": "J",
+            "name": "H",
             "code": 74
           },
           {
-            "name": "K",
+            "name": "T",
             "code": 75
           },
           {
-            "name": "L",
+            "name": "N",
             "code": 76
           },
           {
-            "name": "Ø",
+            "name": "S",
             "code": 59
           },
           {
-            "name": "Æ",
+            "name": "-",
             "code": 39
           },
           {
@@ -261,34 +261,30 @@
           {
             "name": "LSH",
             "code": 340,
-            "width": 10
+            "width": 28
           },
           {
-            "name": "<",
-            "code": 0
-          },
-          {
-            "name": "Z",
+            "name": ";",
             "code": 90
           },
           {
-            "name": "X",
+            "name": "Q",
             "code": 88
           },
           {
-            "name": "C",
+            "name": "J",
             "code": 67
           },
           {
-            "name": "V",
+            "name": "K",
             "code": 86
           },
           {
-            "name": "B",
+            "name": "X",
             "code": 66
           },
           {
-            "name": "N",
+            "name": "B",
             "code": 78
           },
           {
@@ -296,15 +292,15 @@
             "code": 77
           },
           {
-            "name": ",",
+            "name": "W",
             "code": 44
           },
           {
-            "name": ".",
+            "name": "V",
             "code": 46
           },
           {
-            "name": "-",
+            "name": "Z",
             "code": 47
           },
           {
@@ -430,12 +426,12 @@
           },
           {
             "name": "MM",
-            "code": 2,
+            "code": 1,
             "width": 6
           },
           {
             "name": "MR",
-            "code": 1,
+            "code": 2,
             "width": 6
           }
         ]

@@ -4,7 +4,8 @@ import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
-import com.github.einjerjar.mc.keymap.keys.registry.KeybindingRegistry;
+import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeymapRegistry;
+import com.github.einjerjar.mc.keymap.keys.sources.KeymappingNotifier;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.VanillaKeymap;
 import com.github.einjerjar.mc.keymap.utils.Utils;
@@ -30,8 +31,9 @@ import java.util.List;
 @Accessors(fluent = true)
 public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
-    @Getter protected String                filterString     = "";
-    protected         List<KeymapListEntry> filteredItemList = new ArrayList<>();
+    protected final List<KeymapListEntry> filteredItemList = new ArrayList<>();
+
+    @Getter protected String filterString = "";
 
     public KeymapListWidget(int itemHeight, int x, int y, int w, int h) {
         super(itemHeight, x, y, w, h);
@@ -76,76 +78,131 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         ix.resetKey();
         KeyMapping.resetMapping();
         Integer newCode = vk.getCode().get(0);
-        KeybindingRegistry.updateKey(ogCode, newCode, vk);
+        KeymappingNotifier.updateKey(ogCode, newCode, vk);
         setItemSelected(null);
         setItemSelected(null);
     }
 
-    // FIXME: Redundant code
+    @Override protected void setSelected(KeymapListEntry i, boolean selected) {
+        if (i != null) {
+            i.selected(selected);
+            KeymappingNotifier.notifySubscriber(i.map.getSingleCode(), selected);
+        }
+    }
+
     @Override public void setItemSelected(KeymapListEntry t) {
         setLastItemSelected(itemSelected);
-        if (itemSelected != null) {
-            itemSelected.selected(false);
-            KeybindingRegistry.notifySubscriber(itemSelected.map.getCode().get(0), false);
-        }
+        setSelected(itemSelected, false);
         itemSelected = t;
-        if (t != null) {
-            itemSelected.selected(true);
-            KeybindingRegistry.notifySubscriber(itemSelected.map.getCode().get(0), true);
-        }
+        setSelected(itemSelected, true);
     }
 
     @Override public void setLastItemSelected(KeymapListEntry t) {
-        if (lastItemSelected != null) {
-            lastItemSelected.selected(false);
-            KeybindingRegistry.notifySubscriber(lastItemSelected.map.getCode().get(0), false);
-        }
+        setSelected(lastItemSelected, false);
         lastItemSelected = t;
-        if (t != null) {
-            lastItemSelected.selected(true);
-            KeybindingRegistry.notifySubscriber(lastItemSelected.map.getCode().get(0), true);
-        }
+        setSelected(lastItemSelected, true);
     }
 
     public void resetAllKeys() {
+        KeymapRegistry.resetAll();
         for (KeymapListEntry item : items) {
             item.resetKey();
         }
         KeyMapping.resetMapping();
-        KeybindingRegistry.loadWithoutClearingSubscribers();
-        KeybindingRegistry.notifyAllSubscriber();
+        KeymappingNotifier.loadKeys();
+        KeymappingNotifier.notifyAllSubscriber();
+        updateAllEntryTooltips();
         // twice to flush both current and last selected
         setItemSelected(null);
         setItemSelected(null);
     }
 
     public boolean setKeyForItem(KeyComboData kd) {
+        return setKeyForItem(kd, false);
+    }
+
+    public boolean setKeyForItem(KeyComboData kd, boolean removeKeybindReg) {
         KeymapListEntry item = itemSelected != null ? itemSelected : lastItemSelected;
         if (item == null) return false;
         if (!(item.map instanceof VanillaKeymap vk)) return false;
 
         int code = kd.keyCode();
 
-        if (kd.keyCode() == InputConstants.KEY_ESCAPE) {
+        if (code == InputConstants.KEY_ESCAPE) {
             code = -1;
         }
 
         Keymap.logger().warn(code);
 
-        KeybindingRegistry.updateKey(vk.getCode().get(0), code, vk);
+        KeymappingNotifier.updateKey(vk.getCode().get(0), code, vk);
         vk.setKey(List.of(code), kd.keyType() == KeyType.MOUSE);
         item.updateTooltips();
         item.selected(false);
+
+        if (removeKeybindReg) {
+            KeymapRegistry.remove(vk.map());
+        }
 
         return true;
     }
 
     public boolean setKey(KeyComboData kd) {
-        boolean ret = setKeyForItem(kd);
+        KeymapListEntry item = itemSelected != null ? itemSelected : lastItemSelected;
+        boolean         ret ;
+
+        if (!(item != null && item.map instanceof VanillaKeymap vk)) return false;
+        int lastCode = vk.getSingleCode();
+        int newCode  = kd.keyCode() == InputConstants.KEY_ESCAPE ? -1 : kd.keyCode();
+
+        int          ko = KeymappingNotifier.keyOf(vk);
+        int          kk = ko;
+        KeyComboData kl = KeymapRegistry.bindMap().get(vk.map());
+        if (kl != null) kk = kl.keyCode();
+
+        if (kd.onlyKey()) {
+            KeymapRegistry.remove(vk.map());
+            KeymappingNotifier.updateKey(lastCode, newCode, vk);
+            vk.setKey(List.of(newCode), false);
+            ret = true;
+        } else {
+            // FIXME: messy code
+            KeyMapping vItem = null;
+            if (KeymapRegistry.bindMap().inverse().containsKey(kd)) {
+                vItem = KeymapRegistry.bindMap().inverse().get(kd);
+            }
+            KeymapRegistry.put(vk.map(), kd);
+
+            KeymappingNotifier.updateKey(ko == -99 ? lastCode : ko, -1, vk);
+            vk.setKey(List.of(-1), false);
+
+            // when moving combo to another key, the last owner of the combo needs to get updated too
+            if (vItem != null) {
+                for (KeymapListEntry entry : items) {
+                    if (entry.map instanceof VanillaKeymap vvk && vvk.map() == vItem) {
+                        entry.updateTooltips();
+                        break;
+                    }
+                }
+            }
+
+            ret = true;
+        }
+
+        KeymappingNotifier.notifySubscriber(ko, false);
+        KeymappingNotifier.notifySubscriber(kk, false);
+        KeymappingNotifier.notifySubscriber(newCode, false);
+
+        item.updateTooltips();
+        item.selected(false);
+
         // twice to flush both current and last selected
         setItemSelected(null);
         setItemSelected(null);
         return ret;
+    }
+
+    protected void updateAllEntryTooltips() {
+        for (KeymapListEntry item : items) item.updateTooltips();
     }
 
     @Override public void sort() {

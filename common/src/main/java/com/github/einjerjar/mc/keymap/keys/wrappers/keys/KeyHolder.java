@@ -8,6 +8,8 @@ import java.util.List;
 public interface KeyHolder {
     List<Integer> getCode();
 
+    Integer getSingleCode();
+
     Integer getKeyHash();
 
     boolean isComplex();

@@ -19,26 +19,26 @@ import java.io.FileWriter;
 @Accessors(fluent = true)
 public class KeymapConfig {
     static                         KeymapConfig            instance;
-    static                         GsonBuilder             builder = new GsonBuilder().setPrettyPrinting();
-    static                         Gson                    gson    = builder.create();
+    static                         Gson                    gson    = new GsonBuilder().setPrettyPrinting().create();
     private static                 File                    cfgFile = null;
     @Getter @Setter private static KeymapConfigDirProvider configDirProvider;
 
     // extra
-    protected boolean firstOpenDone        = false;
+    protected boolean firstOpenDone           = false;
     // layout
-    protected boolean autoSelectLayout     = false;
-    protected String  customLayout         = "en_us";
+    protected boolean autoSelectLayout        = false;
+    protected String  customLayout            = "en_us";
     // general
-    protected boolean replaceKeybindScreen = true;
-    protected boolean malilibSupport       = true;
-    protected boolean debug                = false;
-    protected boolean debug2               = false;
+    protected boolean replaceKeybindScreen    = true;
+    protected boolean malilibSupport          = true;
+    protected boolean debug                   = false;
+    protected boolean debug2                  = false;
+    protected boolean crashOnProblematicError = false;
     // tooltip
-    protected boolean showHelpTooltips     = true;
+    protected boolean showHelpTooltips        = true;
 
     private static synchronized File cfgFile() {
-        if (cfgFile == null) cfgFile = configDirProvider.execute();
+        if (cfgFile == null) cfgFile = configDirProvider.execute("keymap.json");
         return cfgFile;
     }
 
@@ -71,6 +71,6 @@ public class KeymapConfig {
 
     @FunctionalInterface
     public interface KeymapConfigDirProvider {
-        File execute();
+        File execute(String name);
     }
 }

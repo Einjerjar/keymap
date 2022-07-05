@@ -5,8 +5,8 @@ import com.github.einjerjar.mc.keymap.cross.CrossKeybindShared;
 import com.github.einjerjar.mc.keymap.cross.IntegrationRegistrarShared;
 import com.github.einjerjar.mc.keymap.cross.TickEventRegistrarShared;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
-import com.github.einjerjar.mc.keymap.keys.registry.category.CategoryRegistry;
-import com.github.einjerjar.mc.keymap.keys.registry.keymap.KeymapRegistry;
+import com.github.einjerjar.mc.keymap.keys.sources.category.CategorySources;
+import com.github.einjerjar.mc.keymap.keys.sources.keymap.KeymapSources;
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -15,9 +15,10 @@ import org.apache.logging.log4j.Logger;
 
 @Accessors(fluent = true, chain = true)
 public class Keymap {
-    public static final            String             MOD_ID   = "keymap";
-    @Getter protected static final String             MOD_NAME = "keymap";
-    @Getter protected static final Logger             logger   = LogManager.getLogger();
+    public static final            String             MOD_ID      = "keymap";
+    public static final            String             SERVER_WARN = "Keymap is being ran on a DedicatedServer environment, even though it can only work on Client side environment";
+    @Getter protected static final String             MOD_NAME    = "keymap";
+    @Getter protected static final Logger             logger      = LogManager.getLogger();
     @Getter protected static       CrossKeybindShared kmOpenMapper;
 
     private Keymap() {
@@ -42,8 +43,8 @@ public class Keymap {
                     keyLayout.meta().name());
         }
 
-        KeymapRegistry.collect();
-        CategoryRegistry.collect();
+        KeymapSources.collect();
+        CategorySources.collect();
 
         TickEventRegistrarShared.provider().execute();
         IntegrationRegistrarShared.provider().execute();

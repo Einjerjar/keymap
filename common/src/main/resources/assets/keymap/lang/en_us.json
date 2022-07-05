@@ -17,6 +17,7 @@
   "keymap.optShowHelpTooltips": "Show help tooltips",
   "keymap.optDebug": "Debug1",
   "keymap.optDebug2": "Debug2",
+  "keymap.optCrashOnProblematicError": "\"I'm Mad\" mode",
   "keymap.optAutoSelectLayout": "Auto layout from language",
   "keymap.optCustomLayout": "Layout override",
   "keymap.listCatAll": "All",

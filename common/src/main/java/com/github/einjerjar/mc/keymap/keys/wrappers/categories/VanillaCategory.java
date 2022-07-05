@@ -18,8 +18,8 @@ public class VanillaCategory implements CategoryHolder {
             "key.categories.creative"
     );
 
-    protected String    category;
-    protected Component translatedName;
+    protected final String    category;
+    protected final Component translatedName;
 
     public VanillaCategory(String category) {
         this.category       = category;

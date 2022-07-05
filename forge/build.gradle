@@ -8,7 +8,7 @@ architectury {
 }
 
 loom {
-    // accessWidenerPath = project(":common").loom.accessWidenerPath
+    accessWidenerPath = project(":common").loom.accessWidenerPath
 
     forge {
         //mixin {
@@ -16,9 +16,9 @@ loom {
         //}
         //mixinConfig 'keymap.mixins.json'
         mixinConfig 'keymap-common.mixins.json'
-        // convertAccessWideners = true
+        convertAccessWideners = true
         // extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-        accessTransformer file('src/main/resources/META-INF/accesstransformer.cfg')
+        // accessTransformer file('src/main/resources/META-INF/accesstransformer.cfg')
     }
 }
 

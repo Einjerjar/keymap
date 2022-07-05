@@ -57,7 +57,7 @@ public class KeyLayout {
         Stream<Path> files   = null;
 
         try {
-            URI  layoutUri = Objects.requireNonNull(loader.getResource(LAYOUT_ROOT).toURI());
+            URI  layoutUri = Objects.requireNonNull(Objects.requireNonNull(loader.getResource(LAYOUT_ROOT)).toURI());
             Path path;
             if (layoutUri.getScheme().equals("jar")) {
                 // simple notice, since sonarlint/intellij is complaining about readability
@@ -98,7 +98,7 @@ public class KeyLayout {
             try {
                 if (fs != null) fs.close();
             } catch (Exception e) {
-                Keymap.logger().error("Can't close fs");
+                Keymap.logger().error("!! Can't close FileSystem !!");
             }
         }
     }

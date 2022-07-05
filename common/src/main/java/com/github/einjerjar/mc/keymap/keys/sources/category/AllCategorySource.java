@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap.keys.registry.category;
+package com.github.einjerjar.mc.keymap.keys.sources.category;
 
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.AllCategory;
 import com.github.einjerjar.mc.keymap.keys.wrappers.categories.CategoryHolder;
