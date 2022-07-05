@@ -50,9 +50,10 @@ jobs:
           roots=(fabric forge)
           d_collect=${f_root}/collect
           d_temp=${f_root}/temp
+          d_final=${f_root}/final
           mkdir -p $d_collect
           mkdir -p $d_temp
-          NX="test"
+          mkdir -p $d_final
           for i in "${roots[@]}"
           do
             d="./${i}/build/libs"
@@ -66,7 +67,8 @@ jobs:
           VERSION=`ls ${d_collect}/* | head -n 1`
           VERSION=${VERSION/*keymap-/}
           VERSION=${VERSION/-*/}
-          zip build-$VERSION ${d_collect}/*
+          zip $d_final/build-$VERSION ${d_collect}/*
+          ls final
 
       - store_artifacts:
-          path: ~/repo/build.zip
+          path: ~/repo/final/
