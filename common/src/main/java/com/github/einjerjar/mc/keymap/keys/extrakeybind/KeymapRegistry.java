@@ -134,7 +134,7 @@ public class KeymapRegistry {
 
     public static void remove(@NotNull KeyMapping kb) {
         if (!bindMap.containsKey(kb)) {
-            Keymap.logger().warn("Remove ignore, Keymapping [{}] not registered!", kb.getName());
+            Keymap.logger().warn("Remove ignored, Keymapping [{}] not registered!", kb.getName());
             return;
         }
         KeyComboData kd = bindMap.get(kb);
