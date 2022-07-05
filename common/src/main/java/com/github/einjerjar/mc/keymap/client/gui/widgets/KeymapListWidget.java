@@ -70,19 +70,6 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         setScrollPos(0);
     }
 
-    public void resetKey() {
-        KeymapListEntry ix = itemSelected != null ? itemSelected : lastItemSelected;
-        if (ix == null) return;
-        if (!(ix.map instanceof VanillaKeymap vk)) return;
-        Integer ogCode = vk.getCode().get(0);
-        ix.resetKey();
-        KeyMapping.resetMapping();
-        Integer newCode = vk.getCode().get(0);
-        KeymappingNotifier.updateKey(ogCode, newCode, vk);
-        setItemSelected(null);
-        setItemSelected(null);
-    }
-
     @Override protected void setSelected(KeymapListEntry i, boolean selected) {
         if (i != null) {
             i.selected(selected);
@@ -101,6 +88,13 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         setSelected(lastItemSelected, false);
         lastItemSelected = t;
         setSelected(lastItemSelected, true);
+    }
+
+    public void resetKey() {
+        KeymapListEntry ix = itemSelected != null ? itemSelected : lastItemSelected;
+        if (ix == null) return;
+        if (!(ix.map instanceof VanillaKeymap vk)) return;
+        setKey(new KeyComboData(vk.map().getDefaultKey()));
     }
 
     public void resetAllKeys() {
