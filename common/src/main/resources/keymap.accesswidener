@@ -1,4 +1,3 @@
 accessWidener v2 named
 accessible field net/minecraft/client/KeyMapping key Lcom/mojang/blaze3d/platform/InputConstants$Key;
-accessible field net/minecraft/client/KeyMapping MAP Ljava/util/Map;
 accessible field net/minecraft/client/KeyMapping clickCount I

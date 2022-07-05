@@ -117,6 +117,7 @@ public class KeymapRegistry {
 
     // annoying for the sake of my sanity
     public static void put(@NotNull KeyMapping kb, @NotNull KeyComboData kd) {
+        remove(kd);
         if (!bindMap.containsKey(kb)) {
             add(kb, kd);
             return;
@@ -125,6 +126,10 @@ public class KeymapRegistry {
         bindMap.put(kb, kd);
         Keymap.logger().info("Updated complex keybinding [{}]", kd);
         save();
+    }
+
+    public static void remove(@NotNull KeyComboData kd) {
+        if (bindMap.inverse().containsKey(kd)) remove(bindMap.inverse().get(kd));
     }
 
     public static void remove(@NotNull KeyMapping kb) {
