@@ -63,7 +63,10 @@ jobs:
               mv $f ${t/temp/collect}
             done
           done
-          zip build ${d_collect}/*
+          VERSION=`ls ${d_collect}/* | head -n 1`
+          VERSION=${VERSION/*keymap-/}
+          VERSION=${VERSION/-*/}
+          zip build-$VERSION ${d_collect}/*
 
       - store_artifacts:
           path: ~/repo/build.zip
