@@ -35,13 +35,15 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      # build
-      - run: gradle build
+      - run: gradle dependencies
 
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      # build
+      - run: gradle build
 
       - store_artifacts:
           path: ~/repo/fabric/build/libs
