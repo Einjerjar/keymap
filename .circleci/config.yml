@@ -21,7 +21,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx4G -Djava.net.preferIPv4Stack=true
+      JVM_OPTS: -Xmx4G -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
       TERM: dumb
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
