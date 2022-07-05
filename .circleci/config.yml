@@ -37,10 +37,15 @@ jobs:
 
       - run: gradle dependencies
 
+      # build
+      - run: gradle build
+
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      # build
-      - run: gradle build
+      - store_artifacts:
+          path: ~/repo/fabric/builds
+      - store_artifacts2:
+          path: ~/repo/forge/builds
