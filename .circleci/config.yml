@@ -47,5 +47,5 @@ jobs:
 
       - store_artifacts:
           path: ~/repo/fabric/builds
-      - store_artifacts2:
+      - store_artifacts:
           path: ~/repo/forge/builds
