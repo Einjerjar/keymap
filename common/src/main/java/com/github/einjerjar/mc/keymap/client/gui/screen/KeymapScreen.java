@@ -239,7 +239,6 @@ public class KeymapScreen extends EScreen {
     }
 
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        Keymap.logger().error("PRESS: {}", keyCode);
         EWidget focus = (EWidget) getFocused();
         if (focus == null && keyCode == InputConstants.KEY_F && hasControlDown()) {
             setFocused(inpSearch);

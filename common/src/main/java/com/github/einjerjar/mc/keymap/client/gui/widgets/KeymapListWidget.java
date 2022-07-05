@@ -165,10 +165,26 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
             vk.setKey(List.of(newCode), false);
             ret = true;
         } else {
+            // FIXME: messy code
+            KeyMapping vItem = null;
+            if (KeymapRegistry.bindMap().inverse().containsKey(kd)) {
+                vItem = KeymapRegistry.bindMap().inverse().get(kd);
+            }
             KeymapRegistry.put(vk.map(), kd);
 
             KeymappingNotifier.updateKey(ko == -99 ? lastCode : ko, -1, vk);
             vk.setKey(List.of(-1), false);
+
+            // when moving combo to another key, the last owner of the combo needs to get updated too
+            if (vItem != null) {
+                for (KeymapListEntry entry : items) {
+                    if (entry.map instanceof VanillaKeymap vvk && vvk.map() == vItem) {
+                        entry.updateTooltips();
+                        break;
+                    }
+                }
+            }
+
             ret = true;
         }
 

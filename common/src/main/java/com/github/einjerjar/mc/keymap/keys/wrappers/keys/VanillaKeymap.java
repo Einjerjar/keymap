@@ -32,17 +32,6 @@ public class VanillaKeymap implements KeyHolder {
         updateProps(map.key);
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        VanillaKeymap that = (VanillaKeymap) o;
-        return complex == that.complex && map.equals(that.map) && codes.equals(that.codes);
-    }
-
-    @Override public int hashCode() {
-        return Objects.hash(map, codes, complex);
-    }
-
     @Override public List<Integer> getCode() {
         return codes;
     }
@@ -153,5 +142,16 @@ public class VanillaKeymap implements KeyHolder {
 
     @Override public boolean isAssigned() {
         return map.key.getValue() != -1 || KeymapRegistry.contains(map);
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VanillaKeymap that = (VanillaKeymap) o;
+        return map.equals(that.map) && codes.equals(that.codes);
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(map, codes);
     }
 }
