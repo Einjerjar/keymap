@@ -21,7 +21,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx1G
+      JVM_OPTS: -Xmx2G
       TERM: dumb
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
@@ -45,7 +45,30 @@ jobs:
       # build
       - run: gradle build
 
+      - run: |
+          f_root=~/repo
+          roots=(fabric forge)
+          d_collect=${f_root}/collect
+          d_temp=${f_root}/temp
+          d_final=${f_root}/final
+          mkdir -p $d_collect
+          mkdir -p $d_temp
+          mkdir -p $d_final
+          for i in "${roots[@]}"
+          do
+            d="./${i}/build/libs"
+            cp ${d}/*[0-9].jar $d_temp
+            for f in ${d_temp}/*
+            do
+              t=${f/.jar/-${i}.jar}
+              mv $f ${t/temp/collect}
+            done
+          done
+          VERSION=`ls ${d_collect}/* | head -n 1`
+          VERSION=${VERSION/*keymap-/}
+          VERSION=${VERSION/-*/}
+          zip $d_final/build-$VERSION ${d_collect}/*
+          ls final
+
       - store_artifacts:
-          path: ~/repo/fabric/build/libs
-      - store_artifacts:
-          path: ~/repo/forge/build/libs
+          path: ~/repo/final/

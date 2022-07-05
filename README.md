@@ -7,6 +7,9 @@ Keymap Rewrite
 <p>Visual key remapping mod for Minecraft</p>
 
 [![](https://cf.way2muchnoise.eu/keymap.svg)](https://www.curseforge.com/minecraft/mc-mods/keymap)
+[![](https://img.shields.io/circleci/build/gh/Einjerjar/keymap/v2?label=v2&logo=circleci&style=flat-square)](https://github.com/Einjerjar/keymap/tree/v2)
+[![](https://img.shields.io/circleci/build/gh/Einjerjar/keymap/v2-1.17.1?label=v2-1.17.1&logo=circleci&style=flat-square)](https://github.com/Einjerjar/keymap/tree/v2-1.17.1)
+[![](https://img.shields.io/circleci/build/gh/Einjerjar/keymap/v2-1.19?label=v2-1.19&logo=circleci&style=flat-square)](https://github.com/Einjerjar/keymap/tree/v2-1.19)
 </div>
 
 TOC
