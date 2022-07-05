@@ -33,6 +33,10 @@ public class KeyComboData {
         this(keyCode, KeyType.KEYBOARD, alt, shift, ctrl);
     }
 
+    public KeyComboData(InputConstants.Key k) {
+        this(k.getValue(), k.getType() == InputConstants.Type.MOUSE ? KeyType.MOUSE : KeyType.KEYBOARD);
+    }
+
     public KeyComboData(int keyCode, KeyType keyType, boolean alt, boolean shift, boolean ctrl) {
         this.keyCode = keyCode;
         this.keyType = keyType;
