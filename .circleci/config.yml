@@ -45,7 +45,25 @@ jobs:
       # build
       - run: gradle build
 
+      - run: |
+          f_root=~/repo
+          roots=(fabric forge)
+          d_collect=${f_root}/collect
+          d_temp=${f_root}/temp
+          mkdir -p $d_collect
+          mkdir -p $d_temp
+          NX="test"
+          for i in "${roots[@]}"
+          do
+            d="./${i}/build/libs"
+            cp ${d}/*[0-9].jar $d_temp
+            for f in ${d_temp}/*
+            do
+              t=${f/.jar/-${i}.jar}
+              mv $f ${t/temp/collect}
+            done
+          done
+          zip build ${d_collect}/*
+
       - store_artifacts:
-          path: ~/repo/fabric/build/libs
-      - store_artifacts:
-          path: ~/repo/forge/build/libs
+          path: ~/repo/build.zip
