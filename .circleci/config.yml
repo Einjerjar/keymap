@@ -46,6 +46,6 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - store_artifacts:
-          path: ~/repo/fabric/builds
+          path: ~/repo/fabric/build/libs
       - store_artifacts:
-          path: ~/repo/forge/builds
+          path: ~/repo/forge/build/libs
