@@ -97,7 +97,7 @@ public class VanillaKeymap implements KeyHolder {
             return k.searchString();
         }
 
-        return translatedKey.toString();
+        return translatedKey.getString();
     }
 
     protected void updateSearchString() {
