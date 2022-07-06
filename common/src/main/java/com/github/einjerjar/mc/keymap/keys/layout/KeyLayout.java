@@ -95,11 +95,6 @@ public class KeyLayout {
             e.printStackTrace();
         } finally {
             if (files != null) files.close();
-            try {
-                if (fs != null) fs.close();
-            } catch (Exception e) {
-                Keymap.logger().error("!! Can't close FileSystem !!");
-            }
         }
     }
 
