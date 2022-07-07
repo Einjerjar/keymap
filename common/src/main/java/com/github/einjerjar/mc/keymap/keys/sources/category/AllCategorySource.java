@@ -5,6 +5,9 @@ import com.github.einjerjar.mc.keymap.keys.wrappers.categories.CategoryHolder;
 
 import java.util.List;
 
+/**
+ * Source for the AllCategory class
+ */
 public class AllCategorySource implements CategorySource {
 
 

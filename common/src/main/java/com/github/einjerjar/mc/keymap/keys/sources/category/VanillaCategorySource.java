@@ -8,6 +8,9 @@ import net.minecraft.client.Minecraft;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Source for vanilla categories
+ */
 public class VanillaCategorySource implements CategorySource {
 
     @Override public List<CategoryHolder> getCategoryHolders() {

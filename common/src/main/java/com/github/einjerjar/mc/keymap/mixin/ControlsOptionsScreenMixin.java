@@ -10,19 +10,28 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.ControlsScreen;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Allows the mod to override the default keybinds screen
+ */
 @Mixin(ControlsScreen.class)
 public class ControlsOptionsScreenMixin extends OptionsSubScreen {
     public ControlsOptionsScreenMixin(Screen arg, Options arg2, Component arg3) {
         super(arg, arg2, arg3);
     }
 
+    /**
+     * Hijacks the default keybind screen, by locating the button with the exact location
+     * as the default keybinds button, hacky and not so efficient, but better than hijacking
+     * the lambda, since I can't get that to work properly for forge
+     *
+     * @param ci CallbackInfo
+     */
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
         if (!KeymapConfig.instance().replaceKeybindScreen()) return;
@@ -43,18 +52,17 @@ public class ControlsOptionsScreenMixin extends OptionsSubScreen {
         }
     }
 
+    /**
+     * The handler given to the button to access the keymapping screen
+     *
+     * @param button The click source
+     */
     protected void clickHandler(Button button) {
         assert minecraft != null;
-        if (KeymapConfig.instance().replaceKeybindScreen()) {
-            Screen scr;
-            if (KeymapConfig.instance().firstOpenDone()) {
-                scr = new KeymapScreen(this);
-            } else {
-                scr = new LayoutSelectionScreen(this);
-            }
-            minecraft.setScreen(scr);
-        } else {
-            minecraft.setScreen(new KeyBindsScreen(this, this.options));
-        }
+        Screen scr;
+        if (KeymapConfig.instance().firstOpenDone()) scr = new KeymapScreen(this);
+        else scr = new LayoutSelectionScreen(this);
+
+        minecraft.setScreen(scr);
     }
 }

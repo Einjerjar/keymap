@@ -19,24 +19,27 @@ public class Services {
 
     /**
      * Abstracts the creation of keybinds, should probably get merged with plaform,
-     *  but eh, probably next time
+     * but eh, probably next time
      */
-    public static final IKeybindHelper  KEYBIND  = PLATFORM.keybindHelper();
+    public static final IKeybindHelper KEYBIND = PLATFORM.keybindHelper();
 
     /**
      * Kinda hacky way of dealing with events, should probably scrap this
-     *  and go with loader specific versions instead
+     * and go with loader specific versions instead
      */
-    public static final ITickHelper     TICK     = PLATFORM.tickHelper();
+    public static final ITickHelper TICK = PLATFORM.tickHelper();
 
-    private Services() {}
+    private Services() {
+    }
 
     /**
      * Loads a class via the ServiceLoader, throws a RuntimeException when there is
-     *  no implementation for the class
-     * @param c The class to load
-     * @return  An instance of the class
-     * @param <T>
+     * no implementation for the class
+     *
+     * @param c   The class to load
+     * @param <T> The generic type of the class, why do I even have to document this too???
+     *
+     * @return An instance of the class
      */
     public static <T> T load(Class<T> c) {
         return ServiceLoader.load(c)

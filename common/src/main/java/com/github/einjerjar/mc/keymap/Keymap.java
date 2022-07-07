@@ -24,6 +24,9 @@ public class Keymap {
     private Keymap() {
     }
 
+    /**
+     * General mod setup
+     */
     public static void init() {
         KeymapConfig.load();
         logger.info("Keymap loaded, loader={}, dev={}", PLATFORM.loader(), PLATFORM.dev());

@@ -10,16 +10,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A combo object
+ */
 @Getter
 @ToString
 @Accessors(fluent = true, chain = true)
 public class KeyComboData {
+    /**
+     * Static reference to an empty/unbound key
+     */
     public static final KeyComboData UNBOUND = new KeyComboData(-1);
-    protected           int          keyCode;
-    protected           KeyType      keyType;
-    protected           boolean      alt;
-    protected           boolean      shift;
-    protected           boolean      ctrl;
+
+    /**
+     * The primary key's code
+     */
+    protected int     keyCode;
+    /**
+     * The type of key, mouse or board
+     * TODO: Migrate to InputConstants
+     */
+    protected KeyType keyType;
+    /**
+     * Whether the alt key is pressed
+     */
+    protected boolean alt;
+    /**
+     * Whether the shift key is pressed
+     */
+    protected boolean shift;
+    /**
+     * Whether the control key is pressed
+     */
+    protected boolean ctrl;
 
     public KeyComboData(int keyCode) {
         this(keyCode, KeyType.KEYBOARD);
@@ -49,15 +72,26 @@ public class KeyComboData {
         }
     }
 
+    /**
+     * Convert the combo to a vanilla key class
+     *
+     * @return The key
+     */
     public InputConstants.Key toKey() {
         InputConstants.Type t = keyType == KeyType.KEYBOARD ? InputConstants.Type.KEYSYM : InputConstants.Type.MOUSE;
         return t.getOrCreate(keyCode);
     }
 
+    /**
+     * @return The translated name of the primary key of the combo
+     */
     public String searchString() {
         return toKey().getDisplayName().getString();
     }
 
+    /**
+     * @return A string to reference this key, can be a single letter/word to a series of words
+     */
     public String toKeyString() {
         List<String> x = new ArrayList<>();
         if (ctrl) x.add("ctrl");
@@ -67,10 +101,18 @@ public class KeyComboData {
         return String.join(" + ", x);
     }
 
+    /**
+     * Checks if only the primary key is pressed, aka not a combo
+     *
+     * @return Whether the check succeeded
+     */
     public boolean onlyKey() {
         return !(alt || shift || ctrl);
     }
 
+    /**
+     * @return Number of modifiers activated fo this key
+     */
     public int modifierCount() {
         int x = alt ? 1 : 0;
         x += shift ? 1 : 0;
@@ -78,10 +120,17 @@ public class KeyComboData {
         return x;
     }
 
+    /**
+     * @return Whether the primary key is a modifier
+     */
     public boolean isModifier() {
         return KeymapRegistry.MODIFIER_KEYS.contains(keyCode);
     }
 
+    /**
+     * @return Whether the primary key is a modifier, and the only thing pressed
+     *         FIXME: Might cause a bug where a key combo is just modifier keys, should not be allowed
+     */
     public boolean isModifierOnly() {
         return isModifier() && modifierCount() == 1;
     }

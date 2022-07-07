@@ -12,6 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 
+/**
+ * The mod's configuration, too lazy to document
+ * TODO: Document this
+ */
 @Getter
 @Setter
 @ToString

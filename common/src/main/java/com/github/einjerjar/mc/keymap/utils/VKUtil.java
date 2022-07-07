@@ -6,14 +6,37 @@ import com.github.einjerjar.mc.widgets.EWidget;
 
 import java.util.List;
 
+/**
+ * General util to reduce code repetition when generating VK layouts
+ */
 public class VKUtil {
     private VKUtil() {
     }
 
+    /**
+     * Generate a dumb layout without any action handlers
+     *
+     * @param layout The KeyLayout to use
+     * @param x      The x position of the widgets
+     * @param y      The y position of the widgets
+     *
+     * @return A list of VK widgets (basic, extra, mouse, numpad)
+     */
     public static List<VirtualKeyboardWidget> genLayout(KeyLayout layout, int x, int y) {
         return genLayout(layout, x, y, null, null);
     }
 
+    /**
+     * Generate a VK layout with support for action handlers
+     *
+     * @param layout         The KeyLayout to use
+     * @param x              The x position of the widgets
+     * @param y              The y position of the widgets
+     * @param onClick        The action to take when a normal key is clicked
+     * @param onSpecialClick The action to take when a special key is clicked
+     *
+     * @return  A list of VirtualKeyboardWidget instances
+     */
     public static List<VirtualKeyboardWidget> genLayout(KeyLayout layout, int x, int y, EWidget.SimpleWidgetAction<VirtualKeyboardWidget> onClick, VirtualKeyboardWidget.SpecialVKKeyClicked onSpecialClick) {
         VirtualKeyboardWidget vkBasic = new VirtualKeyboardWidget(layout.keys().basic(), x, y, 0, 0);
         VirtualKeyboardWidget vkExtra = new VirtualKeyboardWidget(layout.keys().extra(),
