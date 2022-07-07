@@ -3,7 +3,7 @@ package com.github.einjerjar.mc.keymapforge.cross.services;
 import com.github.einjerjar.mc.keymap.cross.services.IKeybindHelper;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
 public class ForgeKeybindHelper implements IKeybindHelper {
 
