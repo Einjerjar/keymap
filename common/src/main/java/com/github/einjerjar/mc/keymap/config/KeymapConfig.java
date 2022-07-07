@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.config;
 
 import com.github.einjerjar.mc.keymap.Keymap;
+import com.github.einjerjar.mc.keymap.cross.Services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.*;
@@ -11,6 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 
+/**
+ * The mod's configuration, too lazy to document
+ * TODO: Document this
+ */
 @Getter
 @Setter
 @ToString
@@ -18,10 +23,9 @@ import java.io.FileWriter;
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class KeymapConfig {
-    static                         KeymapConfig            instance;
-    static                         Gson                    gson    = new GsonBuilder().setPrettyPrinting().create();
-    private static                 File                    cfgFile = null;
-    @Getter @Setter private static KeymapConfigDirProvider configDirProvider;
+    static         KeymapConfig instance;
+    static         Gson         gson    = new GsonBuilder().setPrettyPrinting().create();
+    private static File         cfgFile = null;
 
     // extra
     protected boolean firstOpenDone           = false;
@@ -38,7 +42,7 @@ public class KeymapConfig {
     protected boolean showHelpTooltips        = true;
 
     private static synchronized File cfgFile() {
-        if (cfgFile == null) cfgFile = configDirProvider.execute("keymap.json");
+        if (cfgFile == null) cfgFile = Services.PLATFORM.config("keymap.json");
         return cfgFile;
     }
 

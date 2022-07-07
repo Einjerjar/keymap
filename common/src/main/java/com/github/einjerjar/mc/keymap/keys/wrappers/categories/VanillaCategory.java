@@ -7,7 +7,13 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
+/**
+ * The default vanilla categories
+ */
 public class VanillaCategory implements CategoryHolder {
+    /**
+     * List of categories that fall under this group
+     */
     public static final List<String> MC_CATEGORIES = List.of(
             "key.categories.movement",
             "key.categories.misc",
@@ -18,7 +24,13 @@ public class VanillaCategory implements CategoryHolder {
             "key.categories.creative"
     );
 
+    /**
+     * The specific vanilla category this object references
+     */
     protected final String    category;
+    /**
+     * Cached copy of this category's translated name as a Component
+     */
     protected final Component translatedName;
 
     public VanillaCategory(String category) {

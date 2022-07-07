@@ -13,11 +13,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Allows the mod to hijack keyboard input
+ */
 @Mixin(KeyboardHandler.class)
 public class KeyboardHandlerMixin {
     private                KeyComboData lastValidCombo = null;
     @Shadow @Final private Minecraft    minecraft;
 
+    /**
+     * Listens for keypress and checks if there is any matching keybind from the registry,
+     * if so, call that keybind, the cancel the execution of the rest of the function
+     *
+     * @param windowPointer WindowPointer
+     * @param key           Key
+     * @param scanCode      ScanCode
+     * @param action        Action
+     * @param modifiers     Modifiers
+     * @param ci            CallbackInfo
+     */
     @Inject(at = @At("HEAD"), method = "keyPress", cancellable = true)
     private void onKeyPress(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
         if (windowPointer != minecraft.getWindow().getWindow()) return;

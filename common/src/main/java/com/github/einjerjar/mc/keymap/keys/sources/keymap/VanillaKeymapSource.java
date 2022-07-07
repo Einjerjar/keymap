@@ -8,6 +8,9 @@ import net.minecraft.client.Minecraft;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Source for vanilla keybinds
+ */
 public final class VanillaKeymapSource implements KeymapSource {
     @Override public List<KeyHolder> getKeyHolders() {
         List<KeyHolder> keymaps = new ArrayList<>();

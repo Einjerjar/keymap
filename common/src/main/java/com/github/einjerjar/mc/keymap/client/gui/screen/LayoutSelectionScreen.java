@@ -1,7 +1,6 @@
 package com.github.einjerjar.mc.keymap.client.gui.screen;
 
 import com.github.einjerjar.mc.keymap.Keymap;
-import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.VirtualKeyboardWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;

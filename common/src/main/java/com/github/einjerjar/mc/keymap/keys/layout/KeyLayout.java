@@ -18,17 +18,47 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Layout instance, and Registry of layouts for the mod
+ * TODO: Separate the registry
+ */
 @ToString
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class KeyLayout {
-    private static final      String                     LAYOUT_ROOT = "assets/keymap/layouts/";
-    @Getter protected static  KeyLayout                  layoutDefault;
-    @Getter protected static  KeyLayout                  layoutCurrent;
-    @Getter protected static  HashMap<String, KeyLayout> layouts     = new HashMap<>();
-    @Getter @Setter protected KeyMeta                    meta;
-    @Getter @Setter protected Keys                       keys;
+    /**
+     * Where the default layouts are located
+     */
+    private static final     String                     LAYOUT_ROOT = "assets/keymap/layouts/";
+    /**
+     * The default layout (en_us (iirc))
+     * TODO: Check if this is even used at all
+     */
+    @Getter protected static KeyLayout                  layoutDefault;
+    /**
+     * The current layout
+     * TODO: Check if this is even used at all
+     */
+    @Getter protected static KeyLayout                  layoutCurrent;
+    /**
+     * List of all registered layouts and their name codes
+     */
+    @Getter protected static HashMap<String, KeyLayout> layouts     = new HashMap<>();
 
+    /**
+     * The metadata for this layout instance
+     */
+    @Getter @Setter protected KeyMeta meta;
+    /**
+     * The actual key groups
+     */
+    @Getter @Setter protected Keys    keys;
+
+    /**
+     * Registers a layout
+     *
+     * @param layout The layout to register
+     */
     public static void registerLayout(KeyLayout layout) {
         layouts.put(layout.meta.code, layout);
         updateMouseKeys(layout.keys.mouse());
@@ -37,6 +67,11 @@ public class KeyLayout {
         updateMouseKeys(layout.keys.extra());
     }
 
+    /**
+     * Assures all the items under the mouse group, that they are, indeed part of the mouse group
+     *
+     * @param rows The rows under the mouse group, or any other group for that matter
+     */
     protected static void updateMouseKeys(List<KeyRow> rows) {
         for (KeyRow row : rows) {
             for (KeyData key : row.row) {
@@ -47,6 +82,9 @@ public class KeyLayout {
         }
     }
 
+    /**
+     * Loads all the predefined layouts from the mod
+     */
     public static void loadKeys() {
         layouts.clear();
 
@@ -95,18 +133,26 @@ public class KeyLayout {
             e.printStackTrace();
         } finally {
             if (files != null) files.close();
-            try {
-                if (fs != null) fs.close();
-            } catch (Exception e) {
-                Keymap.logger().error("!! Can't close FileSystem !!");
-            }
         }
     }
 
+    /**
+     * Should return the current layout, iirc is not used at all
+     * TODO: Use or remove, prolly use, idk
+     *
+     * @return The current layout
+     */
     public static KeyLayout getCurrentLayout() {
         return layoutCurrent;
     }
 
+    /**
+     * Gets a layout based on its name code
+     *
+     * @param code The name code of the layout
+     *
+     * @return The chosen layout, or english if not found
+     */
     public static KeyLayout getLayoutWithCode(String code) {
         if (layouts.containsKey(code)) {
             return layouts.get(code);

@@ -46,10 +46,10 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
         if (key.code() == -2) {
             this.allowRightClick = true;
             for (int i = 0; i < 10; i++) {
-                KeymappingNotifier.addListener(i, this);
+                KeymappingNotifier.subscribe(i, this);
             }
         } else {
-            KeymappingNotifier.addListener(key.code(), this);
+            KeymappingNotifier.subscribe(key.code(), this);
         }
         updateTooltips();
     }
@@ -57,10 +57,10 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
     public void destroy() {
         if (key.code() == -2) {
             for (int i = 0; i < 10; i++) {
-                KeymappingNotifier.removeListener(i, this);
+                KeymappingNotifier.unsubscribe(i, this);
             }
         } else {
-            KeymappingNotifier.removeListener(key.code(), this);
+            KeymappingNotifier.unsubscribe(key.code(), this);
         }
     }
 
@@ -108,6 +108,7 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
         }
     }
 
+    // TODO: Intellij/Sonarlint complaining about cognitive complexity
     public void updateNormalTooltip() {
         tooltips.add(Text.literal(String.format("(%s) ",
                 text.getString())).withStyle(Styles.yellow()).append(Text.literal(mcKey.getDisplayName().getString()).withStyle(
