@@ -1,8 +1,6 @@
 package com.github.einjerjar.mc.widgets;
 
-import com.github.einjerjar.mc.keymap.client.gui.widgets.KeymapListWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
-import com.github.einjerjar.mc.keymap.keys.sources.KeymappingNotifier;
 import com.github.einjerjar.mc.widgets.utils.*;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
