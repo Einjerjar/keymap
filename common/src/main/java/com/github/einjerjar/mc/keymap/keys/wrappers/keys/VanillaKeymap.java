@@ -18,13 +18,12 @@ import java.util.Objects;
 
 @Accessors(fluent = true, chain = true)
 public class VanillaKeymap implements KeyHolder {
-    @Getter protected KeyMapping map;
-
-    protected final List<Integer> codes = new ArrayList<>();
-    protected       Component     translatedName;
-    protected       Component     translatedKey;
-    protected       boolean       complex;
-    protected       String        searchString;
+    protected final   List<Integer> codes = new ArrayList<>();
+    @Getter protected KeyMapping    map;
+    protected         Component     translatedName;
+    protected         Component     translatedKey;
+    protected         boolean       complex;
+    protected         String        searchString;
 
     public VanillaKeymap(KeyMapping map) {
         this.map            = map;

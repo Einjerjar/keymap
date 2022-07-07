@@ -142,7 +142,7 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
     public boolean setKey(KeyComboData kd) {
         KeymapListEntry item = itemSelected != null ? itemSelected : lastItemSelected;
-        boolean         ret ;
+        boolean         ret;
 
         if (!(item != null && item.map instanceof VanillaKeymap vk)) return false;
         int lastCode = vk.getSingleCode();

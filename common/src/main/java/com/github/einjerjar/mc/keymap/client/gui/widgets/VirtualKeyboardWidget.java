@@ -14,14 +14,12 @@ import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class VirtualKeyboardWidget extends EWidget {
-    @Getter @Setter protected int                                       gap = 2;
+    @Getter protected final   List<KeyWidget>                           childKeys = new ArrayList<>();
+    protected final           List<KeyRow>                              keys;
+    @Getter @Setter protected int                                       gap       = 2;
     @Setter protected         SimpleWidgetAction<VirtualKeyboardWidget> onKeyClicked;
     @Setter protected         SpecialVKKeyClicked                       onSpecialKeyClicked;
-
-    @Getter protected       KeyWidget       lastActionFrom;
-    @Getter protected final List<KeyWidget> childKeys = new ArrayList<>();
-
-    protected final List<KeyRow> keys;
+    @Getter protected         KeyWidget                                 lastActionFrom;
 
     public VirtualKeyboardWidget(List<KeyRow> keys, int x, int y, int w, int h) {
         super(x, y, w, h);

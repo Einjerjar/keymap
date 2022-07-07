@@ -1,6 +1,5 @@
 package com.github.einjerjar.mc.keymap.client.gui.screen;
 
-import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.CategoryListWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeymapListWidget;
@@ -194,8 +193,7 @@ public class KeymapScreen extends EScreen {
         if (inpSearch.text().isEmpty()) {
             onClose();
             return;
-        }
-        else inpSearch.text("");
+        } else inpSearch.text("");
         setFocused(null);
     }
 

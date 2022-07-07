@@ -2,6 +2,7 @@ package com.github.einjerjar.mc.keymap.keys.extrakeybind;
 
 import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
+import com.github.einjerjar.mc.keymap.cross.Services;
 import com.github.einjerjar.mc.keymap.keys.sources.keymap.KeymapSource;
 import com.github.einjerjar.mc.keymap.keys.sources.keymap.KeymapSources;
 import com.github.einjerjar.mc.keymap.keys.wrappers.keys.KeyHolder;
@@ -46,7 +47,7 @@ public class KeymapRegistry {
     }
 
     protected static File cfgFile() {
-        return cfgFile != null ? cfgFile : KeymapConfig.configDirProvider().execute("keymap-keys.json");
+        return cfgFile != null ? cfgFile : Services.PLATFORM.config("keymap-keys.json");
     }
 
     public static BiMap<KeyMapping, KeyComboData> bindMap() {
