@@ -45,6 +45,7 @@ public class KeymapScreen extends EScreen {
     protected EButton            btnOpenSettings;
     protected EButton            btnOpenLayouts;
     protected EButton            btnOpenHelp;
+    protected EButton            btnOpenCredits;
     protected EInput             inpSearch;
 
     protected List<VirtualKeyboardWidget> vks;
@@ -94,7 +95,7 @@ public class KeymapScreen extends EScreen {
                 (listKm.rect().w() - padding.x()) / 2,
                 16);
 
-        int vkSplit = (vkBasic.rect().w() - padding.x()) / 3;
+        int vkSplit = (vkBasic.rect().w() - padding.x()) / 4;
         btnOpenSettings = new EButton(Text.translatable("keymap.btnOpenSettings"),
                 scr.x() + padding.x(),
                 scr.y() + padding.y(),
@@ -105,10 +106,15 @@ public class KeymapScreen extends EScreen {
                 scr.y() + padding.y(),
                 vkSplit,
                 16);
-        btnOpenHelp     = new EButton(Text.translatable("keymap.btnOpenHelp"),
+        btnOpenCredits  = new EButton(Text.translatable("keymap.btnOpenCredits"),
                 btnOpenLayouts.right() + padding.x(),
                 scr.y() + padding.y(),
-                vkBasic.right() - btnOpenLayouts.right() - padding.x(),
+                vkSplit,
+                16);
+        btnOpenHelp     = new EButton(Text.translatable("keymap.btnOpenHelp"),
+                btnOpenCredits.right() + padding.x(),
+                scr.y() + padding.y(),
+                vkBasic.right() - btnOpenCredits.right() - padding.x(),
                 16);
         btnClearSearch  = new EButton(Text.translatable("keymap.btnClearSearch"),
                 listKm.right() - 16,
@@ -121,6 +127,7 @@ public class KeymapScreen extends EScreen {
             btnResetAll.setTooltip(Text.translatable("keymap.btnResetAllTip"));
             btnOpenSettings.setTooltip(Text.translatable("keymap.btnOpenSettingsTip"));
             btnOpenLayouts.setTooltip(Text.translatable("keymap.btnOpenLayoutsTip"));
+            btnOpenCredits.setTooltip(Text.translatable("keymap.btnOpenCreditsTip"));
             btnOpenHelp.setTooltip(Text.translatable("keymap.btnOpenHelpTip"));
             btnClearSearch.setTooltip(Text.translatable("keymap.btnClearSearchTip2"));
         }
@@ -130,6 +137,7 @@ public class KeymapScreen extends EScreen {
 
         btnOpenSettings.clickAction(this::onBtnOpenSettingsClicked);
         btnOpenLayouts.clickAction(this::onBtnOpenLayoutsClicked);
+        btnOpenCredits.clickAction(this::onBtnOpenCreditsClicked);
         btnOpenHelp.clickAction(this::onBtnOpenHelpClicked);
         btnClearSearch.clickAction(this::onBtnClearSearchClicked);
 
@@ -157,6 +165,7 @@ public class KeymapScreen extends EScreen {
         addRenderableWidget(btnResetAll);
         addRenderableWidget(btnOpenSettings);
         addRenderableWidget(btnOpenLayouts);
+        addRenderableWidget(btnOpenCredits);
         addRenderableWidget(btnOpenHelp);
         addRenderableWidget(btnClearSearch);
         addRenderableWidget(inpSearch);
@@ -183,6 +192,11 @@ public class KeymapScreen extends EScreen {
     @Override public void onClose() {
         KeymappingNotifier.clearSubscribers();
         super.onClose();
+    }
+
+    protected void onBtnOpenCreditsClicked(EWidget eWidget) {
+        assert minecraft != null;
+        minecraft.setScreen(new CreditsScreen(this));
     }
 
     protected void onBtnOpenHelpClicked(EWidget source) {
