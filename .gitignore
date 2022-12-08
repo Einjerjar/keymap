@@ -9,6 +9,7 @@ output/
 bin/
 libs/
 quilt/
+.notidea
 
 .classpath
 .project
