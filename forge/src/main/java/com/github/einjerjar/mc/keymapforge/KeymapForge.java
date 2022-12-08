@@ -1,7 +1,7 @@
 package com.github.einjerjar.mc.keymapforge;
 
 import com.github.einjerjar.mc.keymap.Keymap;
-import com.github.einjerjar.mc.keymap.client.gui.screen.ConfigScreenShared;
+import com.github.einjerjar.mc.keymapforge.client.gui.screen.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.fml.DistExecutor;
@@ -13,7 +13,7 @@ import java.io.File;
 
 @Mod(Keymap.MOD_ID)
 public class KeymapForge {
-    public KeymapForge() {
+    protected KeymapForge() {
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> IDK::clientInit);
         DistExecutor.safeRunWhenOn(Dist.DEDICATED_SERVER, () -> IDK::serverInit);
     }
@@ -35,8 +35,7 @@ public class KeymapForge {
             Keymap.init();
 
             ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class,
-                    () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> ConfigScreenShared.provider().execute(
-                            screen)));
+                    () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, parent) -> ConfigScreen.getScreen(parent)));
         }
     }
 }

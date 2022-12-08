@@ -5,7 +5,6 @@ import com.github.einjerjar.mc.keymap.client.gui.widgets.KeyWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.KeymapListWidget;
 import com.github.einjerjar.mc.keymap.client.gui.widgets.VirtualKeyboardWidget;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
-import com.github.einjerjar.mc.keymap.cross.Services;
 import com.github.einjerjar.mc.keymap.keys.KeyType;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeyComboData;
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeymapRegistry;
@@ -233,7 +232,7 @@ public class KeymapScreen extends EScreen {
 
     protected void onBtnOpenSettingsClicked(EWidget source) {
         assert minecraft != null;
-        minecraft.setScreen(Services.PLATFORM.configScreen(this));
+        minecraft.setScreen(new ConfigScreen(this));
     }
 
     protected void onBtnOpenLayoutsClicked(EWidget source) {
