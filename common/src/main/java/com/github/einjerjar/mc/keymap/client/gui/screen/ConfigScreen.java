@@ -13,8 +13,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConfigScreen extends EScreen2 {
 
-    protected ConfigScreen(Screen parent) {
+    public ConfigScreen(Screen parent) {
         super(parent);
+        targetScreenWidth = 450;
     }
 
     @Override protected void onInit() {
