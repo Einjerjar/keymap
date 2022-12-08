@@ -23,20 +23,18 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    modImplementation "com.terraformersmc:modmenu:${rootProject.version_mod_menu}"
+    modImplementation "com.terraformersmc:modmenu:${project.version_mod_menu}"
 
-    modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
-    modRuntimeOnly "maven.modrinth:starlight:${project.version_starlight}"
+//    modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
+//    modRuntimeOnly "maven.modrinth:starlight:${project.version_starlight}"
     modRuntimeOnly "maven.modrinth:ferrite-core:${project.version_ferrite_core}"
     modRuntimeOnly "maven.modrinth:lazydfu:${project.version_lazydfu}"
     modRuntimeOnly "maven.modrinth:ksyxis:${project.version_ksyxis}"
-    modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
+//    modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
     modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-    common(project(path: ":fabric-like", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":fabric-like", configuration: "transformProductionFabric")) { transitive false }
 }
 
 processResources {
