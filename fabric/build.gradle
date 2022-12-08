@@ -23,10 +23,6 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.version_cloth_api}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
     modImplementation "com.terraformersmc:modmenu:${rootProject.version_mod_menu}"
 
     modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
