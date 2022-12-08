@@ -8,6 +8,7 @@ out/
 output/
 bin/
 libs/
+quilt/
 
 .classpath
 .project

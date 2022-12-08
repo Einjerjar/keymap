@@ -3,8 +3,6 @@ package com.github.einjerjar.mc.keymapforge.cross.services;
 import com.github.einjerjar.mc.keymap.cross.services.IKeybindHelper;
 import com.github.einjerjar.mc.keymap.cross.services.IPlatformHelper;
 import com.github.einjerjar.mc.keymap.cross.services.ITickHelper;
-import com.github.einjerjar.mc.keymapforge.client.gui.screen.ConfigScreen;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -26,10 +24,6 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override public File config(String file) {
         return new File(FMLPaths.GAMEDIR.get().resolve("config/" + file).toUri());
-    }
-
-    @Override public Screen configScreen(Screen parent) {
-        return ConfigScreen.getScreen(parent);
     }
 
     @Override public IKeybindHelper keybindHelper() {
