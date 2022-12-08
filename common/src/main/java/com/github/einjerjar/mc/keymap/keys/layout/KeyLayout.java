@@ -120,7 +120,7 @@ public class KeyLayout {
                 // simple notice, since sonarlint/intellij is complaining about readability
                 // ----------------- another try-catch block starts here -----------------
                 try (InputStreamReader reader =
-                             new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream(LAYOUT_ROOT + p.getFileName())))) {
+                             new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream(LAYOUT_ROOT + p.getFileName())), "UTF-8")) {
                     registerLayout(gson.fromJson(reader, KeyLayout.class));
                 } catch (Exception e) {
                     Keymap.logger().warn("Can't load {} ; {}", p.getFileName(), e.getMessage());

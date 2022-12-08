@@ -58,7 +58,6 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
             for (KeymapListEntry item : items) {
                 List<String> segments = Arrays.stream(filterString.split(" ")).filter(s -> !s.isBlank()).toList();
                 long matches = segments.stream()
-                        .sequential()
                         .filter(s -> item.map
                                 .getSearchString()
                                 .contains(s)).toList().size();
@@ -142,7 +141,8 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
     public boolean setKey(KeyComboData kd) {
         KeymapListEntry item = itemSelected != null ? itemSelected : lastItemSelected;
-        boolean         ret;
+
+        Keymap.logger().warn(kd);
 
         if (!(item != null && item.map instanceof VanillaKeymap vk)) return false;
         int lastCode = vk.getSingleCode();
@@ -156,30 +156,9 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         if (kd.onlyKey()) {
             KeymapRegistry.remove(vk.map());
             KeymappingNotifier.updateKey(lastCode, newCode, vk);
-            vk.setKey(List.of(newCode), false);
-            ret = true;
+            vk.setKey(List.of(newCode), kd.keyType() == KeyType.MOUSE);
         } else {
-            // FIXME: messy code
-            KeyMapping vItem = null;
-            if (KeymapRegistry.bindMap().inverse().containsKey(kd)) {
-                vItem = KeymapRegistry.bindMap().inverse().get(kd);
-            }
-            KeymapRegistry.put(vk.map(), kd);
-
-            KeymappingNotifier.updateKey(ko == -99 ? lastCode : ko, -1, vk);
-            vk.setKey(List.of(-1), false);
-
-            // when moving combo to another key, the last owner of the combo needs to get updated too
-            if (vItem != null) {
-                for (KeymapListEntry entry : items) {
-                    if (entry.map instanceof VanillaKeymap vvk && vvk.map() == vItem) {
-                        entry.updateTooltips();
-                        break;
-                    }
-                }
-            }
-
-            ret = true;
+            setComplexKey(kd, vk, lastCode, ko);
         }
 
         KeymappingNotifier.notifySubscriber(ko, false);
@@ -192,7 +171,30 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         // twice to flush both current and last selected
         setItemSelected(null);
         setItemSelected(null);
-        return ret;
+        return true;
+    }
+
+    private void setComplexKey(KeyComboData kd, VanillaKeymap vk, int lastCode, int ko) {
+        Keymap.logger().error(2);
+        // FIXME: messy code
+        KeyMapping vItem = null;
+        if (KeymapRegistry.bindMap().inverse().containsKey(kd)) {
+            vItem = KeymapRegistry.bindMap().inverse().get(kd);
+        }
+        KeymapRegistry.put(vk.map(), kd);
+
+        KeymappingNotifier.updateKey(ko == -99 ? lastCode : ko, -1, vk);
+        vk.setKey(List.of(-1), false);
+
+        // when moving combo to another key, the last owner of the combo needs to get updated too
+        if (vItem != null) {
+            for (KeymapListEntry entry : items) {
+                if (entry.map instanceof VanillaKeymap vvk && vvk.map() == vItem) {
+                    entry.updateTooltips();
+                    break;
+                }
+            }
+        }
     }
 
     protected void updateAllEntryTooltips() {

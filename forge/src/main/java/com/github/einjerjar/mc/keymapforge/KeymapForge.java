@@ -1,7 +1,7 @@
 package com.github.einjerjar.mc.keymapforge;
 
 import com.github.einjerjar.mc.keymap.Keymap;
-import com.github.einjerjar.mc.keymap.client.gui.screen.ConfigScreenShared;
+import com.github.einjerjar.mc.keymap.client.gui.screen.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.fml.DistExecutor;
@@ -35,8 +35,7 @@ public class KeymapForge {
             Keymap.init();
 
             ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class,
-                    () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> ConfigScreenShared.provider().execute(
-                            screen)));
+                    () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, parent) -> new ConfigScreen(parent)));
         }
     }
 }

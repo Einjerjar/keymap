@@ -1,0 +1,26 @@
+{
+  "language": [
+    {
+      "lang": "zh_cn",
+      "name": ["DarkCrystalll"]
+    }
+  ],
+  "layout": [
+    {
+      "key": "fr_fr",
+      "name": ["arthurbambou"]
+    },
+    {
+      "key": "fr_fr_afnor",
+      "name": ["arthurbambou"]
+    },
+    {
+      "key": "fr_fr_bepo",
+      "name": ["arthurbambou"]
+    },
+    {
+      "key": "ja_jp",
+      "name": ["BlueSheep2804"]
+    }
+  ]
+}

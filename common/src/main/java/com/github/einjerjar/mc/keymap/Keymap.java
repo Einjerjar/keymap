@@ -1,9 +1,11 @@
 package com.github.einjerjar.mc.keymap;
 
+import com.github.einjerjar.mc.keymap.client.gui.screen.KeymapScreen;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
 import com.github.einjerjar.mc.keymap.keys.sources.category.CategorySources;
 import com.github.einjerjar.mc.keymap.keys.sources.keymap.KeymapSources;
+import com.github.einjerjar.mc.keymap.objects.Credits;
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -51,9 +53,11 @@ public class Keymap {
 
         TICK.registerEndClientTick(client -> {
             while (kmOpenMapper.consumeClick()) {
-                client.setScreen(PLATFORM.configScreen(null));
+                client.setScreen(new KeymapScreen(null));
             }
         });
+
+        logger.warn(Credits.instance().toString());
     }
 
 }
