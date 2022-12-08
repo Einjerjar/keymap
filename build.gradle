@@ -62,12 +62,6 @@ allprojects {
 
     java {
         withSourcesJar()
-//        doLast {
-//            copy {
-//                from "build/libs/${project.version}.jar"
-//                to "../build/libs/"
-//            }
-//        }
     }
 
     task copyFinal(type: Copy) {
