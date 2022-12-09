@@ -205,7 +205,7 @@ keys:
         - name: END
           code: 269
           width: 6
-        - name: PGU
+        - name: PGD
           code: 267
           width: 6
     - row:
