@@ -1,38 +1,21 @@
-# Java Gradle CircleCI 2.0 configuration file
-# See: https://circleci.com/docs/2.0/language-java/
 version: 2
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   build:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      # specify the version you desire here
       - image: cimg/openjdk:17.0.3
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
     environment:
-      # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx2G
       TERM: dumb
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
       - run: gradle dependencies
@@ -42,33 +25,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      # build
       - run: gradle build
 
-      - run: |
-          f_root=~/repo
-          roots=(fabric forge)
-          d_collect=${f_root}/collect
-          d_temp=${f_root}/temp
-          d_final=${f_root}/final
-          mkdir -p $d_collect
-          mkdir -p $d_temp
-          mkdir -p $d_final
-          for i in "${roots[@]}"
-          do
-            d="./${i}/build/libs"
-            cp ${d}/*[0-9].jar $d_temp
-            for f in ${d_temp}/*
-            do
-              t=${f/.jar/-${i}.jar}
-              mv $f ${t/temp/collect}
-            done
-          done
-          VERSION=`ls ${d_collect}/* | head -n 1`
-          VERSION=${VERSION/*keymap-/}
-          VERSION=${VERSION/-*/}
-          zip $d_final/build-$VERSION ${d_collect}/*
-          ls final
-
       - store_artifacts:
-          path: ~/repo/final/
+          path: ~/repo/build/e_final
