@@ -1,7 +1,6 @@
-Keymap Rewrite
-===
+# Keymap Rewrite
 
-![cover](images/cover_0.6.0.png)
+![cover](images/cover_0.7.0.png)
 
 <div style="text-align: center">
 <p>Visual key remapping mod for Minecraft</p>
@@ -12,8 +11,7 @@ Keymap Rewrite
 [![1.19](https://img.shields.io/circleci/build/gh/Einjerjar/keymap/v2-1.19?label=v2-1.19&logo=circleci&style=flat-square)](https://github.com/Einjerjar/keymap/tree/v2-1.19)
 </div>
 
-TOC
-===
+## TOC
 
 * [Overview](#overview)
     * [Important Stuff](#important-stuff)
@@ -22,11 +20,9 @@ TOC
     * [Screenshots](#screenshots)
     * [Support](#support)
 
-Overview
-===
+## Overview
 
-Important stuff
----
+### Important stuff
 
 - Press the `Grave Accent` / `Backtick` ``( ` )``, or the key under the Escape key to show the mapper while playing
 - `CTRL+F` : focus search box
@@ -38,8 +34,7 @@ Important stuff
 - You can still assign modifier keys by themselves normally
 - You cannot bind multiple keymaps to a single combination
 
-Colors
----
+### Colors
 
 |              Color | Legend            |
 |-------------------:|-------------------|
@@ -49,8 +44,7 @@ Colors
 |              `red` | Conflict          |
 | `small yellow box` | Modifier assigned |
 
-Queries
----
+### Queries
 
 |          Format | Effect           |
 |----------------:|------------------|
@@ -61,21 +55,14 @@ Queries
 | `{sample text}` | Bound key        |
 |  `$sample_text` | Bound key (slug) |
 
-Screenshots
----
+### Screenshots
 
 ![ss1](images/2022-06-24_00.40.47.png)
-![ss2](images/img.png)
 
-Todo
----
+![ss2](images/img_debug.png)
 
-- Widgets
-    - Button
-    - Toggle
-    - Input
+![ss3](images/img_settings.png)
 
-Support
----
+## Support
 
 <a href='https://ko-fi.com/X8X831J1L' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
