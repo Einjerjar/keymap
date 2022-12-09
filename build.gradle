@@ -62,18 +62,12 @@ allprojects {
 
     java {
         withSourcesJar()
-//        doLast {
-//            copy {
-//                from "build/libs/${project.version}.jar"
-//                to "../build/libs/"
-//            }
-//        }
     }
 
     task copyFinal(type: Copy) {
         if (project.name == "fabric" || project.name == "forge") {
             from "${buildDir}/libs/keymap-${version}.jar"
-            into "${rootDir}/build/e_final/"
+            into "${rootDir}/build/e_final/${rootProject.mod_version}-${rootProject.mod_version_type}.${rootProject.mod_subversion}/${rootProject.minecraft_version}"
         }
     }
 
