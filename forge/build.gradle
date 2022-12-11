@@ -88,3 +88,51 @@ publishing {
         // Add repositories to publish to here.
     }
 }
+
+def publishDebug = ext.get("publishDebug")
+
+modrinth {
+    project.logger.lifecycle(project.name)
+    if (!env.isPresent("MODRINTH_API")) {
+        throw new GradleException("Modrinth token not set!")
+    }
+    token = env.MODRINTH_API.value
+    projectId = "keymap"
+    versionNumber = version
+    versionType = rootProject.mod_version_type
+    uploadFile = jar
+    debugMode = publishDebug
+    gameVersions = ["1.18.2"]
+    loaders = ["forge"]
+}
+
+curseforge {
+    if (!env.isPresent("CURSE_API"))
+        throw new GradleException("Curseforge token not set!")
+    if (!env.isPresent("CURSE_ID"))
+        throw new GradleException("Project id not set!")
+
+    apiKey = env.CURSE_API.value
+    project {
+        id = env.CURSE_ID.value
+        releaseType = rootProject.mod_version_type
+        changelog = rootProject.file("changelog.md").text
+
+        addGameVersion rootProject.minecraft_version
+        addGameVersion "Java 17"
+        addGameVersion "Forge"
+
+        mainArtifact(remapJar.archiveFile)
+
+        afterEvaluate {
+            uploadTask.dependsOn remapJar
+        }
+
+        addArtifact shadowJar
+        addArtifact remapSourcesJar
+    }
+    options {
+        debug = publishDebug
+        forgeGradleIntegration = false
+    }
+}
