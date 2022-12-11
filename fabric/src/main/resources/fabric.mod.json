@@ -13,14 +13,14 @@
   "environment": "*",
   "entrypoints": {
     "modmenu": [
-      "com.github.einjerjar.mc.keymap.ModMenuIntegration"
+      "com.github.einjerjar.mc.keymapfabric.ModMenuIntegration"
     ],
     "main": [],
     "client": [
-      "com.github.einjerjar.mc.keymap.KeymapFabricLike"
+      "com.github.einjerjar.mc.keymapfabric.KeymapFabric"
     ],
     "server": [
-      "com.github.einjerjar.mc.keymap.KeymapFabricLikeServer"
+      "com.github.einjerjar.mc.keymapfabric.KeymapFabricServer"
     ]
   },
   "mixins": [

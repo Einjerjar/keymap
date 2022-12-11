@@ -1,5 +1,8 @@
-package com.github.einjerjar.mc.keymap.cross.services;
+package com.github.einjerjar.mc.keymapfabric.cross.services;
 
+import com.github.einjerjar.mc.keymap.cross.services.IKeybindHelper;
+import com.github.einjerjar.mc.keymap.cross.services.IPlatformHelper;
+import com.github.einjerjar.mc.keymap.cross.services.ITickHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
