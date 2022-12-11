@@ -40,8 +40,6 @@ public class Keymap {
                 "keymap.keyCat"
         );
 
-        KeyLayout.loadKeys();
-
         for (KeyLayout keyLayout : KeyLayout.layouts().values()) {
             logger.debug("Layout for {} @ {}",
                     keyLayout.meta().code(),

@@ -1,6 +1,7 @@
 package com.github.einjerjar.mc.keymap.mixin;
 
 import com.github.einjerjar.mc.keymap.keys.extrakeybind.KeymapRegistry;
+import com.github.einjerjar.mc.keymap.keys.layout.KeyLayout;
 import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,6 +22,7 @@ public class TitleScreenMixin {
      */
     @Inject(at = @At("HEAD"), method = "init")
     private void onInit(CallbackInfo ci) {
+        KeyLayout.loadKeys();
         KeymapRegistry.load();
     }
 }
