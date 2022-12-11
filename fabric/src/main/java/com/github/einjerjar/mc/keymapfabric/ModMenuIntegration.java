@@ -1,4 +1,4 @@
-package com.github.einjerjar.mc.keymap;
+package com.github.einjerjar.mc.keymapfabric;
 
 import com.github.einjerjar.mc.keymap.client.gui.screen.ConfigScreen;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;

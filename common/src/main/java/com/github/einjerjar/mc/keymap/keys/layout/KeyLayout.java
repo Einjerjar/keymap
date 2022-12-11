@@ -9,8 +9,10 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -29,7 +31,7 @@ public class KeyLayout {
     /**
      * Where the default layouts are located
      */
-    private static final     String                     LAYOUT_ROOT = "assets/keymap/layouts/";
+    private static final     String                     LAYOUT_ROOT = "assets/keymap/layouts";
     /**
      * The default layout (en_us (iirc))
      * TODO: Check if this is even used at all
@@ -91,21 +93,18 @@ public class KeyLayout {
         GsonBuilder  builder = new GsonBuilder().setPrettyPrinting();
         Gson         gson    = builder.create();
         ClassLoader  loader  = KeyLayout.class.getClassLoader();
-        FileSystem   fs      = null;
         Stream<Path> files   = null;
+        FileSystem   fs;
 
         try {
+            Keymap.logger().warn(loader.getResource("/"));
+            Keymap.logger().warn(loader.getResource(LAYOUT_ROOT));
             URI  layoutUri = Objects.requireNonNull(Objects.requireNonNull(loader.getResource(LAYOUT_ROOT)).toURI());
+            Keymap.logger().warn("Keymap layout stream: {}", layoutUri);
+            Keymap.logger().warn("Keymap layout stream scheme: {}", layoutUri.getScheme());
             Path path;
             if (layoutUri.getScheme().equals("jar")) {
-                // simple notice, since sonarlint/intellij is complaining about readability
-                // ----------------- another try-catch block starts here -----------------
-                try {
-                    fs = FileSystems.getFileSystem(layoutUri);
-                } catch (Exception e) {
-                    fs = FileSystems.newFileSystem(layoutUri, Collections.emptyMap());
-                }
-                // ----------------- another try-catch block ends here -----------------
+                fs = getFileSystem(layoutUri);
                 path = fs.getPath(LAYOUT_ROOT);
             } else {
                 path = Path.of(layoutUri);
@@ -116,17 +115,7 @@ public class KeyLayout {
             for (Iterator<Path> it = files.iterator(); it.hasNext(); ) {
                 Path p = it.next();
                 if (!p.getFileName().toString().endsWith(".json")) continue;
-
-                // simple notice, since sonarlint/intellij is complaining about readability
-                // ----------------- another try-catch block starts here -----------------
-                try (InputStreamReader reader =
-                             new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream(LAYOUT_ROOT + p.getFileName())), "UTF-8")) {
-                    registerLayout(gson.fromJson(reader, KeyLayout.class));
-                } catch (Exception e) {
-                    Keymap.logger().warn("Can't load {} ; {}", p.getFileName(), e.getMessage());
-                    e.printStackTrace();
-                }
-                // ----------------- another try-catch block ends here -----------------
+                tryLoadLayout(gson, loader, p);
             }
         } catch (Exception e) {
             Keymap.logger().error(e.getMessage());
@@ -134,6 +123,28 @@ public class KeyLayout {
         } finally {
             if (files != null) files.close();
         }
+    }
+
+    private static void tryLoadLayout(Gson gson, ClassLoader loader, Path p) {
+        try (InputStreamReader reader =
+                     new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream(p.toString())), StandardCharsets.UTF_8)) {
+            registerLayout(gson.fromJson(reader, KeyLayout.class));
+        } catch (Exception e) {
+            Keymap.logger().warn("Can't load {} ; {}", p.getFileName(), e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static FileSystem getFileSystem(URI layoutUri) throws IOException {
+        FileSystem fs;
+        try {
+            fs = FileSystems.getFileSystem(layoutUri);
+            Keymap.logger().info("GET_FS");
+        } catch (Exception e) {
+            fs = FileSystems.newFileSystem(layoutUri, Collections.emptyMap());
+            Keymap.logger().info("NEW_FS");
+        }
+        return fs;
     }
 
     /**
