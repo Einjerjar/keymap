@@ -35,18 +35,13 @@ public class ControlsOptionsScreenMixin extends OptionsSubScreen {
     @Inject(at = @At("TAIL"), method = "init")
     private void onInit(CallbackInfo ci) {
         if (!KeymapConfig.instance().replaceKeybindScreen()) return;
-        int i = this.width / 2 - 155;
-        int j = i + 160;
-        int k = this.height / 6 - 12;
+        int xPos = this.width / 2 + 5;
+        int yPos = this.height / 6 - 12;
 
         for (GuiEventListener child : children()) {
-            if (child instanceof Button bb && bb.x == j && bb.y == k) {
+            if (child instanceof Button bb && bb.getX() == xPos && bb.getY() == yPos) {
                 this.removeWidget(bb);
-                this.addRenderableWidget(new Button(j,
-                        k,
-                        150,
-                        20,
-                        Text.translatable("keymap.keyCat"), this::clickHandler));
+                this.addRenderableWidget(Button.builder(Text.translatable("keymap.keyCat"), this::clickHandler).size(150, 20).pos(xPos, yPos).build());
                 break;
             }
         }

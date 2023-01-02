@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(fluent = true, chain = true)
-public abstract class EWidget extends GuiComponent implements Widget, GuiEventListener, NarratableEntry, Tooltipped {
+public abstract class EWidget extends GuiComponent implements Renderable, GuiEventListener, NarratableEntry, Tooltipped {
     protected                 Font       font  = Minecraft.getInstance().font;
     @Getter @Setter protected ColorGroup color = ColorGroups.WHITE;
     @Getter @Setter protected Rect       rect;
@@ -102,7 +102,7 @@ public abstract class EWidget extends GuiComponent implements Widget, GuiEventLi
             return false;
         }
         if (!allowRightClick && button != 0) return false;
-        playSound(SoundEvents.UI_BUTTON_CLICK);
+        playSound(SoundEvents.UI_BUTTON_CLICK.value());
         this.active = true;
         return onMouseClicked(true, mouseX, mouseY, button);
     }
