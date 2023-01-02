@@ -41,7 +41,7 @@ public abstract class EWidget2 extends EWidget2Utils {
 
     protected boolean onMouseReleased(double mouseX, double mouseY, int button) {
         if (handleMouseClick(mouseX, mouseY, button)) {
-            playSound(SoundEvents.UI_BUTTON_CLICK);
+            playSound(SoundEvents.UI_BUTTON_CLICK.value());
             return true;
         }
         return false;
