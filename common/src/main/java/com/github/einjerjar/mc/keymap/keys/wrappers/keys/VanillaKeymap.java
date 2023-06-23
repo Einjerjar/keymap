@@ -9,6 +9,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 
@@ -102,7 +103,7 @@ public class VanillaKeymap implements KeyHolder {
         InputConstants.Type type = mouse ? InputConstants.Type.MOUSE : InputConstants.Type.KEYSYM;
         InputConstants.Key  key  = type.getOrCreate(keys.get(0));
         updateProps(key);
-        KeyMapping.resetMapping();
+        Minecraft.getInstance().options.setKey(map, key);
         return true;
     }
 
