@@ -53,6 +53,6 @@ public class VanillaCategory implements CategoryHolder {
     }
 
     @Override public String getFilterSlug() {
-        return String.format("@%s", Utils.slugify(Language.getInstance().getOrDefault(category)));
+        return String.format("@%s", Language.getInstance().getOrDefault(category));
     }
 }
