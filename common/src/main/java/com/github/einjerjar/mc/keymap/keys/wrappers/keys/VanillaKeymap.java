@@ -149,12 +149,12 @@ public class VanillaKeymap implements KeyHolder {
                 // $key-slug
                 getModName(),
                 // {mod}
-                Utils.slugify(getModName()),
-                // #mod-slug
+                getModName(),
+                // #mod
                 cat,
                 // (cat)
-                Utils.slugify(cat)
-                // @cat-slug
+                cat
+                // @cat
         ).toLowerCase();
     }
 
