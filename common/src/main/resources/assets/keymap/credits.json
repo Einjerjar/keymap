@@ -1,8 +1,22 @@
 {
+  "core": [
+    {
+      "name": "SettingDust",
+      "contributions": ["save keys after edit", "cjk search"]
+    },
+    {
+      "name": "douira",
+      "contributions": ["1.19 port"]
+    }
+  ],
   "language": [
     {
       "lang": "zh_cn",
       "name": ["DarkCrystalll"]
+    },
+    {
+      "lang": "uk_ua",
+      "name": ["SKZGx"]
     }
   ],
   "layout": [
