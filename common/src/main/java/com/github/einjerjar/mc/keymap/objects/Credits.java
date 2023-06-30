@@ -26,6 +26,7 @@ public class Credits {
 
     List<LanguageCredits> language;
     List<LayoutCredits>   layout;
+    List<CoreCredits>     core;
 
     @Getter
     @Setter
@@ -47,6 +48,17 @@ public class Credits {
     public static class LayoutCredits {
         String       key;
         List<String> name;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Accessors(fluent = true)
+    public static class CoreCredits {
+        String       name;
+        List<String> contributions;
     }
 
     public static synchronized Credits instance() {

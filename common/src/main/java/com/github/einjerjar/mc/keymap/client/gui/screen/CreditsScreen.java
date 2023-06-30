@@ -30,6 +30,7 @@ public class CreditsScreen extends EScreen {
 
         StringBuilder layoutCredits   = new StringBuilder(Utils.translate("keymap.lblCreditsLayout"));
         StringBuilder languageCredits = new StringBuilder(Utils.translate("keymap.lblCreditsLanguage"));
+        StringBuilder coreCredits = new StringBuilder(Utils.translate("keymap.lblCreditsCore"));
 
         for (Credits.LayoutCredits lay : Credits.instance().layout()) {
             layoutCredits
@@ -53,8 +54,19 @@ public class CreditsScreen extends EScreen {
             }
         }
 
+        for (Credits.CoreCredits contrib : Credits.instance().core()) {
+            coreCredits
+                    .append("\n\n- ")
+                    .append(contrib.name());
+            for (String c : contrib.contributions()) {
+                coreCredits
+                        .append("\n   - ")
+                        .append(c);
+            }
+        }
+
         listHelp = ScrollTextList.createFromString(
-                layoutCredits + "\n\n\n" + languageCredits,
+                coreCredits + "\n\n\n" + layoutCredits + "\n\n\n" + languageCredits,
                 lblTitle.left(),
                 lblTitle.bottom() + padding.y(),
                 lblTitle.rect().w(),
