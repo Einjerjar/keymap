@@ -3,7 +3,6 @@ package com.github.einjerjar.mc.keymap.cross.services;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 
-
 /**
  * Helper service to be overridden loader specific ones
  */
@@ -18,10 +17,5 @@ public interface IKeybindHelper {
      *
      * @return A KeyMapping instance
      */
-    KeyMapping create(
-            InputConstants.Type type,
-            int code,
-            String name,
-            String category
-    );
+    KeyMapping create(InputConstants.Type type, int code, String name, String category);
 }

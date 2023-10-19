@@ -4,22 +4,34 @@ import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyData;
 import com.github.einjerjar.mc.keymap.keys.layout.KeyRow;
 import com.github.einjerjar.mc.widgets.EWidget;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class VirtualKeyboardWidget extends EWidget {
-    @Getter protected final   List<KeyWidget>                           childKeys = new ArrayList<>();
-    protected final           List<KeyRow>                              keys;
-    @Getter @Setter protected int                                       gap       = 2;
-    @Setter protected         SimpleWidgetAction<VirtualKeyboardWidget> onKeyClicked;
-    @Setter protected         SpecialVKKeyClicked                       onSpecialKeyClicked;
-    @Getter protected         KeyWidget                                 lastActionFrom;
+    @Getter
+    protected final List<KeyWidget> childKeys = new ArrayList<>();
+
+    protected final List<KeyRow> keys;
+
+    @Getter
+    @Setter
+    protected int gap = 2;
+
+    @Setter
+    protected SimpleWidgetAction<VirtualKeyboardWidget> onKeyClicked;
+
+    @Setter
+    protected SpecialVKKeyClicked onSpecialKeyClicked;
+
+    @Getter
+    protected KeyWidget lastActionFrom;
 
     public VirtualKeyboardWidget(List<KeyRow> keys, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -27,7 +39,8 @@ public class VirtualKeyboardWidget extends EWidget {
         init();
     }
 
-    @Override public boolean isMouseOver(double mouseX, double mouseY) {
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return false;
     }
 
@@ -57,9 +70,10 @@ public class VirtualKeyboardWidget extends EWidget {
         lastActionFrom = null;
     }
 
-    @Override protected void init() {
-        int w        = 16;
-        int h        = 16;
+    @Override
+    protected void init() {
+        int w = 16;
+        int h = 16;
         int currentX = left();
         int currentY = top();
 
@@ -67,8 +81,8 @@ public class VirtualKeyboardWidget extends EWidget {
 
         for (KeyRow kk : keys) {
             for (KeyData k : kk.row()) {
-                int       ww = w + k.width();
-                int       hh = h + k.height();
+                int ww = w + k.width();
+                int hh = h + k.height();
                 KeyWidget kw = new KeyWidget(k, currentX, currentY, ww, hh);
                 kw.onClick(this::_onKeyClicked);
                 kw.onSpecialClick(this::_onSpecialKeyClicked);
@@ -76,7 +90,7 @@ public class VirtualKeyboardWidget extends EWidget {
                 childKeys.add(kw);
                 currentX += gap + ww;
             }
-            maxX     = Math.max(currentX - gap, maxX);
+            maxX = Math.max(currentX - gap, maxX);
             currentX = left();
             currentY += gap + h;
         }
@@ -86,9 +100,10 @@ public class VirtualKeyboardWidget extends EWidget {
         rect.h(currentY - top());
     }
 
-    @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    @Override
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         for (KeyWidget kw : childKeys) {
-            kw.render(poseStack, mouseX, mouseY, partialTick);
+            kw.render(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
 

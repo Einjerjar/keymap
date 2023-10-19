@@ -23,23 +23,23 @@ import java.io.FileWriter;
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class KeymapConfig {
-    static         KeymapConfig instance;
-    static         Gson         gson    = new GsonBuilder().setPrettyPrinting().create();
-    private static File         cfgFile = null;
+    static KeymapConfig instance;
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static File cfgFile = null;
 
     // extra
-    protected boolean firstOpenDone           = false;
+    protected boolean firstOpenDone = false;
     // layout
-    protected boolean autoSelectLayout        = false;
-    protected String  customLayout            = "en_us";
+    protected boolean autoSelectLayout = false;
+    protected String customLayout = "en_us";
     // general
-    protected boolean replaceKeybindScreen    = true;
-    protected boolean malilibSupport          = true;
-    protected boolean debug                   = false;
-    protected boolean debug2                  = false;
+    protected boolean replaceKeybindScreen = true;
+    protected boolean malilibSupport = true;
+    protected boolean debug = false;
+    protected boolean debug2 = false;
     protected boolean crashOnProblematicError = false;
     // tooltip
-    protected boolean showHelpTooltips        = true;
+    protected boolean showHelpTooltips = true;
 
     private static synchronized File cfgFile() {
         if (cfgFile == null) cfgFile = Services.PLATFORM.config("keymap.json");

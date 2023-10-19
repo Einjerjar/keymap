@@ -1,11 +1,11 @@
 package com.github.einjerjar.mc.widgets;
 
 import com.github.einjerjar.mc.widgets.utils.Rect;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 @Accessors(fluent = true)
@@ -21,7 +21,7 @@ public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
 
     public static ScrollTextList createFromString(String[] lines, int x, int y, int w, int h) {
         ScrollTextList list = new ScrollTextList(x, y, w, h);
-        Font           f    = Minecraft.getInstance().font;
+        Font f = Minecraft.getInstance().font;
         for (String line : lines) {
             int fullWidth = f.width(line);
             int lineWidth = w - list.padding.x() * 2;
@@ -34,9 +34,9 @@ public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
             String currentLine = line;
             String trimmedLine = f.plainSubstrByWidth(line, lineWidth);
             String tempLine;
-            int    ix          = 0;
+            int ix = 0;
             while (!trimmedLine.equals(currentLine)) {
-                tempLine    = currentLine;
+                tempLine = currentLine;
                 currentLine = currentLine.substring(trimmedLine.length());
                 if (currentLine.startsWith(" ") || trimmedLine.endsWith(" ")) {
                     list.addLine(trimmedLine, ix);
@@ -64,15 +64,17 @@ public class ScrollTextList extends EList<ScrollTextList.ScrollTextEntry> {
     }
 
     public static class ScrollTextEntry extends EListEntry<ScrollTextEntry> {
-        @Getter protected String text;
+        @Getter
+        protected String text;
 
         protected ScrollTextEntry(String text, EList<ScrollTextEntry> container) {
             super(container);
             this.text = text;
         }
 
-        @Override public void renderWidget(@NotNull PoseStack poseStack, Rect r, float partialTick) {
-            drawString(poseStack, font, text, r.left(), r.top(), getVariant().text());
+        @Override
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, Rect r, float partialTick) {
+            guiGraphics.drawString(font, text, r.left(), r.top(), getVariant().text());
         }
     }
 }

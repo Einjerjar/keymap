@@ -12,7 +12,8 @@ import java.util.List;
  * Source for vanilla keybinds
  */
 public final class VanillaKeymapSource implements KeymapSource {
-    @Override public List<KeyHolder> getKeyHolders() {
+    @Override
+    public List<KeyHolder> getKeyHolders() {
         List<KeyHolder> keymaps = new ArrayList<>();
         for (KeyMapping km : Minecraft.getInstance().options.keyMappings) {
             KeyHolder kh = new VanillaKeymap(km);
@@ -21,7 +22,8 @@ public final class VanillaKeymapSource implements KeymapSource {
         return keymaps;
     }
 
-    @Override public boolean canUseSource() {
+    @Override
+    public boolean canUseSource() {
         return true;
     }
 }

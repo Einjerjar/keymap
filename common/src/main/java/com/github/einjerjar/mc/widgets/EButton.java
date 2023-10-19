@@ -1,34 +1,42 @@
 package com.github.einjerjar.mc.widgets;
 
 import com.github.einjerjar.mc.widgets.utils.ColorSet;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 @Accessors(fluent = true, chain = true)
 public class EButton extends EWidget {
-    @Getter @Setter Component                   text;
-    @Setter         SimpleWidgetAction<EWidget> clickAction;
+    @Getter
+    @Setter
+    Component text;
+
+    @Setter
+    SimpleWidgetAction<EWidget> clickAction;
 
     public EButton(Component text, int x, int y, int w, int h) {
         super(x, y, w, h);
         this.text = text;
     }
 
-    @Override public void setTooltip(Component tip) {
+    @Override
+    public void setTooltip(Component tip) {
         super.setTooltip(tip);
     }
 
-    @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    @Override
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         ColorSet colors = colorVariant();
-        drawBg(poseStack, colors.bg());
-        drawOutline(poseStack, colors.border());
-        drawCenteredString(poseStack, font, text, midX(), midY() - font.lineHeight / 2 + 1, colors.text());
+        drawBg(guiGraphics, colors.bg());
+        drawOutline(guiGraphics, colors.border());
+        guiGraphics.drawCenteredString(font, text, midX(), midY() - font.lineHeight / 2 + 1, colors.text());
     }
 
-    @Override public boolean onMouseReleased(boolean inside, double mouseX, double mouseY, int button) {
+    @Override
+    public boolean onMouseReleased(boolean inside, double mouseX, double mouseY, int button) {
         if (clickAction != null) {
             clickAction.run(this);
             return true;

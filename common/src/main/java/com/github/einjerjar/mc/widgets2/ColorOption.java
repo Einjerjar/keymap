@@ -18,17 +18,34 @@ public class ColorOption {
             .build();
 
     @Builder.Default
-    @Getter @Setter protected int color                = 0xFFFFFF;
+    @Getter
+    @Setter
+    protected int color = 0xFFFFFF;
+
     @Builder.Default
-    @Getter @Setter protected int transparencyBase     = 0x00_000000;
+    @Getter
+    @Setter
+    protected int transparencyBase = 0x00_000000;
+
     @Builder.Default
-    @Getter @Setter protected int transparencyHover    = 0x33_000000;
+    @Getter
+    @Setter
+    protected int transparencyHover = 0x33_000000;
+
     @Builder.Default
-    @Getter @Setter protected int transparencyActive   = 0x55_000000;
+    @Getter
+    @Setter
+    protected int transparencyActive = 0x55_000000;
+
     @Builder.Default
-    @Getter @Setter protected int transparencyFocus    = 0x11_000000;
+    @Getter
+    @Setter
+    protected int transparencyFocus = 0x11_000000;
+
     @Builder.Default
-    @Getter @Setter protected int transparencyDisabled = 0x00_000000;
+    @Getter
+    @Setter
+    protected int transparencyDisabled = 0x00_000000;
 
     public int base() {
         return transparencyBase | color;

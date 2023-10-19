@@ -15,14 +15,15 @@ public class KeymapSources {
     /**
      * Known list of sources
      */
-    @Getter protected static List<KeymapSource> sources   = new ArrayList<>();
+    @Getter
+    protected static List<KeymapSource> sources = new ArrayList<>();
     /**
      * Whether the collect function has been called once
      */
-    @Getter protected static boolean            collected = false;
+    @Getter
+    protected static boolean collected = false;
 
-    private KeymapSources() {
-    }
+    private KeymapSources() {}
 
     /**
      * Gathers the known keymap sources, should really only be called once to avoid

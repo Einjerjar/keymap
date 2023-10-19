@@ -3,7 +3,6 @@ package com.github.einjerjar.mc.keymap.mixin;
 import com.github.einjerjar.mc.keymap.client.gui.screen.KeymapScreen;
 import com.github.einjerjar.mc.keymap.client.gui.screen.LayoutSelectionScreen;
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
-import com.github.einjerjar.mc.widgets.utils.Text;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -36,17 +35,17 @@ public class ControlsOptionsScreenMixin extends OptionsSubScreen {
     private void onInit(CallbackInfo ci) {
         if (!KeymapConfig.instance().replaceKeybindScreen()) return;
         int i = this.width / 2 - 155;
-        int j = i + 160;
-        int k = this.height / 6 - 12;
+        int x = i + 160;
+        int y = this.height / 6 - 12;
 
         for (GuiEventListener child : children()) {
-            if (child instanceof Button bb && bb.x == j && bb.y == k) {
+            if (child instanceof Button bb && bb.getX() == x && bb.getY() == y) {
                 this.removeWidget(bb);
-                this.addRenderableWidget(new Button(j,
-                        k,
-                        150,
-                        20,
-                        Text.translatable("keymap.keyCat"), this::clickHandler));
+
+                this.addRenderableWidget(Button.builder(Component.translatable("keymap.keyCat"), this::clickHandler)
+                        .pos(x, y)
+                        .size(150, 20)
+                        .build());
                 break;
             }
         }

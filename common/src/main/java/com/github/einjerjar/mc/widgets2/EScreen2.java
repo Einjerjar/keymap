@@ -1,18 +1,16 @@
 package com.github.einjerjar.mc.widgets2;
 
-import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
 @Accessors(fluent = true)
 public abstract class EScreen2 extends EScreen2Utils {
 
     protected EScreen2(Screen parent) {
-        this(parent, Text.translatable("SCREEN"));
+        this(parent, Component.translatable("SCREEN"));
         assert minecraft != null;
     }
 
@@ -21,7 +19,8 @@ public abstract class EScreen2 extends EScreen2Utils {
         this.parent = parent;
     }
 
-    @Override protected void init() {
+    @Override
+    protected void init() {
         super.init();
         int tw = targetScreenWidth == -1 ? width : targetScreenWidth;
         scr = scrFromWidth(Math.min(tw, width));
@@ -89,30 +88,29 @@ public abstract class EScreen2 extends EScreen2Utils {
         return false;
     }
 
-    protected void preRender(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(poseStack);
+    protected void preRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderBackground(guiGraphics);
     }
 
-    protected void onRender(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    protected void onRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         hoverWidget(null);
         for (EWidget2 w : children) {
             if (w.rect.contains(mouseX, mouseY)) hoverWidget(w);
-            w.render(poseStack, mouseX, mouseY, partialTick);
+            w.render(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
 
-    protected void postRender(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    protected void postRender(GuiGraphics poseStack, int mouseX, int mouseY, float partialTick) {}
 
-    }
-
-    @Override public void onClose() {
+    @Override
+    public void onClose() {
         assert minecraft != null;
         minecraft.setScreen(parent);
     }
 
-    @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (focusWidget() != null && focusWidget().keyPressed(keyCode, scanCode, modifiers))
-            return true;
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (focusWidget() != null && focusWidget().keyPressed(keyCode, scanCode, modifiers)) return true;
 
         if (keyCode == InputConstants.KEY_ESCAPE) {
             boolean r = false;
@@ -127,12 +125,14 @@ public abstract class EScreen2 extends EScreen2Utils {
         return onKeyPressed(keyCode, scanCode, modifiers);
     }
 
-    @Override public boolean charTyped(char codePoint, int modifiers) {
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
         if (focusWidget() != null && focusWidget().charTyped(codePoint, modifiers)) return true;
         return onCharTyped(codePoint, modifiers);
     }
 
-    @Override public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         clickState = true;
 
         if (focusWidget() != null && hoverWidget() != focusWidget()) {
@@ -149,7 +149,8 @@ public abstract class EScreen2 extends EScreen2Utils {
         return onMouseClicked(mouseX, mouseY, button);
     }
 
-    @Override public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (!clickState) return false;
         clickState = false;
 
@@ -171,19 +172,22 @@ public abstract class EScreen2 extends EScreen2Utils {
         return r || onMouseReleased(mouseX, mouseY, button);
     }
 
-    @Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (!clickState) return false;
 
         return onMouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
-    @Override public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         return onMouseScrolled(mouseX, mouseY, delta);
     }
 
-    @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        preRender(poseStack, mouseX, mouseY, partialTick);
-        onRender(poseStack, mouseX, mouseY, partialTick);
-        postRender(poseStack, mouseX, mouseY, partialTick);
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        preRender(guiGraphics, mouseX, mouseY, partialTick);
+        onRender(guiGraphics, mouseX, mouseY, partialTick);
+        postRender(guiGraphics, mouseX, mouseY, partialTick);
     }
 }

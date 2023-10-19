@@ -3,7 +3,7 @@ package com.github.einjerjar.mc.keymapforge;
 import com.github.einjerjar.mc.keymap.Keymap;
 import com.github.einjerjar.mc.keymap.client.gui.screen.ConfigScreen;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -24,8 +24,7 @@ public class KeymapForge {
 
     // Prevents referent issue from fml
     public static class IDK {
-        private IDK() {
-        }
+        private IDK() {}
 
         private static void serverInit() {
             Keymap.logger().warn(Keymap.SERVER_WARN);
@@ -34,8 +33,11 @@ public class KeymapForge {
         private static void clientInit() {
             Keymap.init();
 
-            ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class,
-                    () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, parent) -> new ConfigScreen(parent)));
+            ModLoadingContext.get()
+                    .registerExtensionPoint(
+                            ConfigScreenHandler.ConfigScreenFactory.class,
+                            () -> new ConfigScreenHandler.ConfigScreenFactory(
+                                    (minecraft, parent) -> new ConfigScreen(parent)));
         }
     }
 }

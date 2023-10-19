@@ -9,22 +9,29 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @Accessors(fluent = true, chain = true)
 public final class ColorGroup {
-    @Getter private final ColorSet normal;
-    @Getter private final ColorSet hover;
-    @Getter private final ColorSet active;
-    @Getter private final ColorSet disabled;
+    @Getter
+    private final ColorSet normal;
+
+    @Getter
+    private final ColorSet hover;
+
+    @Getter
+    private final ColorSet active;
+
+    @Getter
+    private final ColorSet disabled;
 
     public ColorGroup(ColorSet normal, ColorSet hover, ColorSet active, ColorSet disabled) {
-        this.normal   = normal;
-        this.hover    = hover;
-        this.active   = active;
+        this.normal = normal;
+        this.hover = hover;
+        this.active = active;
         this.disabled = disabled;
     }
 
     public ColorGroup(int color) {
-        this.normal   = new ColorSet(color, ColorType.NORMAL);
-        this.hover    = new ColorSet(color, ColorType.HOVER);
-        this.active   = new ColorSet(color, ColorType.ACTIVE);
+        this.normal = new ColorSet(color, ColorType.NORMAL);
+        this.hover = new ColorSet(color, ColorType.HOVER);
+        this.active = new ColorSet(color, ColorType.ACTIVE);
         this.disabled = new ColorSet(color, ColorType.DISABLED);
     }
 

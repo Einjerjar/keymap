@@ -18,8 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(KeyboardHandler.class)
 public class KeyboardHandlerMixin {
-    private                KeyComboData lastValidCombo = null;
-    @Shadow @Final private Minecraft    minecraft;
+    private KeyComboData lastValidCombo = null;
+
+    @Shadow
+    @Final
+    private Minecraft minecraft;
 
     /**
      * Listens for keypress and checks if there is any matching keybind from the registry,
@@ -37,14 +40,13 @@ public class KeyboardHandlerMixin {
         if (windowPointer != minecraft.getWindow().getWindow()) return;
         Screen screen = minecraft.screen;
 
-        if (screen == null || screen.passEvents) {
-            KeyComboData kd = new KeyComboData(key,
-                    Screen.hasAltDown(),
-                    Screen.hasShiftDown(),
-                    Screen.hasControlDown());
-            if (lastValidCombo != null && action == 0
-                && lastValidCombo.keyCode() == kd.keyCode()
-                && KeymapRegistry.bindMap().inverse().containsKey(lastValidCombo)) {
+        if (screen == null) {
+            KeyComboData kd =
+                    new KeyComboData(key, Screen.hasAltDown(), Screen.hasShiftDown(), Screen.hasControlDown());
+            if (lastValidCombo != null
+                    && action == 0
+                    && lastValidCombo.keyCode() == kd.keyCode()
+                    && KeymapRegistry.bindMap().inverse().containsKey(lastValidCombo)) {
                 KeyMapping k = KeymapRegistry.bindMap().inverse().get(lastValidCombo);
                 k.setDown(false);
 

@@ -1,7 +1,7 @@
 plugins {
     id "co.uzzu.dotenv.gradle" version "2.0.0"
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
+    id "architectury-plugin" version "3.+"
+    id "dev.architectury.loom" version "1.3.+" apply false
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
     id "com.modrinth.minotaur" version "2.+" apply false
 }
@@ -18,18 +18,15 @@ subprojects {
     }
 
     dependencies {
-        compileOnly "org.projectlombok:lombok:${project.version_lombok}"
-        annotationProcessor "org.projectlombok:lombok:${project.version_lombok}"
+        compileOnly "org.projectlombok:lombok:${rootProject.version_lombok}"
+        annotationProcessor "org.projectlombok:lombok:${rootProject.version_lombok}"
 
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
 
         mappings loom.layered() {
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-1.18.2:2022.06.26@zip")
+            parchment("org.parchmentmc.data:parchment-${rootProject.minecraft_version}:${rootProject.parchmentmc_version}@zip")
         }
-
-        implementation "com.google.code.gson:gson:${project.version_gson}"
-        implementation("com.google.guava:guava:${project.version_guava}")
     }
 
     ext {

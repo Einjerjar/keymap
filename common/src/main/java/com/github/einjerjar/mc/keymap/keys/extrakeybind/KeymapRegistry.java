@@ -34,12 +34,13 @@ public class KeymapRegistry {
     /**
      * The expected output of the parse json, also the type of the actual registry
      */
-    public static final            Type          TYPE_BIND_MAP_KEY = new TypeToken<Map<String, KeyComboData>>() {
-    }.getType();
+    public static final Type TYPE_BIND_MAP_KEY = new TypeToken<Map<String, KeyComboData>>() {}.getType();
     /**
      * List of keys that are marked as modifiers
      */
-    @Getter protected static final List<Integer> MODIFIER_KEYS     = Arrays.asList(InputConstants.KEY_LALT,
+    @Getter
+    protected static final List<Integer> MODIFIER_KEYS = Arrays.asList(
+            InputConstants.KEY_LALT,
             InputConstants.KEY_RALT,
             InputConstants.KEY_LSHIFT,
             InputConstants.KEY_RSHIFT,
@@ -49,33 +50,32 @@ public class KeymapRegistry {
     /**
      * TODO: Make only one instance in a centralized location, Keymap class probably?
      */
-    protected static final Gson                            gson       = new GsonBuilder().setPrettyPrinting().create();
+    protected static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     /**
      * The actual registry, bimap so we can search the other way around, also guava is lit
      */
-    protected static final BiMap<KeyMapping, KeyComboData> bindMap    = HashBiMap.create();
+    protected static final BiMap<KeyMapping, KeyComboData> bindMap = HashBiMap.create();
     /**
      * The registry, except, the string keys of the keymaps, the data that is saved and loaded
      */
-    protected static       Map<String, KeyComboData>       bindMapKey = new HashMap<>();
+    protected static Map<String, KeyComboData> bindMapKey = new HashMap<>();
     /**
      * Reference to this class's config file
      */
-    protected static       File                            cfgFile    = null;
+    protected static File cfgFile = null;
     /**
      * Whether the load function has been run
      */
-    protected static       boolean                         loaded     = false;
+    protected static boolean loaded = false;
 
-    private KeymapRegistry() {
-    }
+    private KeymapRegistry() {}
 
     /**
      * The config file instance, if not available create it
      *
      * @return The config file instance
      */
-    protected synchronized static File cfgFile() {
+    protected static synchronized File cfgFile() {
         return cfgFile != null ? cfgFile : Services.PLATFORM.config("keymap-keys.json");
     }
 
@@ -117,7 +117,8 @@ public class KeymapRegistry {
                 List<KeyHolder> keyHolders = source.getKeyHolders();
                 if (keyHolders.isEmpty() || !(keyHolders.get(0) instanceof VanillaKeymap)) continue;
 
-                List<VanillaKeymap> vk = keyHolders.stream().map(VanillaKeymap.class::cast).toList();
+                List<VanillaKeymap> vk =
+                        keyHolders.stream().map(VanillaKeymap.class::cast).toList();
 
                 for (VanillaKeymap v : vk) {
                     if (keys.contains(v.map().getName())) {

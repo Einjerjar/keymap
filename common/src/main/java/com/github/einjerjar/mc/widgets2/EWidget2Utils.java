@@ -3,14 +3,13 @@ package com.github.einjerjar.mc.widgets2;
 import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.github.einjerjar.mc.widgets.utils.Tooltipped;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -23,24 +22,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(fluent = true)
-public abstract class EWidget2Utils extends GuiComponent implements Widget, GuiEventListener, NarratableEntry, Tooltipped {
+public abstract class EWidget2Utils implements Renderable, GuiEventListener, NarratableEntry, Tooltipped {
     protected final Font font = Minecraft.getInstance().font;
 
-    @Getter @Setter protected Rect rect;
+    @Getter
+    @Setter
+    protected Rect rect;
 
-    @Getter @Setter protected boolean visible   = true;
-    @Getter @Setter protected boolean enabled   = true;
-    @Getter @Setter protected boolean focused   = false;
-    @Getter @Setter protected boolean active    = false;
-    @Getter @Setter protected boolean hovered   = false;
-    @Getter @Setter protected boolean focusable = false;
+    @Getter
+    @Setter
+    protected boolean visible = true;
 
+    @Getter
+    @Setter
+    protected boolean enabled = true;
 
-    @Getter @Setter protected int color        = 0xFFFFFF;
-    @Getter @Setter protected int transparency = 0xFF_000000;
+    @Getter
+    @Setter
+    protected boolean focused = false;
 
-    @Getter @Setter protected List<Component> tooltips = new ArrayList<>();
-    @Getter @Setter protected Point<Integer>  padding  = new Point<>(0);
+    @Getter
+    @Setter
+    protected boolean active = false;
+
+    @Getter
+    @Setter
+    protected boolean hovered = false;
+
+    @Getter
+    @Setter
+    protected boolean focusable = false;
+
+    @Getter
+    @Setter
+    protected int color = 0xFFFFFF;
+
+    @Getter
+    @Setter
+    protected int transparency = 0xFF_000000;
+
+    @Getter
+    @Setter
+    protected List<Component> tooltips = new ArrayList<>();
+
+    @Getter
+    @Setter
+    protected Point<Integer> padding = new Point<>(0);
 
     protected EWidget2Utils(int x, int y, int w, int h) {
         this.rect = new Rect(x, y, w, h);
@@ -58,23 +85,30 @@ public abstract class EWidget2Utils extends GuiComponent implements Widget, GuiE
         return tColor(transparency);
     }
 
-    protected void drawOutline(@NotNull PoseStack ps, int l, int t, int r, int b, int c) {
-        U.outline(ps, l, t, r, b, c);
+    protected void drawOutline(@NotNull GuiGraphics guiGraphics, int l, int t, int r, int b, int c) {
+        U.outline(guiGraphics, l, t, r, b, c);
     }
 
-    protected void drawOutline(@NotNull PoseStack ps, Rect r, int c) {
-        drawOutline(ps, r.left(), r.top(), r.right(), r.bottom(), c);
+    protected void drawOutline(@NotNull GuiGraphics guiGraphics, Rect r, int c) {
+        drawOutline(guiGraphics, r.left(), r.top(), r.right(), r.bottom(), c);
     }
 
-    protected void drawOutline(@NotNull PoseStack ps, int c) {
-        drawOutline(ps, rect, c);
+    protected void drawOutline(@NotNull GuiGraphics guiGraphics, int c) {
+        drawOutline(guiGraphics, rect, c);
     }
 
     protected Point<Integer> center() {
-        return new Point<>(
-                (rect.left() + rect.right()) / 2,
-                (rect.top() + rect.bottom()) / 2
-        );
+        return new Point<>((rect.left() + rect.right()) / 2, (rect.top() + rect.bottom()) / 2);
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        focused(focused);
+    }
+
+    @Override
+    public boolean isFocused() {
+        return focused();
     }
 
     public WidgetState state() {
@@ -97,7 +131,8 @@ public abstract class EWidget2Utils extends GuiComponent implements Widget, GuiE
         playSound(sound, 1f);
     }
 
-    @Override public List<Component> getTooltips() {
+    @Override
+    public List<Component> getTooltips() {
         return tooltips;
     }
 
@@ -110,10 +145,11 @@ public abstract class EWidget2Utils extends GuiComponent implements Widget, GuiE
         tooltips = tips;
     }
 
-    @Override public @NotNull NarrationPriority narrationPriority() {
+    @Override
+    public @NotNull NarrationPriority narrationPriority() {
         return NarrationPriority.NONE;
     }
 
-    @Override public void updateNarration(@NotNull NarrationElementOutput narrationElementOutput) {
-    }
+    @Override
+    public void updateNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 }

@@ -10,8 +10,7 @@ import java.util.List;
  * General util to reduce code repetition when generating VK layouts
  */
 public class VKUtil {
-    private VKUtil() {
-    }
+    private VKUtil() {}
 
     /**
      * Generate a dumb layout without any action handlers
@@ -37,23 +36,19 @@ public class VKUtil {
      *
      * @return  A list of VirtualKeyboardWidget instances
      */
-    public static List<VirtualKeyboardWidget> genLayout(KeyLayout layout, int x, int y, EWidget.SimpleWidgetAction<VirtualKeyboardWidget> onClick, VirtualKeyboardWidget.SpecialVKKeyClicked onSpecialClick) {
+    public static List<VirtualKeyboardWidget> genLayout(
+            KeyLayout layout,
+            int x,
+            int y,
+            EWidget.SimpleWidgetAction<VirtualKeyboardWidget> onClick,
+            VirtualKeyboardWidget.SpecialVKKeyClicked onSpecialClick) {
         VirtualKeyboardWidget vkBasic = new VirtualKeyboardWidget(layout.keys().basic(), x, y, 0, 0);
-        VirtualKeyboardWidget vkExtra = new VirtualKeyboardWidget(layout.keys().extra(),
-                vkBasic.left(),
-                vkBasic.bottom() + 4,
-                0,
-                0);
-        VirtualKeyboardWidget vkMouse = new VirtualKeyboardWidget(layout.keys().mouse(),
-                vkExtra.left(),
-                vkExtra.bottom() + 2,
-                0,
-                0);
-        VirtualKeyboardWidget vkNumpad = new VirtualKeyboardWidget(layout.keys().numpad(),
-                vkMouse.right() + 4,
-                vkBasic.bottom() + 4,
-                0,
-                0);
+        VirtualKeyboardWidget vkExtra =
+                new VirtualKeyboardWidget(layout.keys().extra(), vkBasic.left(), vkBasic.bottom() + 4, 0, 0);
+        VirtualKeyboardWidget vkMouse =
+                new VirtualKeyboardWidget(layout.keys().mouse(), vkExtra.left(), vkExtra.bottom() + 2, 0, 0);
+        VirtualKeyboardWidget vkNumpad =
+                new VirtualKeyboardWidget(layout.keys().numpad(), vkMouse.right() + 4, vkBasic.bottom() + 4, 0, 0);
 
         List<VirtualKeyboardWidget> vks = List.of(vkBasic, vkExtra, vkMouse, vkNumpad);
 

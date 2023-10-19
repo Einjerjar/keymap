@@ -4,11 +4,10 @@ import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
 import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Rect;
-import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -18,26 +17,29 @@ import java.util.Optional;
 
 @Accessors(fluent = true, chain = true)
 public abstract class EScreen extends Screen {
-    protected final Point<Integer> margin  = new Point<>(6);
+    protected final Point<Integer> margin = new Point<>(6);
     protected final Point<Integer> padding = new Point<>(4);
 
     protected boolean autoRenderChild = true;
-    protected boolean clickState      = false;
-    protected boolean renderBg        = true;
-    protected EWidget hoveredWidget   = null;
-    protected ELabel  debugFocus;
-    protected ELabel  debugHover;
-    protected Rect    scr;
-    @Getter   Screen  parent;
+    protected boolean clickState = false;
+    protected boolean renderBg = true;
+    protected EWidget hoveredWidget = null;
+    protected ELabel debugFocus;
+    protected ELabel debugHover;
+    protected Rect scr;
+
+    @Getter
+    Screen parent;
 
     protected EScreen(Screen parent, Component text) {
         super(text);
         this.parent = parent;
     }
 
-    @Override protected void init() {
-        debugFocus = new ELabel(Text.literal("focused"), 0, 4, width, font.lineHeight);
-        debugHover = new ELabel(Text.literal("hovered"), 0, 14, width, font.lineHeight);
+    @Override
+    protected void init() {
+        debugFocus = new ELabel(Component.literal("focused"), 0, 4, width, font.lineHeight);
+        debugHover = new ELabel(Component.literal("hovered"), 0, 14, width, font.lineHeight);
         debugFocus.color(ColorGroups.WHITE);
         debugHover.color(ColorGroups.WHITE);
         debugFocus.center(true);
@@ -47,16 +49,14 @@ public abstract class EScreen extends Screen {
     }
 
     protected Rect scrFromWidth(int w) {
-        return new Rect(Math.max((width - w) / 2, 0) + margin.x(),
-                margin.y(),
-                w - margin.x() * 2,
-                height - margin.y() * 2);
+        return new Rect(
+                Math.max((width - w) / 2, 0) + margin.x(), margin.y(), w - margin.x() * 2, height - margin.y() * 2);
     }
 
     protected abstract void onInit();
 
-
-    @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         EWidget focus = (EWidget) getFocused();
 
         if (focus != null && focus.keyPressed(keyCode, scanCode, modifiers)) return true;
@@ -78,11 +78,13 @@ public abstract class EScreen extends Screen {
         return false;
     }
 
-    @Override public boolean charTyped(char chr, int modifiers) {
+    @Override
+    public boolean charTyped(char chr, int modifiers) {
         return onCharTyped(chr, modifiers);
     }
 
-    @Override public void onClose() {
+    @Override
+    public void onClose() {
         assert minecraft != null;
         minecraft.setScreen(parent);
     }
@@ -91,7 +93,8 @@ public abstract class EScreen extends Screen {
         return false;
     }
 
-    @Override public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         clickState = true;
 
         // Click always resets focused element
@@ -122,7 +125,8 @@ public abstract class EScreen extends Screen {
         return false;
     }
 
-    @Override public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         setDragging(false);
         // Prevents flick from previous screen to pass through
         if (!clickState) return false;
@@ -150,7 +154,8 @@ public abstract class EScreen extends Screen {
         return focus.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
-    @Override public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         return onMouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
@@ -159,53 +164,57 @@ public abstract class EScreen extends Screen {
         return hoveredWidget.mouseScrolled(mouseX, mouseY, amount);
     }
 
-    @Override public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         return onMouseScrolled(mouseX, mouseY, amount);
     }
 
     public List<EWidget> widgets() {
-        return children().stream().filter(EWidget.class::isInstance).map(EWidget.class::cast).toList();
+        return children().stream()
+                .filter(EWidget.class::isInstance)
+                .map(EWidget.class::cast)
+                .toList();
     }
 
-    @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        if (renderBg) renderBackground(poseStack);
-        preRenderScreen(poseStack, mouseX, mouseY, partialTick);
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        if (renderBg) renderBackground(guiGraphics);
+        preRenderScreen(guiGraphics, mouseX, mouseY, partialTick);
         hoveredWidget = null;
         if (autoRenderChild) {
             for (EWidget d : widgets()) {
-                d.render(poseStack, mouseX, mouseY, partialTick);
+                d.render(guiGraphics, mouseX, mouseY, partialTick);
                 if (d.rect().contains(mouseX, mouseY)) {
                     hoveredWidget = d;
                 }
             }
         }
-        postRenderScreen(poseStack, mouseX, mouseY, partialTick);
+        postRenderScreen(guiGraphics, mouseX, mouseY, partialTick);
 
         if (KeymapConfig.instance().debug2()) {
-            fill(poseStack, 0, 0, width, 30, 0x66_000000);
-            debugHover.text(Text.literal(hoveredWidget != null ? hoveredWidget.getClass().getName() : "none"));
-            debugFocus.text(Text.literal(getFocused() != null ? getFocused().getClass().getName() : "none"));
-            debugHover.render(poseStack, mouseX, mouseY, partialTick);
-            debugFocus.render(poseStack, mouseX, mouseY, partialTick);
+            guiGraphics.fill(0, 0, width, 30, 0x66_000000);
+            debugHover.text(Component.literal(
+                    hoveredWidget != null ? hoveredWidget.getClass().getName() : "none"));
+            debugFocus.text(Component.literal(
+                    getFocused() != null ? getFocused().getClass().getName() : "none"));
+            debugHover.render(guiGraphics, mouseX, mouseY, partialTick);
+            debugFocus.render(guiGraphics, mouseX, mouseY, partialTick);
         }
-        postRenderDebugScreen(poseStack, mouseX, mouseY, partialTick);
+        postRenderDebugScreen(guiGraphics, mouseX, mouseY, partialTick);
 
-        if (hoveredWidget != null && hoveredWidget.getTooltips() != null) renderTooltip(poseStack,
-                hoveredWidget.getTooltips(),
-                Optional.empty(),
-                mouseX,
-                mouseY);
+        if (hoveredWidget != null && hoveredWidget.getTooltips() != null)
+            guiGraphics.renderTooltip(font, hoveredWidget.getTooltips(), Optional.empty(), mouseX, mouseY);
     }
 
-    protected void preRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    protected void preRenderScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         //    override to render after the bg, but before the widgets
     }
 
-    protected void postRenderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    protected void postRenderScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         //    override to render after the widgets, but not before the debug
     }
 
-    protected void postRenderDebugScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    protected void postRenderDebugScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         //    override to render after debug
     }
 
@@ -225,26 +234,26 @@ public abstract class EScreen extends Screen {
         return height;
     }
 
-    public void drawOutline(PoseStack poseStack, int left, int top, int right, int bottom, int color) {
-        hLine(poseStack, left, right, top, color);
-        hLine(poseStack, left, right, bottom, color);
-        vLine(poseStack, left, top, bottom, color);
-        vLine(poseStack, right, top, bottom, color);
+    public void drawOutline(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int color) {
+        guiGraphics.hLine(left, right, top, color);
+        guiGraphics.hLine(left, right, bottom, color);
+        guiGraphics.vLine(left, top, bottom, color);
+        guiGraphics.vLine(right, top, bottom, color);
     }
 
-    public void drawOutline(PoseStack poseStack, int color) {
-        drawOutline(poseStack, left(), top(), right(), bottom(), color);
+    public void drawOutline(GuiGraphics guiGraphics, int color) {
+        drawOutline(guiGraphics, left(), top(), right(), bottom(), color);
     }
 
-    public void drawOutline(PoseStack poseStack, Rect r, int color) {
-        drawOutline(poseStack, r.left(), r.top(), r.right(), r.bottom(), color);
+    public void drawOutline(GuiGraphics guiGraphics, Rect r, int color) {
+        drawOutline(guiGraphics, r.left(), r.top(), r.right(), r.bottom(), color);
     }
 
-    public void drawBg(PoseStack poseStack, int left, int top, int right, int bottom, int color) {
-        fill(poseStack, left, top, right, bottom, color);
+    public void drawBg(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int color) {
+        guiGraphics.fill(left, top, right, bottom, color);
     }
 
-    public void drawBg(PoseStack poseStack, int color) {
-        drawBg(poseStack, left(), top(), right(), bottom(), color);
+    public void drawBg(GuiGraphics guiGraphics, int color) {
+        drawBg(guiGraphics, left(), top(), right(), bottom(), color);
     }
 }
