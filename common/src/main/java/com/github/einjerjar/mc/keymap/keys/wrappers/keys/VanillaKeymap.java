@@ -116,6 +116,7 @@ public class VanillaKeymap implements KeyHolder {
         InputConstants.Key key = type.getOrCreate(keys.get(0));
         updateProps(key);
         Minecraft.getInstance().options.setKey(map, key);
+        KeyMapping.resetMapping();
         return true;
     }
 

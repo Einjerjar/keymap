@@ -129,8 +129,7 @@ public class KeymapRegistry {
         } catch (FileNotFoundException e) {
             Keymap.logger().info("No keymap complex-key save found");
         } catch (Exception e) {
-            Keymap.logger().error("!! Can't read keymap's complex-key save !!");
-            e.printStackTrace();
+            Keymap.logger().error("!! Can't read keymap's complex-key save !!", e);
         } finally {
             loaded = true;
         }
@@ -143,8 +142,7 @@ public class KeymapRegistry {
         try (FileWriter writer = new FileWriter(cfgFile())) {
             gson.toJson(bindMapKey(), writer);
         } catch (Exception e) {
-            Keymap.logger().error("!! Can't save key config !!");
-            e.printStackTrace();
+            Keymap.logger().error("!! Can't save key config !!", e);
         }
     }
 
