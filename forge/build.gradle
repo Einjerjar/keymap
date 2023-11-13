@@ -54,7 +54,7 @@ shadowJar {
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = null
 }
@@ -97,13 +97,14 @@ modrinth {
         throw new GradleException("Modrinth token not set!")
     }
     token = env.MODRINTH_API.value
-    projectId = "keymap"
+    projectId = env.MODRINTH_ID.value
     versionNumber = version
     versionType = rootProject.mod_version_type
-    uploadFile = jar
+    uploadFile = remapJar
     debugMode = publishDebug
-    gameVersions = ["1.18.2"]
+    gameVersions = [rootProject.minecraft_version]
     loaders = ["forge"]
+    changelog = rootProject.file("changelog.md").text
 }
 
 curseforge {
