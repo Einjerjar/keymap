@@ -17,14 +17,20 @@ import static com.github.einjerjar.mc.keymap.cross.Services.*;
 
 @Accessors(fluent = true, chain = true)
 public class Keymap {
-    public static final            String     MOD_ID      = "keymap";
-    public static final            String     SERVER_WARN = "Keymap is being ran on a DedicatedServer environment, even though it can only work on Client side environment";
-    @Getter protected static final String     MOD_NAME    = "keymap";
-    @Getter protected static final Logger     logger      = LogManager.getLogger();
-    @Getter protected static       KeyMapping kmOpenMapper;
+    public static final String MOD_ID = "keymap";
+    public static final String SERVER_WARN =
+            "Keymap is being ran on a DedicatedServer environment, even though it can only work on Client side environment";
 
-    private Keymap() {
-    }
+    @Getter
+    protected static final String MOD_NAME = "keymap";
+
+    @Getter
+    protected static final Logger logger = LogManager.getLogger();
+
+    @Getter
+    protected static KeyMapping kmOpenMapper;
+
+    private Keymap() {}
 
     /**
      * General mod setup
@@ -34,14 +40,11 @@ public class Keymap {
         logger.info("Keymap loaded, loader={}, dev={}", PLATFORM.loader(), PLATFORM.dev());
 
         kmOpenMapper = KEYBIND.create(
-                InputConstants.Type.KEYSYM,
-                InputConstants.KEY_GRAVE,
-                "keymap.keyOpenKeymap",
-                "keymap.keyCat"
-        );
+                InputConstants.Type.KEYSYM, InputConstants.KEY_GRAVE, "keymap.keyOpenKeymap", "keymap.keyCat");
 
         for (KeyLayout keyLayout : KeyLayout.layouts().values()) {
-            logger.debug("Layout for {} @ {}",
+            logger.debug(
+                    "Layout for {} @ {}",
                     keyLayout.meta().code(),
                     keyLayout.meta().name());
         }
@@ -57,5 +60,4 @@ public class Keymap {
 
         logger.warn(Credits.instance().toString());
     }
-
 }

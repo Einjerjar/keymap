@@ -1,2 +1,1 @@
-- [CHORE] refactor
-- [FIX] keymap layouts not loading on quilt loader 0.18.x
+fix: publish the correct build

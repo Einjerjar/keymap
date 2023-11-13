@@ -17,25 +17,26 @@ public class KeyData {
     /**
      * The keycode
      */
-    protected         int     code;
+    protected int code;
     /**
      * The text to display on the virtual key
      */
-    protected         String  name;
+    protected String name;
     /**
      * Whether this key can be assigned (eg; super/windows keys should be disabled)
      */
-    protected         boolean enabled;
+    protected boolean enabled;
     /**
      * Whether the key is a mouse key
      */
-    @Setter protected boolean mouse;
+    @Setter
+    protected boolean mouse;
     /**
      * Extra width for the key (can be negative)
      */
-    protected         int     width;
+    protected int width;
     /**
      * Extra height for the key (can be negative)
      */
-    protected         int     height;
+    protected int height;
 }

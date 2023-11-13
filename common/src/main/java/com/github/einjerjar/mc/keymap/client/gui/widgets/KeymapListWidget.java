@@ -12,13 +12,12 @@ import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.github.einjerjar.mc.widgets.EList;
 import com.github.einjerjar.mc.widgets.utils.Rect;
 import com.github.einjerjar.mc.widgets.utils.Styles;
-import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -33,14 +32,16 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
     protected final List<KeymapListEntry> filteredItemList = new ArrayList<>();
 
-    @Getter protected String filterString = "";
+    @Getter
+    protected String filterString = "";
 
     public KeymapListWidget(int itemHeight, int x, int y, int w, int h) {
         super(itemHeight, x, y, w, h);
         updateFilteredList();
     }
 
-    @Override protected List<KeymapListEntry> filteredItems() {
+    @Override
+    protected List<KeymapListEntry> filteredItems() {
         return filteredItemList;
     }
 
@@ -50,17 +51,20 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         return this;
     }
 
-    @Override public void updateFilteredList() {
+    @Override
+    public void updateFilteredList() {
         filteredItemList.clear();
         if (filterString.trim().isBlank()) {
             filteredItemList.addAll(items);
         } else {
             for (KeymapListEntry item : items) {
-                List<String> segments = Arrays.stream(filterString.split(" ")).filter(s -> !s.isBlank()).toList();
+                List<String> segments = Arrays.stream(filterString.split(" "))
+                        .filter(s -> !s.isBlank())
+                        .toList();
                 long matches = segments.stream()
-                        .filter(s -> item.map
-                                .getSearchString()
-                                .contains(s)).toList().size();
+                        .filter(s -> item.map.getSearchString().contains(s))
+                        .toList()
+                        .size();
                 if (matches == segments.size()) {
                     filteredItemList.add(item);
                 }
@@ -69,21 +73,24 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         setScrollPos(0);
     }
 
-    @Override protected void setSelected(KeymapListEntry i, boolean selected) {
+    @Override
+    protected void setSelected(KeymapListEntry i, boolean selected) {
         if (i != null) {
             i.selected(selected);
             KeymappingNotifier.notifySubscriber(i.map.getSingleCode(), selected);
         }
     }
 
-    @Override public void setItemSelected(KeymapListEntry t) {
+    @Override
+    public void setItemSelected(KeymapListEntry t) {
         setLastItemSelected(itemSelected);
         setSelected(itemSelected, false);
         itemSelected = t;
         setSelected(itemSelected, true);
     }
 
-    @Override public void setLastItemSelected(KeymapListEntry t) {
+    @Override
+    public void setLastItemSelected(KeymapListEntry t) {
         setSelected(lastItemSelected, false);
         lastItemSelected = t;
         setSelected(lastItemSelected, true);
@@ -146,10 +153,10 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
         if (!(item != null && item.map instanceof VanillaKeymap vk)) return false;
         int lastCode = vk.getSingleCode();
-        int newCode  = kd.keyCode() == InputConstants.KEY_ESCAPE ? -1 : kd.keyCode();
+        int newCode = kd.keyCode() == InputConstants.KEY_ESCAPE ? -1 : kd.keyCode();
 
-        int          ko = KeymappingNotifier.keyOf(vk);
-        int          kk = ko;
+        int ko = KeymappingNotifier.keyOf(vk);
+        int kk = ko;
         KeyComboData kl = KeymapRegistry.bindMap().get(vk.map());
         if (kl != null) kk = kl.keyCode();
 
@@ -201,22 +208,28 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         for (KeymapListEntry item : items) item.updateTooltips();
     }
 
-    @Override public void sort() {
+    @Override
+    public void sort() {
         this.items().sort(Comparator.comparing(o -> o.map.getTranslatedName().getString()));
-        this.filteredItemList.sort(Comparator.comparing(o -> o.map.getTranslatedName().getString()));
+        this.filteredItemList.sort(
+                Comparator.comparing(o -> o.map.getTranslatedName().getString()));
     }
 
     @Accessors(fluent = true, chain = true)
     public static class KeymapListEntry extends EListEntry<KeymapListEntry> {
-        protected static final String    CHAR_ASSIGNED   = "⬛ ";
-        protected static final String    CHAR_UNASSIGNED = "⬜ ";
-        protected static       Integer   CHAR_ASSIGN_W   = null;
-        @Getter protected      KeyHolder map;
-        @Getter protected      Component keyString;
+        protected static final String CHAR_ASSIGNED = "⬛ ";
+        protected static final String CHAR_UNASSIGNED = "⬜ ";
+        protected static Integer CHAR_ASSIGN_W = null;
+
+        @Getter
+        protected KeyHolder map;
+
+        @Getter
+        protected Component keyString;
 
         public KeymapListEntry(KeyHolder map, KeymapListWidget container) {
             super(container);
-            this.map       = map;
+            this.map = map;
             this.keyString = map.getTranslatedName();
             updateTooltips();
         }
@@ -230,27 +243,28 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
 
         protected void updateDebugTooltips() {
             if (KeymapConfig.instance().debug()) {
-                tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
-                tooltips.add(Text.literal(String.format("Search: %s",
-                        map.getSearchString())).withStyle(Styles.yellow()));
+                tooltips.add(Component.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+                tooltips.add(Component.literal(String.format("Search: %s", map.getSearchString()))
+                        .withStyle(Styles.yellow()));
             }
         }
 
-        @Override public void updateTooltips() {
+        @Override
+        public void updateTooltips() {
             tooltips.clear();
-            tooltips.add(Text.literal(this.keyString.getString()).withStyle(Styles.headerBold()));
-            tooltips.add(Text.literal(String.format("[@%s #%s]",
-                    Language.getInstance().getOrDefault(this.map().getCategory()),
-                    Language.getInstance().getOrDefault(this.map().getModName())
-            )).withStyle(Styles.muted2()));
-            tooltips.add(map.isAssigned() ? map.getTranslatedKey() : Text.translatable("key.keyboard.unknown"));
+            tooltips.add(Component.literal(this.keyString.getString()).withStyle(Styles.headerBold()));
+            tooltips.add(Component.literal(String.format(
+                            "[@%s #%s]",
+                            Language.getInstance().getOrDefault(this.map().getCategory()),
+                            Language.getInstance().getOrDefault(this.map().getModName())))
+                    .withStyle(Styles.muted2()));
+            tooltips.add(map.isAssigned() ? map.getTranslatedKey() : Component.translatable("key.keyboard.unknown"));
             updateDebugTooltips();
         }
 
-        @Override public String toString() {
-            return "KeymapListEntryWidget{" +
-                   "keyString=" + keyString.getString() +
-                   '}';
+        @Override
+        public String toString() {
+            return "KeymapListEntryWidget{" + "keyString=" + keyString.getString() + '}';
         }
 
         public void resetKey() {
@@ -258,16 +272,16 @@ public class KeymapListWidget extends EList<KeymapListWidget.KeymapListEntry> {
         }
 
         @Override
-        public void renderWidget(@NotNull PoseStack poseStack, Rect r, float partialTick) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, Rect r, float partialTick) {
             String trimmed = font.substrByWidth(keyString, r.w() - charW()).getString();
-            drawString(poseStack, font,
-                    map.isAssigned()
-                    ? CHAR_ASSIGNED
-                    : CHAR_UNASSIGNED, r.x(), r.y(),
-                    map.isAssigned()
-                    ? color.active().text()
-                    : color.normal().text());
-            drawString(poseStack, font, trimmed, r.x() + charW(), r.y(), getVariant().text());
+            guiGraphics.drawString(
+                    font,
+                    map.isAssigned() ? CHAR_ASSIGNED : CHAR_UNASSIGNED,
+                    r.x(),
+                    r.y(),
+                    map.isAssigned() ? color.active().text() : color.normal().text());
+            guiGraphics.drawString(
+                    font, trimmed, r.x() + charW(), r.y(), getVariant().text());
         }
     }
 }

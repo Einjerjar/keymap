@@ -29,8 +29,7 @@ public class Services {
      */
     public static final ITickHelper TICK = PLATFORM.tickHelper();
 
-    private Services() {
-    }
+    private Services() {}
 
     /**
      * Loads a class via the ServiceLoader, throws a RuntimeException when there is
@@ -44,8 +43,6 @@ public class Services {
     public static <T> T load(Class<T> c) {
         return ServiceLoader.load(c)
                 .findFirst()
-                .orElseThrow(() ->
-                        new RuntimeException(String.format("Can't load service for %s", c.getName()))
-                );
+                .orElseThrow(() -> new RuntimeException(String.format("Can't load service for %s", c.getName())));
     }
 }

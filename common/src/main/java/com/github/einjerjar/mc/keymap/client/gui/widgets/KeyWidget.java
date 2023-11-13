@@ -10,27 +10,38 @@ import com.github.einjerjar.mc.widgets.EWidget;
 import com.github.einjerjar.mc.widgets.utils.ColorGroups;
 import com.github.einjerjar.mc.widgets.utils.ColorSet;
 import com.github.einjerjar.mc.widgets.utils.Styles;
-import com.github.einjerjar.mc.widgets.utils.Text;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(fluent = true, chain = true)
 public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingRegistrySubscriber {
-    @Getter protected         KeyData                       key;
-    @Getter protected         InputConstants.Key            mcKey;
-    @Setter protected         SimpleWidgetAction<KeyWidget> onClick;
-    @Setter protected         SpecialKeyWidgetAction        onSpecialClick;
-    @Getter @Setter protected boolean                       selected   = false;
-    protected                 Component                     text;
-    protected                 boolean                       hasComplex = false;
+    @Getter
+    protected KeyData key;
+
+    @Getter
+    protected InputConstants.Key mcKey;
+
+    @Setter
+    protected SimpleWidgetAction<KeyWidget> onClick;
+
+    @Setter
+    protected SpecialKeyWidgetAction onSpecialClick;
+
+    @Getter
+    @Setter
+    protected boolean selected = false;
+
+    protected Component text;
+    protected boolean hasComplex = false;
 
     public KeyWidget(KeyData key, int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -38,9 +49,9 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
     }
 
     protected void _init(KeyData key) {
-        this.key      = key;
-        this.text     = Text.literal(key.name());
-        this.mcKey    = getMCKey(key);
+        this.key = key;
+        this.text = Component.literal(key.name());
+        this.mcKey = getMCKey(key);
         this.tooltips = new ArrayList<>();
         this.tooltips.add(mcKey.getDisplayName());
         if (key.code() == -2) {
@@ -69,13 +80,14 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
     }
 
     public boolean updateTooltipForOtherMouseKeys() {
-        tooltips.add(Text.literal(text.getString()).withStyle(Styles.header()));
+        tooltips.add(Component.literal(text.getString()).withStyle(Styles.header()));
         List<Component> boundKeys = new ArrayList<>();
         // 10 mouse keys
         for (int i = 0; i < 10; i++) {
             if (KeymappingNotifier.keys().containsKey(i)) {
                 for (KeyHolder k : KeymappingNotifier.keys().get(i)) {
-                    boundKeys.add(Text.literal(String.format("[%s] %s", i, k.getTranslatedName().getString())));
+                    boundKeys.add(Component.literal(
+                            String.format("[%s] %s", i, k.getTranslatedName().getString())));
                 }
             }
         }
@@ -84,7 +96,7 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
         this.color(ColorGroups.WHITE);
         if (size > 0) {
             this.color(ColorGroups.GREEN);
-            tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+            tooltips.add(Component.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
             tooltips.addAll(boundKeys);
         }
         if (selected) this.color(ColorGroups.YELLOW);
@@ -101,18 +113,21 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
 
     protected void updateDebugTooltips() {
         if (KeymapConfig.instance().debug()) {
-            tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
-            tooltips.add(Text.literal(String.format("Code: %d", key.code())).withStyle(Styles.yellow()));
-            tooltips.add(Text.literal(String.format("Mouse?: %b", key.mouse())).withStyle(Styles.yellow()));
-            tooltips.add(Text.literal(String.format("Name: %s", key.name())).withStyle(Styles.yellow()));
+            tooltips.add(Component.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+            tooltips.add(
+                    Component.literal(String.format("Code: %d", key.code())).withStyle(Styles.yellow()));
+            tooltips.add(
+                    Component.literal(String.format("Mouse?: %b", key.mouse())).withStyle(Styles.yellow()));
+            tooltips.add(
+                    Component.literal(String.format("Name: %s", key.name())).withStyle(Styles.yellow()));
         }
     }
 
     // TODO: Intellij/Sonarlint complaining about cognitive complexity
     public void updateNormalTooltip() {
-        tooltips.add(Text.literal(String.format("(%s) ",
-                text.getString())).withStyle(Styles.yellow()).append(Text.literal(mcKey.getDisplayName().getString()).withStyle(
-                Styles.headerBold())));
+        tooltips.add(Component.literal(String.format("(%s) ", text.getString()))
+                .withStyle(Styles.yellow())
+                .append(Component.literal(mcKey.getDisplayName().getString()).withStyle(Styles.headerBold())));
 
         hasComplex = KeymapRegistry.containsKey(key.code());
         if (KeymappingNotifier.keys().containsKey(key.code())) {
@@ -126,7 +141,7 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
             }
 
             if (size > 0) {
-                tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+                tooltips.add(Component.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
                 for (KeyHolder k : holders) {
                     tooltips.add(k.getTranslatedName());
                 }
@@ -137,15 +152,17 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
 
         if (hasComplex) {
             List<KeyMapping> m = KeymapRegistry.getMappings(key.code());
-            if (m.isEmpty() && tooltips.size() == 1) tooltips.add(Text.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
+            if (m.isEmpty() && tooltips.size() == 1)
+                tooltips.add(Component.literal(Utils.SEPARATOR).withStyle(Styles.muted()));
             for (KeyMapping km : m) {
-                tooltips.add(Text.translatable(km.getName()));
+                tooltips.add(Component.translatable(km.getName()));
             }
         }
         if (selected) color(ColorGroups.YELLOW);
     }
 
-    @Override public void updateTooltips() {
+    @Override
+    public void updateTooltips() {
         tooltips.clear();
         if (!updateSpecialTooltip()) {
             updateNormalTooltip();
@@ -158,7 +175,8 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
         return InputConstants.Type.KEYSYM.getOrCreate(key.code());
     }
 
-    @Override public boolean onMouseReleased(boolean inside, double mouseX, double mouseY, int button) {
+    @Override
+    public boolean onMouseReleased(boolean inside, double mouseX, double mouseY, int button) {
         if (isNormal()) {
             if (onClick != null) {
                 onClick.run(this);
@@ -173,17 +191,19 @@ public class KeyWidget extends EWidget implements KeymappingNotifier.KeybindingR
         return false;
     }
 
-    @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    @Override
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         ColorSet colors = colorVariant();
-        drawBg(poseStack, colors.bg());
+        drawBg(guiGraphics, colors.bg());
         if (hasComplex) {
-            fill(poseStack, right() - 6, bottom() - 6, right(), bottom(), 0xFF_ffff00);
+            guiGraphics.fill(right() - 6, bottom() - 6, right(), bottom(), 0xFF_ffff00);
         }
-        drawOutline(poseStack, colors.border());
-        drawCenteredString(poseStack, font, text, midX(), midY() - font.lineHeight / 2 + 1, colors.text());
+        drawOutline(guiGraphics, colors.border());
+        guiGraphics.drawCenteredString(font, text, midX(), midY() - font.lineHeight / 2 + 1, colors.text());
     }
 
-    @Override public void keybindingRegistryUpdated(boolean selected) {
+    @Override
+    public void keybindingRegistryUpdated(boolean selected) {
         this.selected = selected;
         updateTooltips();
     }

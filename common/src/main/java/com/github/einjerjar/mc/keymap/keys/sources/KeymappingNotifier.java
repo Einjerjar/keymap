@@ -203,11 +203,7 @@ public class KeymappingNotifier {
         if (containsHolder(holder)) {
             String msg = String.format(
                     "KeyHolder was not removed by the last removeKey call! [lastCode=%d, newCode=%d, keyOf=%d, holder=%s]",
-                    lastCode,
-                    newCode,
-                    keyOf(holder),
-                    holder.getTranslatableName()
-            );
+                    lastCode, newCode, keyOf(holder), holder.getTranslatableName());
             if (KeymapConfig.instance().crashOnProblematicError()) {
                 throw (new RuntimeException(msg));
             } else {

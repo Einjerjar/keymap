@@ -13,7 +13,8 @@ import java.util.List;
  */
 public class VanillaCategorySource implements CategorySource {
 
-    @Override public List<CategoryHolder> getCategoryHolders() {
+    @Override
+    public List<CategoryHolder> getCategoryHolders() {
         List<String> categories = new ArrayList<>();
         for (KeyMapping km : Minecraft.getInstance().options.keyMappings) {
             String cat = km.getCategory();
@@ -28,7 +29,8 @@ public class VanillaCategorySource implements CategorySource {
         return categoryHolders;
     }
 
-    @Override public boolean canUseSource() {
+    @Override
+    public boolean canUseSource() {
         return true;
     }
 }

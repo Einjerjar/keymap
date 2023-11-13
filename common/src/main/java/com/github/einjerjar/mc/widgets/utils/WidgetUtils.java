@@ -8,8 +8,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 
 public class WidgetUtils {
-    private WidgetUtils() {
-    }
+    private WidgetUtils() {}
 
     public static double clamp(double x, double min, double max) {
         return Math.max(Math.min(x, max), min);
@@ -19,17 +18,25 @@ public class WidgetUtils {
         return Math.max(Math.min(x, max), min);
     }
 
-    public static void drawQuad(Tesselator ts, BufferBuilder bb, int left, int right, int top, int bottom, int color, boolean initAndBuild) {
+    public static void drawQuad(
+            Tesselator ts,
+            BufferBuilder bb,
+            int left,
+            int right,
+            int top,
+            int bottom,
+            int color,
+            boolean initAndBuild) {
         if (initAndBuild) {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             bb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
 
         SColor lColor = new SColor(color);
-        int    a      = lColor.a;
-        int    r      = lColor.r;
-        int    g      = lColor.g;
-        int    b      = lColor.b;
+        int a = lColor.a;
+        int r = lColor.r;
+        int g = lColor.g;
+        int b = lColor.b;
 
         bb.vertex(left, bottom, 0.0D).color(r, g, b, a).endVertex();
         bb.vertex(right, bottom, 0.0D).color(r, g, b, a).endVertex();

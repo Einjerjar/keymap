@@ -1,17 +1,24 @@
 package com.github.einjerjar.mc.widgets;
 
 import com.github.einjerjar.mc.widgets.utils.Rect;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
+@Getter
 @Accessors(fluent = true, chain = true)
 public class ELabel extends EWidget {
-    @Getter @Setter Component text;
-    @Getter @Setter boolean   centerX;
-    @Getter @Setter boolean   centerY;
+    @Setter
+    Component text;
+
+    @Setter
+    boolean centerX;
+
+    @Setter
+    boolean centerY;
 
     public ELabel(int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -41,9 +48,10 @@ public class ELabel extends EWidget {
         this.centerY = xy;
     }
 
-    @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    @Override
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int x = centerX ? midX() : left();
         int y = centerY ? midY() - font.lineHeight / 2 : top();
-        drawCenteredString(poseStack, font, text, x, y, colorVariant().text());
+        guiGraphics.drawCenteredString(font, text, x, y, colorVariant().text());
     }
 }

@@ -21,12 +21,12 @@ import java.util.Objects;
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class Credits {
-    private static final String  CREDITS_ROOT = "assets/keymap/credits.json";
-    static               Credits instance;
+    private static final String CREDITS_ROOT = "assets/keymap/credits.json";
+    static Credits instance;
 
     List<LanguageCredits> language;
-    List<LayoutCredits>   layout;
-    List<CoreCredits>     core;
+    List<LayoutCredits> layout;
+    List<CoreCredits> core;
 
     @Getter
     @Setter
@@ -35,7 +35,7 @@ public class Credits {
     @AllArgsConstructor
     @Accessors(fluent = true)
     public static class LanguageCredits {
-        String       lang;
+        String lang;
         List<String> name;
     }
 
@@ -46,7 +46,7 @@ public class Credits {
     @AllArgsConstructor
     @Accessors(fluent = true)
     public static class LayoutCredits {
-        String       key;
+        String key;
         List<String> name;
     }
 
@@ -57,7 +57,7 @@ public class Credits {
     @AllArgsConstructor
     @Accessors(fluent = true)
     public static class CoreCredits {
-        String       name;
+        String name;
         List<String> contributions;
     }
 
@@ -70,11 +70,12 @@ public class Credits {
 
     public static void loadCredits() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
-        Gson        gson    = builder.create();
-        ClassLoader loader  = Credits.class.getClassLoader();
+        Gson gson = builder.create();
+        ClassLoader loader = Credits.class.getClassLoader();
 
         try {
-            URI creditUri = Objects.requireNonNull(loader.getResource(CREDITS_ROOT)).toURI();
+            URI creditUri =
+                    Objects.requireNonNull(loader.getResource(CREDITS_ROOT)).toURI();
 
             if (creditUri.getScheme().equals("jar")) {
                 // simple notice, since sonarlint/intellij is complaining about readability
@@ -87,7 +88,8 @@ public class Credits {
                 // ----------------- another try-catch block ends here -----------------
             }
 
-            try (InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream(CREDITS_ROOT)), StandardCharsets.UTF_8)) {
+            try (InputStreamReader reader = new InputStreamReader(
+                    Objects.requireNonNull(loader.getResourceAsStream(CREDITS_ROOT)), StandardCharsets.UTF_8)) {
                 instance = gson.fromJson(reader, Credits.class);
             }
 

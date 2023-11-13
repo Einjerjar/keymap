@@ -1,9 +1,9 @@
 package com.github.einjerjar.mc.widgets;
 
 import com.github.einjerjar.mc.widgets.utils.Rect;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -15,9 +15,10 @@ public class ValueMapList extends EList<ValueMapList.ValueMapEntry<?>> {
         this.canDeselectItem = canDeselectItem;
     }
 
-    @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        super.renderWidget(poseStack, mouseX, mouseY, partialTick);
-        drawOutline(poseStack, 0xff_ffffff);
+    @Override
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        drawOutline(guiGraphics, 0xff_ffffff);
     }
 
     public void setItemSelectedWithKey(String key) {
@@ -39,18 +40,22 @@ public class ValueMapList extends EList<ValueMapList.ValueMapEntry<?>> {
     }
 
     public static class ValueMapEntry<V> extends EListEntry<ValueMapEntry<?>> {
-        @Getter protected String key;
-        @Getter protected V      value;
+        @Getter
+        protected String key;
+
+        @Getter
+        protected V value;
 
         public ValueMapEntry(String key, V value, ValueMapList container) {
             super(container);
-            this.key   = key;
+            this.key = key;
             this.value = value;
         }
 
-        @Override public void renderWidget(@NotNull PoseStack poseStack, Rect r, float partialTick) {
+        @Override
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, Rect r, float partialTick) {
             String trimmed = font.plainSubstrByWidth(key, r.w());
-            drawString(poseStack, font, trimmed, r.x(), r.y(), getVariant().text());
+            guiGraphics.drawString(font, trimmed, r.x(), r.y(), getVariant().text());
         }
     }
 }

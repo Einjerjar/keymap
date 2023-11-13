@@ -8,10 +8,21 @@ import java.util.Objects;
 
 @Accessors(fluent = true, chain = true)
 public class Rect {
-    @Getter @Setter int x;
-    @Getter @Setter int y;
-    @Getter @Setter int w;
-    @Getter @Setter int h;
+    @Getter
+    @Setter
+    int x;
+
+    @Getter
+    @Setter
+    int y;
+
+    @Getter
+    @Setter
+    int w;
+
+    @Getter
+    @Setter
+    int h;
 
     public Rect(int x, int y, int w, int h) {
         this.x = x;
@@ -20,13 +31,15 @@ public class Rect {
         this.h = h;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Rect rect)) return false;
         return x == rect.x && y == rect.y && w == rect.w && h == rect.h;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(x, y, w, h);
     }
 

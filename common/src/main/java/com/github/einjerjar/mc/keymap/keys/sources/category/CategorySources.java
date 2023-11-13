@@ -15,14 +15,15 @@ public class CategorySources {
     /**
      * Known list of sources
      */
-    @Getter protected static List<CategorySource> sources   = new ArrayList<>();
+    @Getter
+    protected static List<CategorySource> sources = new ArrayList<>();
     /**
      * Whether the collect function has been called once
      */
-    @Getter protected static boolean              collected = false;
+    @Getter
+    protected static boolean collected = false;
 
-    private CategorySources() {
-    }
+    private CategorySources() {}
 
     /**
      * Gathers the known category sources, should really only be called once to avoid

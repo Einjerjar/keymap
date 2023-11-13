@@ -25,7 +25,7 @@ public class KeyComboData {
     /**
      * The primary key's code
      */
-    protected int     keyCode;
+    protected int keyCode;
     /**
      * The type of key, mouse or board
      * TODO: Migrate to InputConstants
@@ -63,9 +63,9 @@ public class KeyComboData {
     public KeyComboData(int keyCode, KeyType keyType, boolean alt, boolean shift, boolean ctrl) {
         this.keyCode = keyCode;
         this.keyType = keyType;
-        this.alt     = alt;
-        this.shift   = shift;
-        this.ctrl    = ctrl;
+        this.alt = alt;
+        this.shift = shift;
+        this.ctrl = ctrl;
 
         if (isModifierOnly()) {
             this.alt = this.shift = this.ctrl = false;
@@ -135,14 +135,20 @@ public class KeyComboData {
         return isModifier() && modifierCount() == 1;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         KeyComboData that = (KeyComboData) o;
-        return keyCode == that.keyCode && alt == that.alt && shift == that.shift && ctrl == that.ctrl && keyType == that.keyType;
+        return keyCode == that.keyCode
+                && alt == that.alt
+                && shift == that.shift
+                && ctrl == that.ctrl
+                && keyType == that.keyType;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(keyCode, keyType, alt, shift, ctrl);
     }
 }

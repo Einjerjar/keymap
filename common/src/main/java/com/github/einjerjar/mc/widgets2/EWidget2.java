@@ -1,8 +1,8 @@
 package com.github.einjerjar.mc.widgets2;
 
 import com.github.einjerjar.mc.keymap.Keymap;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,11 +12,9 @@ public abstract class EWidget2 extends EWidget2Utils {
         super(x, y, w, h);
     }
 
-    protected void init() {
-    }
+    protected void init() {}
 
-    protected void updateTooltips() {
-    }
+    protected void updateTooltips() {}
 
     protected boolean onMouseClicked(double mouseX, double mouseY, int button) {
         return true;
@@ -41,7 +39,7 @@ public abstract class EWidget2 extends EWidget2Utils {
 
     protected boolean onMouseReleased(double mouseX, double mouseY, int button) {
         if (handleMouseClick(mouseX, mouseY, button)) {
-            playSound(SoundEvents.UI_BUTTON_CLICK);
+            playSound(SoundEvents.UI_BUTTON_CLICK.value());
             return true;
         }
         return false;
@@ -75,17 +73,15 @@ public abstract class EWidget2 extends EWidget2Utils {
         return false;
     }
 
-    protected boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+    protected boolean onMouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         return false;
     }
 
-    protected void preRenderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-    }
+    protected void preRenderWidget(@NotNull GuiGraphics poseStack, int mouseX, int mouseY, float partialTick) {}
 
-    protected abstract void onRenderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
+    protected abstract void onRenderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick);
 
-    protected void postRenderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-    }
+    protected void postRenderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {}
 
     private boolean onEscape() {
         return false;
@@ -95,13 +91,15 @@ public abstract class EWidget2 extends EWidget2Utils {
         return onEscape();
     }
 
-    @Override public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!rect.contains(mouseX, mouseY)) return false;
 
         return onMouseClicked(mouseX, mouseY, button);
     }
 
-    @Override public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (!active()) return false;
 
         if (!rect.contains(mouseX, mouseY)) {
@@ -112,25 +110,30 @@ public abstract class EWidget2 extends EWidget2Utils {
         return onMouseReleased(mouseX, mouseY, button);
     }
 
-    @Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         return onMouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
-    @Override public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return onMouseScrolled(mouseX, mouseY, delta);
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return onMouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
-    @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return onKeyPressed(keyCode, scanCode, modifiers);
     }
 
-    @Override public boolean charTyped(char codePoint, int modifiers) {
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
         return onCharTyped(codePoint, modifiers);
     }
 
-    @Override public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        preRenderWidget(poseStack, mouseX, mouseY, partialTick);
-        onRenderWidget(poseStack, mouseX, mouseY, partialTick);
-        postRenderWidget(poseStack, mouseX, mouseY, partialTick);
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        preRenderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        onRenderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        postRenderWidget(guiGraphics, mouseX, mouseY, partialTick);
     }
 }

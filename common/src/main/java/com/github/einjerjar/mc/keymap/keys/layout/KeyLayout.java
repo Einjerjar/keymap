@@ -31,30 +31,37 @@ public class KeyLayout {
     /**
      * Where the default layouts are located
      */
-    private static final     String                     LAYOUT_ROOT = "assets/keymap/layouts";
+    private static final String LAYOUT_ROOT = "assets/keymap/layouts";
     /**
      * The default layout (en_us (iirc))
      * TODO: Check if this is even used at all
      */
-    @Getter protected static KeyLayout                  layoutDefault;
+    @Getter
+    protected static KeyLayout layoutDefault;
     /**
      * The current layout
      * TODO: Check if this is even used at all
      */
-    @Getter protected static KeyLayout                  layoutCurrent;
+    @Getter
+    protected static KeyLayout layoutCurrent;
     /**
      * List of all registered layouts and their name codes
      */
-    @Getter protected static HashMap<String, KeyLayout> layouts     = new HashMap<>();
+    @Getter
+    protected static HashMap<String, KeyLayout> layouts = new HashMap<>();
 
     /**
      * The metadata for this layout instance
      */
-    @Getter @Setter protected KeyMeta meta;
+    @Getter
+    @Setter
+    protected KeyMeta meta;
     /**
      * The actual key groups
      */
-    @Getter @Setter protected Keys    keys;
+    @Getter
+    @Setter
+    protected Keys keys;
 
     /**
      * Registers a layout
@@ -90,16 +97,17 @@ public class KeyLayout {
     public static void loadKeys() {
         layouts.clear();
 
-        GsonBuilder  builder = new GsonBuilder().setPrettyPrinting();
-        Gson         gson    = builder.create();
-        ClassLoader  loader  = KeyLayout.class.getClassLoader();
-        Stream<Path> files   = null;
-        FileSystem   fs;
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        Gson gson = builder.create();
+        ClassLoader loader = KeyLayout.class.getClassLoader();
+        Stream<Path> files = null;
+        FileSystem fs;
 
         try {
             Keymap.logger().warn(loader.getResource("/"));
             Keymap.logger().warn(loader.getResource(LAYOUT_ROOT));
-            URI  layoutUri = Objects.requireNonNull(Objects.requireNonNull(loader.getResource(LAYOUT_ROOT)).toURI());
+            URI layoutUri = Objects.requireNonNull(
+                    Objects.requireNonNull(loader.getResource(LAYOUT_ROOT)).toURI());
             Keymap.logger().warn("Keymap layout stream: {}", layoutUri);
             Keymap.logger().warn("Keymap layout stream scheme: {}", layoutUri.getScheme());
             Path path;
@@ -126,8 +134,8 @@ public class KeyLayout {
     }
 
     private static void tryLoadLayout(Gson gson, ClassLoader loader, Path p) {
-        try (InputStreamReader reader =
-                     new InputStreamReader(Objects.requireNonNull(loader.getResourceAsStream(p.toString())), StandardCharsets.UTF_8)) {
+        try (InputStreamReader reader = new InputStreamReader(
+                Objects.requireNonNull(loader.getResourceAsStream(p.toString())), StandardCharsets.UTF_8)) {
             registerLayout(gson.fromJson(reader, KeyLayout.class));
         } catch (Exception e) {
             Keymap.logger().warn("Can't load {} ; {}", p.getFileName(), e.getMessage());

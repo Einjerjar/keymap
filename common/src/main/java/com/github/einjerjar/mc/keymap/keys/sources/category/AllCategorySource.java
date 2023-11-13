@@ -10,12 +10,13 @@ import java.util.List;
  */
 public class AllCategorySource implements CategorySource {
 
-
-    @Override public List<CategoryHolder> getCategoryHolders() {
+    @Override
+    public List<CategoryHolder> getCategoryHolders() {
         return List.of(new AllCategory());
     }
 
-    @Override public boolean canUseSource() {
+    @Override
+    public boolean canUseSource() {
         return true;
     }
 }

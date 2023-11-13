@@ -2,22 +2,26 @@ package com.github.einjerjar.mc.widgets;
 
 import com.github.einjerjar.mc.keymap.utils.Utils;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
+import org.jetbrains.annotations.NotNull;
 
 @Accessors(fluent = true)
 public class EInput extends EWidget {
-    protected final StringBuilder text        = new StringBuilder();
-    protected final String        placeholder = Language.getInstance().getOrDefault("keymap.inpSearchPlaceholder");
+    protected final StringBuilder text = new StringBuilder();
+    protected final String placeholder = Language.getInstance().getOrDefault("keymap.inpSearchPlaceholder");
 
     protected String display = "";
-    @Getter   int    cursor  = 0;
 
-    @Setter EInputChangedAction onChanged;
+    @Getter
+    int cursor = 0;
+
+    @Setter
+    EInputChangedAction onChanged;
 
     public EInput(int x, int y, int w, int h) {
         super(x, y, w, h);
@@ -38,14 +42,16 @@ public class EInput extends EWidget {
 
     protected void updateDisplay() {
         display = text.toString();
-        int maxW   = rect.w() - padding.x() * 2;
+        int maxW = rect.w() - padding.x() * 2;
         int tWidth = font.width(display);
         if (tWidth > maxW) {
             StringBuilder temp = new StringBuilder(text);
-            display = new StringBuilder(font.plainSubstrByWidth(temp.reverse().toString(), maxW)).reverse().toString();
+            display = new StringBuilder(font.plainSubstrByWidth(temp.reverse().toString(), maxW))
+                    .reverse()
+                    .toString();
             temp.reverse();
 
-            int delta  = text.length() - display.length();
+            int delta = text.length() - display.length();
             int cDelta = cursor - delta;
             if (cDelta <= 0) {
                 display = font.plainSubstrByWidth(temp.substring(Math.max(0, cursor - 1), temp.length()), maxW);
@@ -92,7 +98,8 @@ public class EInput extends EWidget {
         moveCursor(1);
     }
 
-    @Override protected boolean onCharTyped(char codePoint, int modifiers) {
+    @Override
+    protected boolean onCharTyped(char codePoint, int modifiers) {
         if (SharedConstants.isAllowedChatCharacter(codePoint)) {
             write(codePoint);
             return true;
@@ -100,7 +107,8 @@ public class EInput extends EWidget {
         return false;
     }
 
-    @Override protected boolean onKeyPressed(int keyCode, int scanCode, int modifiers) {
+    @Override
+    protected boolean onKeyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == InputConstants.KEY_BACKSPACE) {
             boolean isLast = cursor == text.length();
             textDelete(1);
@@ -132,14 +140,20 @@ public class EInput extends EWidget {
         return false;
     }
 
-    @Override protected void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        drawBg(poseStack);
-        drawOutline(poseStack);
+    @Override
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        drawBg(guiGraphics);
+        drawOutline(guiGraphics);
 
-        if (display.length() > 0) {
-            drawString(poseStack, font, display, left() + padding.x(), top() + padding.y(), colorVariant().text());
+        if (!display.isEmpty()) {
+            guiGraphics.drawString(
+                    font,
+                    display,
+                    left() + padding.x(),
+                    top() + padding.y(),
+                    colorVariant().text());
         } else {
-            drawString(poseStack,
+            guiGraphics.drawString(
                     font,
                     placeholder,
                     left() + padding.x(),
@@ -153,7 +167,7 @@ public class EInput extends EWidget {
             cPosX = font.width(display.substring(0, Math.min(cDelta <= 0 ? 1 : cDelta, display.length())));
         }
 
-        hLine(poseStack,
+        guiGraphics.hLine(
                 left() + padding.x() + cPosX,
                 left() + padding.x() + cPosX + 4,
                 bottom() - padding.y(),

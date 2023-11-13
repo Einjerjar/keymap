@@ -2,14 +2,13 @@ package com.github.einjerjar.mc.keymap.client.gui.screen;
 
 import com.github.einjerjar.mc.keymap.config.KeymapConfig;
 import com.github.einjerjar.mc.widgets.utils.Point;
-import com.github.einjerjar.mc.widgets.utils.Text;
 import com.github.einjerjar.mc.widgets2.ELabel2;
 import com.github.einjerjar.mc.widgets2.ELineToggleButton;
 import com.github.einjerjar.mc.widgets2.EScreen2;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.jetbrains.annotations.NotNull;
 
 public class ConfigScreen extends EScreen2 {
 
@@ -18,7 +17,8 @@ public class ConfigScreen extends EScreen2 {
         targetScreenWidth = 450;
     }
 
-    @Override protected void onInit() {
+    @Override
+    protected void onInit() {
         children.clear();
         Style bold = Style.EMPTY.withBold(true);
 
@@ -26,11 +26,9 @@ public class ConfigScreen extends EScreen2 {
 
         // General
         ELabel2 labelGeneral = new ELabel2(
-                Text.translatable("keymap.catGeneral").withStyle(bold),
-                scr.left(), scr.top(), scr.w(), h);
+                Component.translatable("keymap.catGeneral").withStyle(bold), scr.left(), scr.top(), scr.w(), h);
         ELineToggleButton toggleReplaceKeybind = new ELineToggleButton(
-                Text.translatable("keymap.optReplaceKeybindScreen"),
-                scr.left(), scr.top() + h, scr.w(), h);
+                Component.translatable("keymap.optReplaceKeybindScreen"), scr.left(), scr.top() + h, scr.w(), h);
 
         toggleReplaceKeybind.padding(new Point<>(4));
         toggleReplaceKeybind.value(KeymapConfig.instance().replaceKeybindScreen());
@@ -38,11 +36,9 @@ public class ConfigScreen extends EScreen2 {
 
         // Layout
         ELabel2 labelLayout = new ELabel2(
-                Text.translatable("keymap.catLayout").withStyle(bold),
-                scr.left(), scr.top() + h * 2, scr.w(), h);
+                Component.translatable("keymap.catLayout").withStyle(bold), scr.left(), scr.top() + h * 2, scr.w(), h);
         ELineToggleButton toggleAutoSelectLayout = new ELineToggleButton(
-                Text.translatable("keymap.optAutoSelectLayout"),
-                scr.left(), scr.top() + h * 3, scr.w(), h);
+                Component.translatable("keymap.optAutoSelectLayout"), scr.left(), scr.top() + h * 3, scr.w(), h);
 
         toggleAutoSelectLayout.padding(new Point<>(4));
         toggleAutoSelectLayout.value(KeymapConfig.instance().autoSelectLayout());
@@ -50,11 +46,13 @@ public class ConfigScreen extends EScreen2 {
 
         // Tooltips
         ELabel2 labelTooltips = new ELabel2(
-                Text.translatable("keymap.catTooltips").withStyle(bold),
-                scr.left(), scr.top() + h * 4, scr.w(), h);
+                Component.translatable("keymap.catTooltips").withStyle(bold),
+                scr.left(),
+                scr.top() + h * 4,
+                scr.w(),
+                h);
         ELineToggleButton toggleShowHelpTooltips = new ELineToggleButton(
-                Text.translatable("keymap.optShowHelpTooltips"),
-                scr.left(), scr.top() + h * 5, scr.w(), h);
+                Component.translatable("keymap.optShowHelpTooltips"), scr.left(), scr.top() + h * 5, scr.w(), h);
 
         toggleShowHelpTooltips.padding(new Point<>(4));
         toggleShowHelpTooltips.value(KeymapConfig.instance().showHelpTooltips());
@@ -62,20 +60,19 @@ public class ConfigScreen extends EScreen2 {
 
         // Extra
         ELabel2 labelExtra = new ELabel2(
-                Text.translatable("keymap.catExtra").withStyle(bold),
-                scr.left(), scr.top() + h * 6, scr.w(), h);
+                Component.translatable("keymap.catExtra").withStyle(bold), scr.left(), scr.top() + h * 6, scr.w(), h);
         ELineToggleButton toggleFirstOpenDone = new ELineToggleButton(
-                Text.translatable("keymap.optFirstOpenDoneExtra"),
-                scr.left(), scr.top() + h * 7, scr.w(), h);
+                Component.translatable("keymap.optFirstOpenDoneExtra"), scr.left(), scr.top() + h * 7, scr.w(), h);
         ELineToggleButton toggleDebug = new ELineToggleButton(
-                Text.translatable("keymap.optDebug"),
-                scr.left(), scr.top() + h * 8, scr.w(), h);
+                Component.translatable("keymap.optDebug"), scr.left(), scr.top() + h * 8, scr.w(), h);
         ELineToggleButton toggleDebug2 = new ELineToggleButton(
-                Text.translatable("keymap.optDebug2"),
-                scr.left(), scr.top() + h * 9, scr.w(), h);
+                Component.translatable("keymap.optDebug2"), scr.left(), scr.top() + h * 9, scr.w(), h);
         ELineToggleButton toggleMad = new ELineToggleButton(
-                Text.translatable("keymap.optCrashOnProblematicError"),
-                scr.left(), scr.top() + h * 10, scr.w(), h);
+                Component.translatable("keymap.optCrashOnProblematicError"),
+                scr.left(),
+                scr.top() + h * 10,
+                scr.w(),
+                h);
 
         toggleFirstOpenDone.padding(new Point<>(4));
         toggleFirstOpenDone.value(KeymapConfig.instance().firstOpenDone());
@@ -109,15 +106,18 @@ public class ConfigScreen extends EScreen2 {
         children.add(toggleMad);
     }
 
-    @Override protected void preRender(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        super.preRender(poseStack, mouseX, mouseY, partialTick);
+    @Override
+    protected void preRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.preRender(guiGraphics, mouseX, mouseY, partialTick);
     }
 
-    @Override protected void postRender(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    @Override
+    protected void postRender(GuiGraphics poseStack, int mouseX, int mouseY, float partialTick) {
         // postRender
     }
 
-    @Override public void onClose() {
+    @Override
+    public void onClose() {
         KeymapConfig.save();
         super.onClose();
     }

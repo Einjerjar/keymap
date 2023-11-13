@@ -2,9 +2,9 @@ package com.github.einjerjar.mc.widgets2;
 
 import com.github.einjerjar.mc.widgets.utils.Point;
 import com.github.einjerjar.mc.widgets.utils.Rect;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -15,13 +15,20 @@ import java.util.List;
 
 @Accessors(fluent = true)
 public abstract class EScreen2Utils extends Screen {
-    @Getter protected final Point<Integer> margin  = new Point<>(6);
-    @Getter protected final Point<Integer> padding = new Point<>(6);
+    @Getter
+    protected final Point<Integer> margin = new Point<>(6);
 
-    @Getter protected int targetScreenWidth = -1;
-    @Getter protected int minScreenWidth    = 10;
+    @Getter
+    protected final Point<Integer> padding = new Point<>(6);
 
-    @Getter protected List<EWidget2> children = new ArrayList<>();
+    @Getter
+    protected int targetScreenWidth = -1;
+
+    @Getter
+    protected int minScreenWidth = 10;
+
+    @Getter
+    protected List<EWidget2> children = new ArrayList<>();
 
     // Last active
     private EWidget2 focusWidget;
@@ -30,11 +37,14 @@ public abstract class EScreen2Utils extends Screen {
     // Mouse clicking
     private EWidget2 activeWidget;
 
-    @Getter protected Rect scr;
+    @Getter
+    protected Rect scr;
 
-    @Getter protected Screen parent;
+    @Getter
+    protected Screen parent;
 
-    @Nullable protected EWidget2 focusWidget() {
+    @Nullable
+    protected EWidget2 focusWidget() {
         if (focusWidget != null) {
             if (focusWidget.focused) return focusWidget;
             focusWidget(null);
@@ -42,7 +52,8 @@ public abstract class EScreen2Utils extends Screen {
         return null;
     }
 
-    @Nullable protected EWidget2 hoverWidget() {
+    @Nullable
+    protected EWidget2 hoverWidget() {
         if (hoverWidget != null) {
             if (hoverWidget.hovered) return hoverWidget;
             hoverWidget(null);
@@ -50,7 +61,8 @@ public abstract class EScreen2Utils extends Screen {
         return null;
     }
 
-    @Nullable protected EWidget2 activeWidget() {
+    @Nullable
+    protected EWidget2 activeWidget() {
         if (activeWidget != null) {
             if (activeWidget.active) return activeWidget;
             activeWidget(null);
@@ -59,15 +71,13 @@ public abstract class EScreen2Utils extends Screen {
     }
 
     protected void focusWidget(EWidget2 w) {
-        if (focusWidget != w && focusWidget != null)
-            focusWidget.focused(false);
+        if (focusWidget != w && focusWidget != null) focusWidget.focused(false);
         focusWidget = w;
         if (w != null) w.focused(true);
     }
 
     protected void hoverWidget(EWidget2 w) {
-        if (hoverWidget != w && hoverWidget != null)
-            hoverWidget.hovered(false);
+        if (hoverWidget != w && hoverWidget != null) hoverWidget.hovered(false);
         hoverWidget = w;
         if (hoverWidget != null) {
             hoverWidget.hovered(true);
@@ -75,8 +85,7 @@ public abstract class EScreen2Utils extends Screen {
     }
 
     protected void activeWidget(EWidget2 w) {
-        if (activeWidget != w && activeWidget != null)
-            activeWidget.active(false);
+        if (activeWidget != w && activeWidget != null) activeWidget.active(false);
         activeWidget = w;
         if (w != null) w.active(true);
     }
@@ -91,41 +100,34 @@ public abstract class EScreen2Utils extends Screen {
         super(component);
     }
 
-    protected void drawOutline(@NotNull PoseStack ps, int l, int t, int r, int b, int c) {
-        U.outline(ps, l, t, r, b, c);
+    protected void drawOutline(@NotNull GuiGraphics guiGraphics, int l, int t, int r, int b, int c) {
+        U.outline(guiGraphics, l, t, r, b, c);
     }
 
-    protected void drawOutline(@NotNull PoseStack ps, Rect r, int c) {
-        drawOutline(ps, r.left(), r.top(), r.right(), r.bottom(), c);
+    protected void drawOutline(@NotNull GuiGraphics guiGraphics, Rect r, int c) {
+        drawOutline(guiGraphics, r.left(), r.top(), r.right(), r.bottom(), c);
     }
 
-    protected void drawOutline(@NotNull PoseStack ps, int c) {
-        drawOutline(ps, scr, c);
+    protected void drawOutline(@NotNull GuiGraphics guiGraphics, int c) {
+        drawOutline(guiGraphics, scr, c);
     }
 
-    protected void drawOutsideOutline(@NotNull PoseStack ps, Rect r, int c) {
-        drawOutline(ps, r.left() - 1, r.top() - 1, r.right() - 1, r.bottom() - 1, c);
+    protected void drawOutsideOutline(@NotNull GuiGraphics guiGraphics, Rect r, int c) {
+        drawOutline(guiGraphics, r.left() - 1, r.top() - 1, r.right() - 1, r.bottom() - 1, c);
     }
 
-    protected void drawOutsideOutline(@NotNull PoseStack ps, int c) {
-        drawOutsideOutline(ps, scr, c);
+    protected void drawOutsideOutline(@NotNull GuiGraphics guiGraphics, int c) {
+        drawOutsideOutline(guiGraphics, scr, c);
     }
 
     protected Rect scrFromWidth(int w) {
         if (w == -1) w = width;
         w = Math.max(Math.min(w, width - margin.x() * 2), minScreenWidth);
         return new Rect(
-                Math.max((width - w) / 2, 0) + margin.x(),
-                margin.y(),
-                w - margin.x() * 2,
-                height - margin.y() * 2
-        );
+                Math.max((width - w) / 2, 0) + margin.x(), margin.y(), w - margin.x() * 2, height - margin.y() * 2);
     }
 
     protected Point<Integer> center() {
-        return new Point<>(
-                (scr.left() + scr.right()) / 2,
-                (scr.top() + scr.bottom()) / 2
-        );
+        return new Point<>((scr.left() + scr.right()) / 2, (scr.top() + scr.bottom()) / 2);
     }
 }
