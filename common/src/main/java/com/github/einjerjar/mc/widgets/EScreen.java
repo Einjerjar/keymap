@@ -159,14 +159,14 @@ public abstract class EScreen extends Screen {
         return onMouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
-    public boolean onMouseScrolled(double mouseX, double mouseY, double amount) {
+    public boolean onMouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (hoveredWidget == null) return false;
-        return hoveredWidget.mouseScrolled(mouseX, mouseY, amount);
+        return hoveredWidget.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        return onMouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return onMouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     public List<EWidget> widgets() {
@@ -178,7 +178,7 @@ public abstract class EScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (renderBg) renderBackground(guiGraphics);
+        if (renderBg) renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         preRenderScreen(guiGraphics, mouseX, mouseY, partialTick);
         hoveredWidget = null;
         if (autoRenderChild) {

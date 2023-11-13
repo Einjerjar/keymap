@@ -25,14 +25,6 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${project.version_mod_menu}"
 
-    modRuntimeOnly "maven.modrinth:lithium:${project.version_lithium}"
-    modRuntimeOnly "maven.modrinth:starlight:${project.version_starlight}"
-    modRuntimeOnly "maven.modrinth:ferrite-core:${project.version_ferrite_core}"
-    modRuntimeOnly "maven.modrinth:lazydfu:${project.version_lazydfu}"
-    modRuntimeOnly "maven.modrinth:ksyxis:${project.version_ksyxis}"
-    modRuntimeOnly "maven.modrinth:c2me-fabric:${project.version_c2me}"
-    modRuntimeOnly "maven.modrinth:notenoughcrashes:${project.version_nec}"
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }

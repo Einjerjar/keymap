@@ -73,7 +73,7 @@ public abstract class EWidget2 extends EWidget2Utils {
         return false;
     }
 
-    protected boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+    protected boolean onMouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         return false;
     }
 
@@ -116,8 +116,8 @@ public abstract class EWidget2 extends EWidget2Utils {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return onMouseScrolled(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return onMouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override

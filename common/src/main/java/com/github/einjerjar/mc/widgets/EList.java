@@ -279,8 +279,8 @@ public abstract class EList<T extends EList.EListEntry<T>> extends EWidget {
     }
 
     @Override
-    protected boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-        relativeScrollPos(-delta * scrollSpeed);
+    protected boolean onMouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        relativeScrollPos(-scrollY * scrollSpeed);
         return true;
     }
 
